@@ -390,9 +390,10 @@ body{
     <!-- EXTERNAL INTELLIGENCE WIDGET -->
     <div class="widget" style="margin-top: 20px;">
       <div class="widget-title">🧠 Generadores de Inteligencia (Offline)</div>
-      <div style="display:flex; gap:10px; margin-bottom: 15px;">
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom: 15px;">
         <button class="btn" style="background:var(--accent-purple); color:white;" onclick="generateDashPrompt('gemini')">✨ Prompt Copiloto (Gemini)</button>
         <button class="btn" style="background:var(--accent-gold); color:white;" onclick="generateDashPrompt('notebooklm')">🎧 Prompt Audio (NotebookLM)</button>
+        <button class="btn" style="background:#4ade80; color:#1a1a2e; font-weight:bold;" onclick="generateDashPrompt('codecombat')">⚔️ Auditor CodeCombat</button>
       </div>
       <textarea id="dashPromptOutput" class="panel-input" style="width:100%; height:120px; background:var(--input-bg); color:var(--text-primary); border:1px solid var(--border); border-radius:8px; padding:10px; display:none;" readonly></textarea>
       <button id="dashCopyBtn" class="btn btn-secondary" style="margin-top:10px; display:none;" onclick="copyDashPrompt()">📋 Copiar al Portapapeles</button>
@@ -1663,6 +1664,15 @@ Instrucciones:
 Tema principal: Fase ${task.phase.id} (${task.phase.name}) - ${task.detail}.
 Audiencia: Adulto autodidacta con disciplina.
 Instrucciones: Explica el concepto con analogías del mundo real (no de programación). ¿Por qué es crítico aprender esto en 2026? Usa un tono exigente pero justo. Cierra con un reto mental para cuando el oyente vuelva a su computadora.`;
+  } else if (type === 'codecombat') {
+    promptText = `Actúa como un Evaluador Táctico Estricto para mi progreso en CodeCombat.
+Contexto: Tengo una cuenta premium en CodeCombat y acabo de terminar una serie de niveles. Mi objetivo no es solo pasar el juego, sino extraer los principios reales de Ciencias de la Computación subyacentes.
+
+Instrucciones:
+1. Pídeme que te indique qué mundo o niveles acabo de terminar.
+2. Una vez que te lo diga, hazme 2 o 3 preguntas técnicas muy específicas (sin código) sobre los conceptos que ese nivel enseña (por ejemplo: bucles, arrays, variables de estado, pathfinding).
+3. Analiza mis respuestas. Si mi comprensión es superficial, provéeme un reto de refuerzo (un pequeño problema lógico para resolver sin el juego).
+4. No me des respuestas fáciles. Audítame implacablemente para asegurar que no solo estoy jugando, sino aprendiendo ingeniería de software.`;
   }
   
   const textarea = document.getElementById('dashPromptOutput');
