@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AEGIS v3.0 — ADHD Optimized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--font-sans:'Inter',system-ui,-apple-system,sans-serif;--font-mono:'JetBrains Mono',monospace}
+[data-theme="dark"]{
+  --bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a1f2e;
+  --bg-chat-user:#2563eb22;--bg-chat-bot:#1e293b;
+  --text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;
+  --accent-blue:#3b82f6;--accent-green:#22c55e;--accent-gold:#f59e0b;
+  --accent-red:#ef4444;--accent-purple:#a855f7;--accent-cyan:#06b6d4;
+  --border:#1e293b;--glass:rgba(30,41,59,0.5);
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+  --glow-blue:0 0 20px rgba(59,130,246,0.15);
+  --input-bg:#0f172a;--scrollbar:#334155;
+}
+[data-theme="light"]{
+  --bg-primary:#f8fafc;--bg-secondary:#f1f5f9;--bg-card:#ffffff;
+  --bg-chat-user:#eff6ff;--bg-chat-bot:#f1f5f9;
+  --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+  --accent-blue:#2563eb;--accent-green:#16a34a;--accent-gold:#d97706;
+  --accent-red:#dc2626;--accent-purple:#9333ea;--accent-cyan:#0891b2;
+  --border:#e2e8f0;--glass:rgba(241,245,249,0.8);
+  --shadow:0 4px 24px rgba(0,0,0,0.08);
+  --glow-blue:0 0 20px rgba(37,99,235,0.08);
+  --input-bg:#ffffff;--scrollbar:#cbd5e1;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);display:flex;flex-direction:column;transition:background .3s,color .3s;}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+.main-layout{display:flex;flex:1;overflow:hidden;height:100%;}
+.dashboard-area{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;}
+
+/* ═══════════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════════ */
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);flex-shrink:0;backdrop-filter:blur(12px);z-index:10;}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{font-size:18px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:11px;color:var(--text-muted);font-weight:500}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;background:var(--glass);border:1px solid var(--border);}
+.badge-xp{color:var(--accent-gold)}
+.badge-streak{color:var(--accent-red)}
+.badge-dopamine{color:var(--accent-purple)}
+.header-right{display:flex;align-items:center;gap:8px}
+.icon-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);cursor:pointer;padding:6px 8px;font-size:16px;transition:all .2s;}
+.icon-btn:hover{background:var(--glass);color:var(--text-primary);transform:scale(1.05)}
+
+/* ═══════════════════════════════════════════════════════════
+   WIDGETS BASE
+   ═══════════════════════════════════════════════════════════ */
+.widget{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);transition:all 0.3s;}
+.widget:hover{box-shadow:0 8px 32px rgba(0,0,0,0.5);}
+.widget-title{font-size:13px;font-weight:700;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+
+/* ═══════════════════════════════════════════════════════════
+   MICRO-MISIONES — ADHD CHUNKING
+   ═══════════════════════════════════════════════════════════ */
+.missions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mission-card{background:var(--glass);border:2px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.mission-card:hover{border-color:var(--accent-blue);transform:scale(1.02);}
+.mission-card.active{border-color:var(--accent-green);background:rgba(34,197,94,0.1);animation:missionPulse 2s infinite;}
+.mission-card.completed{border-color:var(--accent-gold);opacity:0.7;}
+.mission-card.rest-mode{grid-column:span 2;background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(217,119,6,0.1));border-color:var(--accent-gold);}
+@keyframes missionPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.4);}50%{box-shadow:0 0 20px 5px rgba(34,197,94,0.2);}}
+.mission-icon{font-size:24px;margin-bottom:6px;}
+.mission-title{font-size:12px;font-weight:600;margin-bottom:2px;}
+.mission-time{font-size:10px;color:var(--text-muted);}
+.mission-reward{position:absolute;top:8px;right:8px;font-size:10px;color:var(--accent-gold);font-weight:700;}
+.mission-progress-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border);}
+.progress-fill{height:100%;width:0%;background:var(--accent-green);transition:width 0.5s linear;}
+.combo-counter{text-align:center;margin-top:12px;font-size:16px;font-weight:700;color:var(--accent-gold);}
+
+/* ═══════════════════════════════════════════════════════════
+   STREAK VISUALIZER
+   ═══════════════════════════════════════════════════════════ */
+.flame-container{text-align:center;padding:15px;background:linear-gradient(180deg,rgba(239,68,68,0.1),transparent);border-radius:12px;margin-bottom:12px;}
+#flameCanvas{filter:drop-shadow(0 0 20px rgba(245,158,11,0.5));}
+.flame-intensity{margin-top:8px;font-weight:700;color:var(--accent-gold);font-size:14px;}
+.daily-checklist{display:flex;flex-direction:column;gap:6px;}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--glass);border-radius:8px;cursor:pointer;transition:all 0.2s;}
+.check-item:hover{background:var(--bg-card);}
+.check-item.completed{background:rgba(34,197,94,0.2);}
+.check-item.completed .check-box{color:var(--accent-green);}
+.check-box{font-size:16px;}
+.check-reward{margin-left:auto;font-size:11px;color:var(--accent-gold);}
+
+/* ═══════════════════════════════════════════════════════════
+   AUDIO WIDGET
+   ═══════════════════════════════════════════════════════════ */
+.music-widget{background:linear-gradient(135deg,var(--bg-card),#1a1f2e);}
+.music-visualizer{background:var(--bg-secondary);border-radius:8px;margin:10px 0;padding:5px;height:60px;display:flex;align-items:center;justify-content:center;}
+#audioCanvas{width:100%;height:50px;}
+.music-presets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+.preset-btn{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;transition:all 0.2s;text-align:left;font-size:12px;}
+.preset-btn:hover{border-color:var(--accent-blue);}
+.preset-btn.active{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+.preset-btn small{display:block;font-size:9px;opacity:0.8;margin-top:3px;}
+.music-controls{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-secondary);border-radius:8px;}
+.btn-icon{width:36px;height:36px;border-radius:50%;border:none;background:var(--accent-green);cursor:pointer;font-size:14px;transition:transform 0.2s;}
+.btn-icon:hover{transform:scale(1.1);}
+#volumeSlider{flex:1;height:6px;}
+
+/* ═══════════════════════════════════════════════════════════
+   XP & PROGRESS
+   ═══════════════════════════════════════════════════════════ */
+.xp-bar-container{background:var(--bg-secondary);border-radius:10px;padding:12px;margin-top:10px;}
+.xp-bar-header{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;}
+.xp-bar{background:var(--border);border-radius:20px;height:8px;overflow:hidden;}
+.xp-fill{background:linear-gradient(90deg,var(--accent-blue),var(--accent-cyan));height:100%;width:0%;transition:width 0.5s;}
+.level-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));border-radius:20px;font-size:11px;font-weight:700;color:white;}
+
+/* ═══════════════════════════════════════════════════════════
+   SYNC WIDGET
+   ═══════════════════════════════════════════════════════════ */
+.sync-section{margin-bottom:15px;}
+.sync-section h4{font-size:12px;margin-bottom:6px;color:var(--accent-cyan);}
+.sync-section p{font-size:11px;color:var(--text-muted);margin-bottom:8px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary{background:var(--accent-blue);color:#fff;}
+.btn-primary:hover{background:#2563eb;}
+.btn-secondary{background:var(--glass);color:var(--text-primary);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--bg-card);}
+input[type="file"]{padding:6px;font-size:11px;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);width:100%;}
+
+/* ═══════════════════════════════════════════════════════════
+   ACHIEVEMENT POPUP
+   ═══════════════════════════════════════════════════════════ */
+.achievement-popup{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#1a1f2e,#0f172a);border:2px solid var(--accent-gold);border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;z-index:10000;animation:achievementSlide 0.5s ease-out;box-shadow:0 10px 40px rgba(245,158,11,0.3);max-width:300px;}
+@keyframes achievementSlide{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes achievementSlideOut{from{transform:translateX(0);opacity:1;}to{transform:translateX(400px);opacity:0;}}
+.achievement-icon{font-size:36px;}
+.achievement-title{font-size:9px;color:var(--accent-gold);letter-spacing:1px;text-transform:uppercase;}
+.achievement-name{font-size:15px;font-weight:700;margin:2px 0;}
+.achievement-desc{font-size:11px;color:var(--text-muted);}
+.achievement-xp{font-size:13px;color:var(--accent-green);font-weight:700;margin-top:4px;}
+
+/* ═══════════════════════════════════════════════════════════
+   DOPAMINE HIT ANIMATION
+   ═══════════════════════════════════════════════════════════ */
+.dopamine-hit{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;font-weight:700;color:var(--accent-gold);text-shadow:0 0 30px rgba(245,158,11,0.8);z-index:10000;animation:dopamineFloat 1.5s ease-out forwards;pointer-events:none;text-align:center;}
+.dopamine-hit small{display:block;font-size:18px;margin-top:10px;}
+@keyframes dopamineFloat{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}20%{transform:translate(-50%,-60%) scale(1.2);opacity:1;}100%{transform:translate(-50%,-100%) scale(1);opacity:0;}}
+
+/* ═══════════════════════════════════════════════════════════
+   VECTOR GRID
+   ═══════════════════════════════════════════════════════════ */
+.vector-grid-container{display:flex;flex-wrap:wrap;gap:3px;padding:10px;background:var(--bg-secondary);border-radius:8px;}
+.vector-dot{width:10px;height:10px;border-radius:2px;background:var(--border);transition:all 0.3s;}
+.vector-dot.done{background:var(--accent-green);box-shadow:0 0 6px rgba(34,197,94,0.4);}
+.vector-dot.current{background:var(--accent-cyan);box-shadow:0 0 8px rgba(6,182,212,0.6);animation:pulseDot 1.5s infinite;}
+.vector-dot.rest{background:var(--accent-gold);}
+@keyframes pulseDot{0%{transform:scale(1);opacity:1;}50%{transform:scale(1.2);opacity:0.8;}100%{transform:scale(1);opacity:1;}}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+@media(max-width:768px){.dashboard-grid{grid-template-columns:1fr;}.header{padding:10px 14px;}.logo{font-size:15px;}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-left">
+    <div>
+      <div class="logo">AEGIS</div>
+      <div class="logo-sub">v3.0 — ADHD Optimized</div>
+    </div>
+    <span class="badge badge-xp" id="badge-xp">⚡ 0 XP</span>
+    <span class="badge badge-streak" id="badge-streak">🔥 0 días</span>
+    <span class="badge badge-dopamine" id="badge-dopamine">🧠 0 dopamina</span>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn" onclick="toggleTheme()" title="Tema">🌙</button>
+    <button class="icon-btn" onclick="exportAll()" title="Exportar">📤</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN DASHBOARD
+     ═══════════════════════════════════════════════════════════ -->
+<div class="main-layout">
+  <div class="dashboard-area">
+    <div class="dashboard-grid">
+      
+      <!-- MICRO-MISIONES -->
+      <div class="widget">
+        <div class="widget-title">
+          ⚡ Micro-Misiones
+          <span id="comboDisplay">🔥 Combo: 0</span>
+        </div>
+        <div class="missions-grid">
+          <div class="mission-card" id="mission1" onclick="startMission(1)">
+            <div class="mission-icon">📺</div>
+            <div class="mission-title">Video Teoría</div>
+            <div class="mission-time">15 min</div>
+            <div class="mission-reward">+50 XP</div>
+            <div class="mission-progress-bar"><div class="progress-fill" id="progress1"></div></div>
+          </div>
+          <div class="mission-card" id="mission2" onclick="startMission(2)">
+            <div class="mission-icon">⌨️</div>
+            <div class="mission-title">Copiar Código</div>
+            <div class="mission-time">10 min</div>
+            <div class="mission-reward">+30 XP</div>
+            <div class="mission-progress-bar"><div class="progress-fill" id="progress2"></div></div>
+          </div>
+          <div class="mission-card" id="mission3" onclick="startMission(3)">
+            <div class="mission-icon">🧩</div>
+            <div class="mission-title">1 Ejercicio</div>
+            <div class="mission-time">15 min</div>
+            <div class="mission-reward">+50 XP</div>
+            <div class="mission-progress-bar"><div class="progress-fill" id="progress3"></div></div>
+          </div>
+          <div class="mission-card rest-mode" id="mission4" onclick="startMission(4)">
+            <div class="mission-icon">☕</div>
+            <div class="mission-title">DESCANSO ACTIVO</div>
+            <div class="mission-time">5 min</div>
+            <div class="mission-reward">+20 XP</div>
+            <div class="mission-progress-bar"><div class="progress-fill" id="progress4"></div></div>
+          </div>
+        </div>
+        <div class="combo-counter" id="comboCounter"></div>
+      </div>
+
+      <!-- STREAK VISUALIZER -->
+      <div class="widget">
+        <div class="widget-title">
+          🔥 Racha Visual
+          <span id="streakNumber">0 días</span>
+        </div>
+        <div class="flame-container">
+          <canvas id="flameCanvas" width="280" height="100"></canvas>
+          <div class="flame-intensity" id="flameIntensity">🕯️ Iniciar</div>
+        </div>
+        <div class="daily-checklist">
+          <div class="check-item" data-task="study" onclick="toggleDailyTask('study')">
+            <span class="check-box">⬜</span>
+            <span>Estudiar hoy</span>
+            <span class="check-reward">+10 🔥</span>
+          </div>
+          <div class="check-item" data-task="code" onclick="toggleDailyTask('code')">
+            <span class="check-box">⬜</span>
+            <span>Escribir código</span>
+            <span class="check-reward">+15 🔥</span>
+          </div>
+          <div class="check-item" data-task="exercise" onclick="toggleDailyTask('exercise')">
+            <span class="check-box">⬜</span>
+            <span>Ejercicio físico</span>
+            <span class="check-reward">+5 🔥</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIO NEURAL -->
+      <div class="widget music-widget">
+        <div class="widget-title">
+          🎵 Audio Neural
+          <span id="musicStatus">⏹️ Detenido</span>
+        </div>
+        <div class="music-visualizer">
+          <canvas id="audioCanvas" width="280" height="50"></canvas>
+        </div>
+        <div class="music-presets">
+          <button class="preset-btn active" data-preset="deep_focus" onclick="playPreset('deep_focus')">
+            🧠 Deep Focus
+            <small>40Hz Gamma</small>
+          </button>
+          <button class="preset-btn" data-preset="flow_state" onclick="playPreset('flow_state')">
+            🌊 Flow State
+            <small>10Hz Alpha</small>
+          </button>
+          <button class="preset-btn" data-preset="alert_study" onclick="playPreset('alert_study')">
+            ⚡ Alert
+            <small>Beta + Noise</small>
+          </button>
+          <button class="preset-btn" data-preset="recovery" onclick="playPreset('recovery')">
+            🧘 Recovery
+            <small>5Hz Theta</small>
+          </button>
+        </div>
+        <div class="music-controls">
+          <button class="btn-icon" onclick="toggleMusic()" id="playPauseBtn">▶️</button>
+          <input type="range" min="0" max="100" value="25" id="volumeSlider" onchange="setVolume(this.value/100)">
+          <span style="font-size:11px;color:var(--text-muted);">25%</span>
+        </div>
+      </div>
+
+      <!-- PROGRESS & LEVEL -->
+      <div class="widget">
+        <div class="widget-title">
+          📊 Progreso
+          <span class="level-badge" id="levelBadge">Nivel 1</span>
+        </div>
+        <div class="xp-bar-container">
+          <div class="xp-bar-header">
+            <span>XP: <span id="xpCurrent">0</span></span>
+            <span>Next: <span id="xpNext">100</span></span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-fill" id="xpFill"></div>
+          </div>
+        </div>
+        <div class="vector-grid-container" id="vectorGrid" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- SYNC & PORTABILITY -->
+      <div class="widget">
+        <div class="widget-title">☁️ Portabilidad</div>
+        <div class="sync-section">
+          <h4>📤 Exportar Backup</h4>
+          <p>Guarda todo tu progreso en un archivo JSON</p>
+          <button class="btn btn-primary" onclick="exportAll()">💾 Descargar</button>
+          <div id="exportInfo" style="margin-top:8px;font-size:11px;color:var(--text-muted);"></div>
+        </div>
+        <div class="sync-section" style="border-top:1px solid var(--border);padding-top:12px;">
+          <h4>📥 Importar (Nuevo PC)</h4>
+          <p>Restaura tu progreso desde backup</p>
+          <input type="file" id="importFile" accept=".json" onchange="importAll(this)">
+          <div id="importInfo" style="margin-top:8px;font-size:11px;"></div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="widget">
+        <div class="widget-title">⚡ Acciones Rápidas</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <button class="btn btn-secondary" onclick="showAchievements()">🏆 Logros</button>
+          <button class="btn btn-secondary" onclick="showStats()">📈 Stats</button>
+          <button class="btn btn-secondary" style="background:var(--accent-red);color:white;" onclick="hardReset()">🛑 Reset</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT ENGINE
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_STATE = {
+  xp: 0, streak: 0, level: 1, combo: 0,
+  achievements: [], dailyTasks: { study: false, code: false, exercise: false },
+  musicPreferences: { currentPlaylist: 'deep_focus', volume: 0.25 },
+  theme: 'dark'
+};
+
+let STATE = JSON.parse(localStorage.getItem('aegis_v3_state') || 'null') || { ...DEFAULT_STATE };
+
+function save() {
+  localStorage.setItem('aegis_v3_state', JSON.stringify(STATE));
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('badge-xp').textContent = `⚡ ${STATE.xp} XP`;
+  document.getElementById('badge-streak').textContent = `🔥 ${STATE.streak} días`;
+  document.getElementById('badge-dopamine').textContent = `🧠 ${Math.floor(STATE.xp / 100)} dopamina`;
+  document.getElementById('streakNumber').textContent = `${STATE.streak} días`;
+  document.getElementById('comboDisplay').textContent = `🔥 Combo: ${STATE.combo}`;
+  document.getElementById('levelBadge').textContent = `Nivel ${STATE.level}`;
+  document.getElementById('xpCurrent').textContent = STATE.xp;
+  document.getElementById('xpNext').textContent = STATE.level * 100;
+  document.getElementById('xpFill').style.width = `${(STATE.xp % 100)}%`;
+  renderFlame();
+  updateChecklist();
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUDIO ENGINE — Real Binaural Beats
+// ═══════════════════════════════════════════════════════════
+class AegisAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.oscillators = [];
+    this.gainNodes = [];
+    this.isPlaying = false;
+    this.currentPreset = 'deep_focus';
+    this.volume = 0.25;
+  }
+
+  init() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  playDeepFocus() {
+    this.init();
+    this.stop();
+    const baseFreq = 200;
+    const beatFreq = 40;
+    
+    const oscL = this.ctx.createOscillator();
+    const gainL = this.ctx.createGain();
+    oscL.type = 'sine';
+    oscL.frequency.value = baseFreq;
+    gainL.gain.value = this.volume * 0.5;
+    
+    const oscR = this.ctx.createOscillator();
+    const gainR = this.ctx.createGain();
+    oscR.type = 'sine';
+    oscR.frequency.value = baseFreq + beatFreq;
+    gainR.gain.value = this.volume * 0.5;
+    
+    const pannerL = this.ctx.createStereoPanner();
+    const pannerR = this.ctx.createStereoPanner();
+    pannerL.pan.value = -1;
+    pannerR.pan.value = 1;
+    
+    oscL.connect(gainL).connect(pannerL).connect(this.ctx.destination);
+    oscR.connect(gainR).connect(pannerR).connect(this.ctx.destination);
+    
+    oscL.start();
+    oscR.start();
+    
+    this.oscillators = [oscL, oscR];
+    this.gainNodes = [gainL, gainR];
+    this.isPlaying = true;
+    this.currentPreset = 'deep_focus';
+  }
+
+  playFlowState() {
+    this.init();
+    this.stop();
+    
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    
+    osc1.type = 'sine';
+    osc1.frequency.value = 100;
+    osc2.type = 'triangle';
+    osc2.frequency.value = 110;
+    gain.gain.value = this.volume * 0.3;
+    
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    this.oscillators = [osc1, osc2];
+    this.gainNodes = [gain];
+    this.isPlaying = true;
+    this.currentPreset = 'flow_state';
+  }
+
+  playAlertStudy() {
+    this.init();
+    this.stop();
+    
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 300;
+    gain.gain.value = this.volume * 0.15;
+    
+    // Simple noise
+    const bufferSize = this.ctx.sampleRate * 2;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.value = this.volume * 0.1;
+    
+    osc.connect(gain).connect(this.ctx.destination);
+    noise.connect(noiseGain).connect(this.ctx.destination);
+    
+    osc.start();
+    noise.start();
+    
+    this.oscillators = [osc, noise];
+    this.gainNodes = [gain, noiseGain];
+    this.isPlaying = true;
+    this.currentPreset = 'alert_study';
+  }
+
+  playRecovery() {
+    this.init();
+    this.stop();
+    
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(80, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 300);
+    gain.gain.value = this.volume * 0.4;
+    
+    osc.connect(gain).connect(this.ctx.destination);
+    osc.start();
+    
+    this.oscillators = [osc];
+    this.gainNodes = [gain];
+    this.isPlaying = true;
+    this.currentPreset = 'recovery';
+  }
+
+  stop() {
+    this.oscillators.forEach(osc => {
+      try { osc.stop(); osc.disconnect(); } catch(e) {}
+    });
+    this.gainNodes.forEach(gain => gain.disconnect());
+    this.oscillators = [];
+    this.gainNodes = [];
+    this.isPlaying = false;
+  }
+
+  setVolume(vol) {
+    this.volume = Math.max(0, Math.min(1, vol));
+    this.gainNodes.forEach(gain => {
+      gain.gain.value = this.volume * (gain.gain.value > 0.2 ? 0.4 : 0.2);
+    });
+  }
+}
+
+const AudioEngine = new AegisAudioEngine();
+
+// ═══════════════════════════════════════════════════════════
+// MUSIC CONTROLS
+// ═══════════════════════════════════════════════════════════
+function playPreset(preset) {
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.preset === preset);
+  });
+  
+  switch(preset) {
+    case 'deep_focus': AudioEngine.playDeepFocus(); break;
+    case 'flow_state': AudioEngine.playFlowState(); break;
+    case 'alert_study': AudioEngine.playAlertStudy(); break;
+    case 'recovery': AudioEngine.playRecovery(); break;
+  }
+  
+  document.getElementById('musicStatus').textContent = '🔊 ' + preset.replace('_', ' ');
+  document.getElementById('playPauseBtn').textContent = '⏸️';
+  STATE.musicPreferences.currentPlaylist = preset;
+  startVisualizer();
+  save();
+}
+
+function toggleMusic() {
+  if (AudioEngine.isPlaying) {
+    AudioEngine.stop();
+    document.getElementById('musicStatus').textContent = '⏹️ Detenido';
+    document.getElementById('playPauseBtn').textContent = '▶️';
+    stopVisualizer();
+  } else {
+    playPreset(STATE.musicPreferences.currentPlaylist || 'deep_focus');
+  }
+}
+
+function setVolume(vol) {
+  AudioEngine.setVolume(vol);
+  STATE.musicPreferences.volume = vol;
+  save();
+}
+
+// Visualizer
+let visualizerId;
+function startVisualizer() {
+  const canvas = document.getElementById('audioCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  function draw() {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    const colors = {
+      deep_focus: '#3b82f6',
+      flow_state: '#22c55e',
+      alert_study: '#f59e0b',
+      recovery: '#a855f7'
+    };
+    
+    ctx.strokeStyle = colors[AudioEngine.currentPreset] || '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    const time = Date.now() / 1000;
+    const freq = AudioEngine.currentPreset === 'deep_focus' ? 40 : 10;
+    
+    for (let x = 0; x < canvas.width; x += 2) {
+      const y = canvas.height / 2 + Math.sin(x * 0.05 + time * freq) * 15 * (AudioEngine.isPlaying ? 1 : 0.1);
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    
+    visualizerId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function stopVisualizer() {
+  cancelAnimationFrame(visualizerId);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MICRO-MISSIONS SYSTEM
+// ═══════════════════════════════════════════════════════════
+let activeMission = null;
+let missionTimer = null;
+
+const MISSIONS = {
+  1: { duration: 15 * 60, xp: 50, name: 'Video Teoría' },
+  2: { duration: 10 * 60, xp: 30, name: 'Copiar Código' },
+  3: { duration: 15 * 60, xp: 50, name: 'Ejercicio' },
+  4: { duration: 5 * 60, xp: 20, name: 'Descanso', rest: true }
+};
+
+function startMission(id) {
+  if (activeMission) endMission(false);
+  
+  activeMission = id;
+  const card = document.getElementById(`mission${id}`);
+  card.classList.add('active');
+  
+  const mission = MISSIONS[id];
+  let elapsed = 0;
+  
+  if (mission.rest) {
+    playPreset('recovery');
+  } else if (!AudioEngine.isPlaying) {
+    playPreset('deep_focus');
+  }
+  
+  showDopamineHit('🚀', '¡Misión iniciada!');
+  
+  missionTimer = setInterval(() => {
+    elapsed++;
+    const progress = (elapsed / mission.duration) * 100;
+    document.getElementById(`progress${id}`).style.width = `${progress}%`;
+    
+    if (elapsed >= mission.duration) {
+      endMission(true);
+    }
+  }, 1000);
+}
+
+function endMission(completed) {
+  if (!activeMission) return;
+  
+  clearInterval(missionTimer);
+  const card = document.getElementById(`mission${activeMission}`);
+  card.classList.remove('active');
+  
+  const mission = MISSIONS[activeMission];
+  
+  if (completed) {
+    card.classList.add('completed');
+    addXP(mission.xp);
+    STATE.combo++;
+    
+    playSuccessSound();
+    showDopamineHit('✨', `+${mission.xp} XP`);
+    
+    if (STATE.combo >= 3) {
+      const bonus = STATE.combo * 10;
+      addXP(bonus);
+      setTimeout(() => showDopamineHit('🔥', `Combo x${STATE.combo}! +${bonus}`), 500);
+    }
+    
+    if (mission.rest) {
+      AudioEngine.stop();
+      document.getElementById('musicStatus').textContent = '⏹️ Detenido';
+      document.getElementById('playPauseBtn').textContent = '▶️';
+    }
+    
+    checkAchievements();
+  } else {
+    STATE.combo = 0;
+  }
+  
+  document.getElementById('comboCounter').textContent = '';
+  document.getElementById(`progress${activeMission}`).style.width = '0%';
+  activeMission = null;
+  save();
+}
+
+function addXP(amount) {
+  STATE.xp += amount;
+  const newLevel = Math.floor(STATE.xp / 100) + 1;
+  if (newLevel > STATE.level) {
+    STATE.level = newLevel;
+    showAchievementPopup({
+      icon: '🎉',
+      name: `¡Nivel ${newLevel}!`,
+      desc: 'Subiste de nivel',
+      xp: 0
+    });
+  }
+  save();
+}
+
+// ═══════════════════════════════════════════════════════════
+// STREAK & DAILY TASKS
+// ═══════════════════════════════════════════════════════════
+function toggleDailyTask(task) {
+  const item = document.querySelector(`[data-task="${task}"]`);
+  const isCompleted = !STATE.dailyTasks[task];
+  STATE.dailyTasks[task] = isCompleted;
+  
+  item.classList.toggle('completed', isCompleted);
+  item.querySelector('.check-box').textContent = isCompleted ? '✅' : '⬜';
+  
+  if (isCompleted) {
+    const rewards = { study: 10, code: 15, exercise: 5 };
+    STATE.streak += rewards[task];
+    showDopamineHit('🔥', `+${rewards[task]} racha!`);
+    save();
+  }
+}
+
+function updateChecklist() {
+  Object.entries(STATE.dailyTasks).forEach(([task, completed]) => {
+    const item = document.querySelector(`[data-task="${task}"]`);
+    if (item) {
+      item.classList.toggle('completed', completed);
+      item.querySelector('.check-box').textContent = completed ? '✅' : '⬜';
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// FLAME ANIMATION
+// ═══════════════════════════════════════════════════════════
+function renderFlame() {
+  const canvas = document.getElementById('flameCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  const intensity = Math.min(STATE.streak / 100, 1);
+  const labels = ['🕯️ Iniciar', '🔥 Tibia', '🔥🔥 Caliente', '🔥🔥🔥 INFIERNO'];
+  document.getElementById('flameIntensity').textContent = 
+    labels[Math.floor(intensity * (labels.length - 1))] || labels[0];
+  
+  function draw() {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    if (STATE.streak === 0) return;
+    
+    const particles = 15 + (intensity * 25);
+    const time = Date.now() / 200;
+    
+    for (let i = 0; i < particles; i++) {
+      const x = canvas.width / 2 + Math.sin(time + i * 0.5) * (20 + intensity * 30);
+      const y = canvas.height - 10 - (i * 3) - Math.abs(Math.cos(time + i)) * 15;
+      const size = (particles - i) / 8 * (0.5 + intensity);
+      
+      const alpha = 0.3 + (intensity * 0.5);
+      if (i < particles * 0.3) {
+        ctx.fillStyle = `rgba(255, 200, 100, ${alpha})`;
+      } else if (i < particles * 0.7) {
+        ctx.fillStyle = `rgba(245, 158, 11, ${alpha * 0.8})`;
+      } else {
+        ctx.fillStyle = `rgba(239, 68, 68, ${alpha * 0.6})`;
+      }
+      
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACHIEVEMENTS SYSTEM
+// ═══════════════════════════════════════════════════════════
+const ACHIEVEMENTS = {
+  first_mission: { icon: '🎯', name: 'Primera Sangre', desc: 'Completar primera misión', xp: 50 },
+  combo_3: { icon: '🔥', name: 'En Racha', desc: 'Combo x3', xp: 100 },
+  combo_10: { icon: '⚡', name: 'Imparable', desc: 'Combo x10', xp: 500 },
+  level_5: { icon: '🎓', name: 'Estudiante', desc: 'Alcanzar nivel 5', xp: 200 },
+  level_10: { icon: '🏆', name: 'Experto', desc: 'Alcanzar nivel 10', xp: 1000 },
+  streak_7: { icon: '🌟', name: 'Semana Perfecta', desc: '7 días seguidos', xp: 300 },
+  streak_30: { icon: '👑', name: 'Mes de Acero', desc: '30 días seguidos', xp: 1000 }
+};
+
+function checkAchievements() {
+  const checks = [
+    ['first_mission', () => STATE.xp >= 50],
+    ['combo_3', () => STATE.combo >= 3],
+    ['combo_10', () => STATE.combo >= 10],
+    ['level_5', () => STATE.level >= 5],
+    ['level_10', () => STATE.level >= 10],
+    ['streak_7', () => STATE.streak >= 70],
+    ['streak_30', () => STATE.streak >= 300]
+  ];
+  
+  checks.forEach(([id, check]) => {
+    if (check() && !STATE.achievements.includes(id)) {
+      unlockAchievement(id);
+    }
+  });
+}
+
+function unlockAchievement(id) {
+  const ach = ACHIEVEMENTS[id];
+  if (!ach || STATE.achievements.includes(id)) return;
+  
+  STATE.achievements.push(id);
+  addXP(ach.xp);
+  showAchievementPopup(ach);
+  playSuccessSound();
+  save();
+}
+
+function showAchievementPopup(ach) {
+  const popup = document.createElement('div');
+  popup.className = 'achievement-popup';
+  popup.innerHTML = `
+    <div class="achievement-icon">${ach.icon}</div>
+    <div>
+      <div class="achievement-title">¡LOGRO DESBLOQUEADO!</div>
+      <div class="achievement-name">${ach.name}</div>
+      <div class="achievement-desc">${ach.desc}</div>
+      ${ach.xp > 0 ? `<div class="achievement-xp">+${ach.xp} XP</div>` : ''}
+    </div>
+  `;
+  document.body.appendChild(popup);
+  
+  setTimeout(() => {
+    popup.style.animation = 'achievementSlideOut 0.5s ease-in forwards';
+    setTimeout(() => popup.remove(), 500);
+  }, 4000);
+}
+
+function showAchievements() {
+  const list = Object.entries(ACHIEVEMENTS).map(([id, ach]) => {
+    const unlocked = STATE.achievements.includes(id);
+    return `${unlocked ? '✅' : '⬛'} ${ach.icon} ${ach.name} — ${ach.desc}`;
+  }).join('\n');
+  
+  alert('🏆 TUS LOGROS\n\n' + list + '\n\nDesbloqueados: ' + STATE.achievements.length + '/' + Object.keys(ACHIEVEMENTS).length);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DOPAMINE & SOUND EFFECTS
+// ═══════════════════════════════════════════════════════════
+function showDopamineHit(emoji, text) {
+  const hit = document.createElement('div');
+  hit.className = 'dopamine-hit';
+  hit.innerHTML = `${emoji}<br><small>${text}</small>`;
+  document.body.appendChild(hit);
+  setTimeout(() => hit.remove(), 1500);
+}
+
+function playSuccessSound() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const notes = [523.25, 659.25, 783.99, 1046.50];
+  let i = 0;
+  
+  function play() {
+    if (i >= notes.length) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = notes[i];
+    osc.type = i === notes.length - 1 ? 'square' : 'sine';
+    gain.gain.value = 0.1;
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+    i++;
+    setTimeout(play, 120);
+  }
+  play();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SYNC & PORTABILITY
+// ═══════════════════════════════════════════════════════════
+function exportAll() {
+  const data = {
+    version: '3.0',
+    timestamp: new Date().toISOString(),
+    state: STATE,
+    stats: {
+      totalXP: STATE.xp,
+      level: STATE.level,
+      streak: STATE.streak,
+      achievements: STATE.achievements.length
+    }
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `aegis-v3-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  
+  document.getElementById('exportInfo').textContent = 
+    `✅ Exportado: ${(blob.size / 1024).toFixed(1)} KB`;
+}
+
+function importAll(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.state) {
+        STATE = { ...DEFAULT_STATE, ...data.state };
+        save();
+        document.getElementById('importInfo').innerHTML = 
+          `<span style="color:var(--accent-green)">✅ Restaurado: Nivel ${STATE.level}, ${STATE.xp} XP</span>`;
+        setTimeout(() => location.reload(), 1500);
+      }
+    } catch (err) {
+      document.getElementById('importInfo').innerHTML = 
+        `<span style="color:var(--accent-red)">❌ Error: ${err.message}</span>`;
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  STATE.theme = next;
+  save();
+}
+
+function showStats() {
+  const stats = `
+📊 TUS ESTADÍSTICAS
+
+Nivel: ${STATE.level}
+XP Total: ${STATE.xp}
+Racha: ${STATE.streak} días
+Combo Actual: ${STATE.combo}
+Logros: ${STATE.achievements.length}
+
+Misiones completadas: ~${Math.floor(STATE.xp / 40)}
+Tiempo estimado: ~${Math.floor(STATE.xp / 10)} minutos
+  `;
+  alert(stats);
+}
+
+function hardReset() {
+  if (confirm('⚠️ ¿Borrar TODO el progreso?')) {
+    STATE = { ...DEFAULT_STATE };
+    localStorage.removeItem('aegis_v3_state');
+    save();
+    location.reload();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  // Apply saved theme
+  if (STATE.theme) {
+    document.documentElement.setAttribute('data-theme', STATE.theme);
+  }
+  
+  // Init UI
+  updateUI();
+  
+  // Check for new day
+  const lastActive = localStorage.getItem('aegis_last_active');
+  const today = new Date().toDateString();
+  if (lastActive !== today) {
+    // Reset daily tasks
+    STATE.dailyTasks = { study: false, code: false, exercise: false };
+    save();
+    localStorage.setItem('aegis_last_active', today);
+  }
+  
+  // Welcome message for first time
+  if (!lastActive) {
+    setTimeout(() => {
+      showDopamineHit('🎉', '¡Bienvenido a AEGIS v3.0!');
+    }, 1000);
+  }
+});
+</script>
+
+</body>
+</html>

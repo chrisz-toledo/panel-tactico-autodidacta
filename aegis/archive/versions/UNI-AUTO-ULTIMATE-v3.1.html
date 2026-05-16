@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0e17">
+<title>UNI-AUTO ULTIMATE v3.1 — Tu Universidad + IA Copiloto</title>
+<style>
+:root{--bg:#0a0e17;--bg2:#111827;--bg3:#1f2937;--border:#374151;--text:#e5e7eb;--text2:#9ca3af;--accent:#38bdf8;--accent2:#22c55e;--accent3:#f59e0b;--accent4:#a78bfa;--danger:#ef4444;--warn:#f97316;--ai:#f472b6}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.container{max-width:1450px;margin:0 auto;padding:12px}
+header{background:linear-gradient(135deg,var(--bg2) 0%,#0f172a 100%);border:1px solid var(--border);border-radius:14px;padding:24px 16px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(56,189,248,0.07) 0%,transparent 70%);animation:pulse 10s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+header h1{font-size:2em;margin-bottom:6px;position:relative}header h1 span{color:var(--accent)}
+header p{color:var(--text2);position:relative;font-size:.95em}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:3px;border:1px solid}
+.badge-blue{background:rgba(56,189,248,.12);color:var(--accent);border-color:rgba(56,189,248,.25)}
+.badge-green{background:rgba(34,197,94,.12);color:var(--accent2);border-color:rgba(34,197,94,.25)}
+.badge-orange{background:rgba(245,158,11,.12);color:var(--accent3);border-color:rgba(245,158,11,.25)}
+.badge-purple{background:rgba(167,139,250,.12);color:var(--accent4);border-color:rgba(167,139,250,.25)}
+.badge-red{background:rgba(239,68,68,.12);color:var(--danger);border-color:rgba(239,68,68,.25)}
+.badge-ai{background:rgba(244,114,182,.12);color:var(--ai);border-color:rgba(244,114,182,.25)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;transition:transform .2s,border-color .2s}
+.stat-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.stat-card .number{font-size:1.7em;font-weight:800;color:var(--accent)}.stat-card .label{color:var(--text2);font-size:.78em;margin-top:3px}
+.tabs{display:flex;gap:5px;margin-bottom:16px;flex-wrap:nowrap;overflow-x:auto;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:100;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
+.tab-btn{padding:8px 14px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);border-radius:8px;cursor:pointer;font-size:.78em;font-weight:700;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.tab-btn:hover{background:var(--bg3);color:var(--text)}.tab-btn.active{background:var(--accent);color:#0a0e17;border-color:var(--accent)}
+.tab-content{display:none}.tab-content.active{display:block;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.phase{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.phase-header{padding:14px 18px;background:linear-gradient(90deg,var(--bg3) 0%,transparent 100%);border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+.phase-header:hover{background:var(--bg3)}.phase-header h2{font-size:1.1em;display:flex;align-items:center;gap:8px}
+.phase-header h2 .icon{font-size:1.1em}.phase-meta{color:var(--text2);font-size:.8em}
+.phase-content{display:none;padding:0}.phase-content.open{display:block}
+.course{border-bottom:1px solid var(--border);padding:14px 18px;transition:background .15s}.course:last-child{border-bottom:none}
+.course:hover{background:rgba(56,189,248,.02)}.course-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;flex-wrap:wrap;gap:5px}
+.course-title{font-size:1em;font-weight:700;color:var(--text)}.course-tags{display:flex;gap:4px;flex-wrap:wrap}
+.course-desc{color:var(--text2);font-size:.85em;margin-bottom:8px}
+.course-resources{display:flex;gap:6px;flex-wrap:wrap}
+.resource-link{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;font-size:.74em;font-weight:600;text-decoration:none;transition:all .2s}
+.resource-link:hover{transform:translateY(-1px)}.link-course{background:rgba(56,189,248,.1);color:var(--accent);border:1px solid rgba(56,189,248,.18)}
+.link-book{background:rgba(34,197,94,.1);color:var(--accent2);border:1px solid rgba(34,197,94,.18)}
+.link-lab{background:rgba(245,158,11,.1);color:var(--accent3);border:1px solid rgba(245,158,11,.18)}
+.link-video{background:rgba(167,139,250,.1);color:var(--accent4);border:1px solid rgba(167,139,250,.18)}
+.link-ai{background:rgba(244,114,182,.1);color:var(--ai);border:1px solid rgba(244,114,182,.18)}
+.progress-section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.progress-section h3{margin-bottom:10px;font-size:1em}.progress-bar-bg{background:var(--bg3);border-radius:8px;height:18px;overflow:hidden;margin-bottom:5px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:8px;transition:width .5s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.7em;font-weight:800;color:#0a0e17;min-width:35px}
+.panel-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px}
+.panel-card h4{margin-bottom:8px;color:var(--accent3);font-size:1em}.panel-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.panel-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:.9em;min-width:100px;width:auto;flex:1}
+.panel-input:focus{outline:none;border-color:var(--accent)}.panel-btn{padding:10px 18px;border-radius:8px;border:none;background:var(--accent);color:#0a0e17;font-weight:700;cursor:pointer;transition:all .2s;font-size:.9em}.panel-btn:hover{background:#7dd3fc;transform:translateY(-1px)}
+.panel-btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}.panel-btn-secondary:hover{background:var(--border)}
+.brief-output{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:Consolas,monospace;font-size:.8em;color:var(--text2);white-space:pre-wrap;max-height:280px;overflow-y:auto;margin-top:10px}
+.check-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}.check-item:last-child{border-bottom:none}
+.check-box{width:20px;height:20px;border:2px solid var(--border);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75em;transition:all .2s;flex-shrink:0}.check-box:hover{border-color:var(--accent)}
+.check-box.checked{background:var(--accent2);border-color:var(--accent2);color:#fff}.check-text{font-size:.85em}.check-text.done{text-decoration:line-through;color:var(--text2)}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.tool-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .2s}.tool-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tool-card h4{color:var(--accent);margin-bottom:6px;font-size:.95em}.tool-card p{color:var(--text2);font-size:.82em;margin-bottom:10px}
+.tool-card .install{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-family:Consolas,Monaco,monospace;font-size:.72em;color:var(--accent2);overflow-x:auto}
+.audio-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.audio-card h5{color:var(--accent);margin-bottom:5px;font-size:.9em}.audio-card p{color:var(--text2);font-size:.8em;margin-bottom:6px}
+.audio-card .audio-meta{color:var(--text2);font-size:.75em;margin-bottom:8px}
+.copy-btn{padding:5px 10px;border-radius:6px;border:none;background:var(--bg3);color:var(--text);font-size:.72em;cursor:pointer;border:1px solid var(--border)}.copy-btn:hover{background:var(--border)}
+.ai-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;transition:all .2s}
+.ai-card:hover{border-color:var(--ai)}.ai-card h4{color:var(--ai);margin-bottom:8px;font-size:1.05em}.ai-card p{color:var(--text2);font-size:.85em;margin-bottom:10px}
+.ai-tip{background:rgba(244,114,182,.06);border:1px solid rgba(244,114,182,.2);border-radius:10px;padding:14px;margin:12px 0}
+.ai-tip h5{color:var(--ai);margin-bottom:6px;font-size:.9em}.ai-tip p{color:var(--text2);font-size:.82em}
+.risk-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:14px;margin:12px 0}
+.risk-box h5{color:var(--danger);margin-bottom:6px;font-size:.9em}.risk-box p{color:var(--text2);font-size:.82em}
+.principle-box{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:14px;margin:12px 0}
+.principle-box h5{color:var(--accent2);margin-bottom:6px;font-size:.9em}.principle-box p{color:var(--text2);font-size:.82em}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.82em}th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:var(--bg3);color:var(--accent);font-weight:700;text-transform:uppercase;font-size:.72em;letter-spacing:.5px}tr:hover{background:rgba(56,189,248,.02)}
+.mindset-box{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.25);border-radius:10px;padding:16px;margin:14px 0}
+.mindset-box h4{color:var(--accent4);margin-bottom:6px;font-size:.95em}
+.warning-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:16px;margin-bottom:14px}
+.warning-box h4{color:var(--danger);margin-bottom:6px}
+.tip-box{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:16px;margin-bottom:14px}
+.tip-box h4{color:var(--accent2);margin-bottom:6px}
+.mobile-banner{display:none;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0a0e17;padding:12px 16px;border-radius:10px;margin-bottom:14px;text-align:center;font-weight:700;font-size:.9em}
+.big-btn{display:block;width:100%;padding:14px;border-radius:10px;border:none;background:var(--accent);color:#0a0e17;font-weight:800;font-size:1em;margin-bottom:10px;cursor:pointer;text-align:center;text-decoration:none}
+.big-btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.audio-filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.audio-filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:.78em;font-weight:700;cursor:pointer;transition:all .2s}
+.audio-filter-btn:hover{background:var(--bg3)}.audio-filter-btn.active{background:var(--accent);color:#0a0e17;border-color:var(--accent)}
+@media(max-width:768px){
+.container{padding:8px}
+header{padding:18px 12px}header h1{font-size:1.5em}
+.stats-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-card{padding:10px 6px}.stat-card .number{font-size:1.4em}
+.tabs{padding:8px 0;gap:4px}
+.tab-btn{padding:7px 10px;font-size:.72em}
+.phase-header{padding:12px 14px}.phase-header h2{font-size:1em}
+.course{padding:12px 14px}.course-title{font-size:.95em}
+.panel-row{flex-direction:column;align-items:stretch}
+.panel-input{width:100%;min-width:unset}
+.panel-btn{width:100%}
+.tools-grid{grid-template-columns:1fr}
+table{font-size:.78em}th,td{padding:7px 8px}
+.brief-output{font-size:.75em}
+.mobile-banner{display:block}
+}
+footer{text-align:center;padding:24px;color:var(--text2);border-top:1px solid var(--border);margin-top:24px;font-size:.8em}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>🏛️ <span>UNI-AUTO</span> ULTIMATE v3.1</h1>
+<p>Tu Universidad + IA Copiloto | PC + Móvil | 2026-2032</p>
+<div style="margin-top:10px">
+<span class="badge badge-blue">100% Offline</span>
+<span class="badge badge-green">PC + Móvil</span>
+<span class="badge badge-orange">6 Fases</span>
+<span class="badge badge-purple">Panel Táctico</span>
+<span class="badge badge-ai">IA Copiloto</span>
+<span class="badge badge-red">CyberSec + CS</span>
+</div>
+</header>
+<div class="mobile-banner" id="mobile-banner">📱 Modo Móvil Activado — Perfecto para lecturas y repaso</div>
+<div class="stats-grid">
+<div class="stat-card"><div class="number" id="stat-total">0</div><div class="label">Cursos</div></div>
+<div class="stat-card"><div class="number" id="stat-hours">0</div><div class="label">Horas</div></div>
+<div class="stat-card"><div class="number" id="stat-progress">0%</div><div class="label">Progreso</div></div>
+<div class="stat-card"><div class="number" id="stat-streak">0</div><div class="label">Racha 🔥</div></div>
+<div class="stat-card"><div class="number" id="stat-ip">0</div><div class="label">IP</div></div>
+<div class="stat-card"><div class="number" id="stat-sessions">0</div><div class="label">Sesiones</div></div>
+</div>
+<div class="tabs">
+<button class="tab-btn active" onclick="showTab('plan')">📚 Plan</button>
+<button class="tab-btn" onclick="showTab('panel')">🛡️ Panel</button>
+<button class="tab-btn" onclick="showTab('today')">📖 Hoy</button>
+<button class="tab-btn" onclick="showTab('ai')">🤖 IA Copiloto</button>
+<button class="tab-btn" onclick="showTab('tools')">🛠️ Tools</button>
+<button class="tab-btn" onclick="showTab('labs')">🧪 Labs</button>
+<button class="tab-btn" onclick="showTab('audio')">🎧 Audio (68)</button>
+<button class="tab-btn" onclick="showTab('certs')">🏅 Certs</button>
+<button class="tab-btn" onclick="showTab('mindset')">🧠 Mindset</button>
+<button class="tab-btn" onclick="showTab('tracker')">📊 Tracker</button>
+</div>
+
+<div id="plan" class="tab-content active">
+<div class="tip-box"><h4>💡 Cómo usar este plan</h4><p>Metodología: <strong>1) Teoría → 2) Proyecto → 3) Enseñar → 4) Repetir.</strong> La IA es tu <strong>copiloto</strong>. Cada fase incluye su módulo IA.</p></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🌱 FASE 0: Fundamentos (Meses 1-6)</h2><div class="phase-meta">Matemáticas, CS50, Linux, Inglés + IA Copiloto</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Matemáticas: Álgebra, Geometría y Precálculo</span><div class="course-tags"><span class="badge badge-blue">Fundamento</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Base indispensable para criptografía y algoritmos.</div><div class="course-resources"><a class="resource-link link-course" href="https://es.khanacademy.org/math" target="_blank">📐 Khan Academy</a><a class="resource-link link-book" href="https://openstax.org/details/books/algebra-and-trigonometry" target="_blank">📖 OpenStax</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Pensamiento Computacional + CS50x</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Harvard CS50x 2026. Pensar como computadora.</div><div class="course-resources"><a class="resource-link link-course" href="https://cs50.harvard.edu/x/2026/" target="_blank">🎓 CS50x</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Linux para Principiantes</span><div class="course-tags"><span class="badge badge-orange">Lab</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Terminal, comandos esenciales, filosofía Unix.</div><div class="course-resources"><a class="resource-link link-course" href="https://linuxjourney.com/" target="_blank">🐧 Linux Journey</a><a class="resource-link link-book" href="https://linuxcommand.org/tlcl.php" target="_blank">📖 TLCL</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Inglés Técnico para IT</span><div class="course-tags"><span class="badge badge-blue">Soft Skill</span></div></div><div class="course-desc">95% de documentación técnica está en inglés.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.duolingo.com/" target="_blank">🦉 Duolingo</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">🤖 Módulo IA 0: Filosofía del Copiloto</span><div class="course-tags"><span class="badge badge-ai">IA</span></div></div><div class="course-desc">Rising Water Effect. IA acelera mecánicas, no juicio.</div><div class="course-resources"><a class="resource-link link-ai" href="#" onclick="showTab('ai')">📖 Módulo IA</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto: Configura Ollama local + primer repo GitHub</h4></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🎓 FASE 1: Pregrado Año 1 (Meses 7-18)</h2><div class="phase-meta">Python, C, Algoritmos, Matemáticas Discretas, Redes + IA</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Programación Imperativa con Python</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Variables, estructuras de control, funciones, archivos.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.py4e.com/" target="_blank">🎓 Python for Everybody</a><a class="resource-link link-lab" href="https://exercism.org/tracks/python" target="_blank">💻 Exercism</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Programación de Sistemas con C</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Memoria, punteros, compilación. CS50 módulo C.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.bell-labs.com/usr/dmr/www/cbook.pdf" target="_blank">📖 K&R C</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Estructuras de Datos y Algoritmos</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Listas, pilas, colas, árboles, grafos, búsqueda, ordenamiento.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.coursera.org/learn/algorithms-part1" target="_blank">🎓 Princeton Algo I</a><a class="resource-link link-lab" href="https://visualgo.net/" target="_blank">💻 VisuAlgo</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Matemáticas Discretas</span><div class="course-tags"><span class="badge badge-blue">Matemáticas</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Lógica, conjuntos, combinatoria, grafos.</div><div class="course-resources"><a class="resource-link link-course" href="https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/" target="_blank">🎓 MIT 6.042J</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Git, Control de Versiones</span><div class="course-tags"><span class="badge badge-orange">Herramienta</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Branching, merging, pull requests, flujo profesional.</div><div class="course-resources"><a class="resource-link link-book" href="https://git-scm.com/book/en/v2" target="_blank">📖 Pro Git</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Redes de Computadoras I</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">OSI/TCP-IP, subnetting, DNS, HTTP, routing.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFeZRBIxEbV" target="_blank">▶️ NetworkChuck</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">🤖 Módulo IA 1: Prompt Engineering</span><div class="course-tags"><span class="badge badge-ai">IA</span></div></div><div class="course-desc">Contexto, Restricción, Chain-of-Thought.</div><div class="course-resources"><a class="resource-link link-ai" href="#" onclick="showTab('ai')">📖 Módulo IA</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto: Gestor de contraseñas con AES + SQLite</h4></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>⚙️ FASE 2: Pregrado Año 2 (Meses 19-30)</h2><div class="phase-meta">Nand2Tetris, SO, Bases de Datos, Web, Seguridad + IA</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Arquitectura: Nand2Tetris</span><div class="course-tags"><span class="badge badge-blue">Sistemas</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">De NAND hasta sistema operativo funcional.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.nand2tetris.org/" target="_blank">🎓 Nand2Tetris</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Sistemas Operativos</span><div class="course-tags"><span class="badge badge-blue">Sistemas</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Procesos, threads, memoria virtual, concurrencia.</div><div class="course-resources"><a class="resource-link link-book" href="http://pages.cs.wisc.edu/~remzi/OSTEP/" target="_blank">📖 OSTEP (GRATIS)</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Bases de Datos y SQL</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Normalización, índices, ACID, SQL avanzado.</div><div class="course-resources"><a class="resource-link link-book" href="https://sqlbolt.com/" target="_blank">📖 SQLBolt</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Web Full Stack</span><div class="course-tags"><span class="badge badge-blue">Aplicaciones</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">HTML, CSS, JS, DOM, APIs REST.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.theodinproject.com/" target="_blank">🎓 Odin Project</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Seguridad Fundamentos</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">CIA Triad, threat modeling, criptografía, TLS.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.crypto101.io/" target="_blank">📖 Crypto 101</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">🤖 Módulo IA 2: Vibe Coding Seguro</span><div class="course-tags"><span class="badge badge-ai">IA</span><span class="badge badge-red">Crítico</span></div></div><div class="course-desc">45% del código IA tiene vulnerabilidades. Aprende a protegerte.</div><div class="course-resources"><a class="resource-link link-ai" href="#" onclick="showTab('ai')">📖 Framework IA</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto: POS web con JWT + PostgreSQL + auditoría</h4></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🔬 FASE 3: Pregrado Año 3 (Meses 31-42)</h2><div class="phase-meta">Algoritmos, Teoría, Compiladores, Pentesting, Blue Team + IA</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Algoritmos Avanzados</span><div class="course-tags"><span class="badge badge-blue">Teoría</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">DP, greedy, grafos avanzados, NP-completitud.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.coursera.org/learn/algorithms-part2" target="_blank">🎓 Princeton Algo II</a><a class="resource-link link-lab" href="https://leetcode.com/" target="_blank">💻 LeetCode</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Teoría de la Computación</span><div class="course-tags"><span class="badge badge-blue">Teoría</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Autómatas, Turing, computabilidad, P vs NP.</div><div class="course-resources"><a class="resource-link link-course" href="https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/" target="_blank">🎓 MIT 18.404J</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Compiladores e Intérpretes</span><div class="course-tags"><span class="badge badge-purple">Especial</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Lexing, parsing, AST, codegen. Conecta con Hado DSL.</div><div class="course-resources"><a class="resource-link link-course" href="https://craftinginterpreters.com/" target="_blank">🎓 Crafting Interpreters</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Ciberseguridad Ofensiva (Pentesting)</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Reconocimiento, escaneo, explotación, reporte.</div><div class="course-resources"><a class="resource-link link-lab" href="https://tryhackme.com/" target="_blank">💻 TryHackMe</a><a class="resource-link link-lab" href="https://overthewire.org/wargames/" target="_blank">💻 OverTheWire</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Ciberseguridad Defensiva (Blue Team)</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">SIEM, logs, detección, hardening, respuesta.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.elastic.co/security-for-beginners" target="_blank">🎓 Elastic Security</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">🤖 Módulo IA 3: IA en CyberSec</span><div class="course-tags"><span class="badge badge-ai">IA</span><span class="badge badge-red">Seguridad</span></div></div><div class="course-desc">Threat hunting con IA, Few-Shot Prompting, Adversarial Prompting.</div><div class="course-resources"><a class="resource-link link-ai" href="#" onclick="showTab('ai')">📖 Prompt CyberSec</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto: Scanner de vulnerabilidades web automatizado</h4></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🏗️ FASE 4: Pregrado Año 4 (Meses 43-54)</h2><div class="phase-meta">Arquitectura, Sistemas Distribuidos, ML, Forense, Tesis + IA</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Ingeniería de Software y Arquitectura</span><div class="course-tags"><span class="badge badge-blue">Arquitectura</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Patrones, microservicios, CI/CD, DevOps.</div><div class="course-resources"><a class="resource-link link-book" href="https://refactoring.guru/" target="_blank">📖 Refactoring Guru</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Sistemas Distribuidos</span><div class="course-tags"><span class="badge badge-blue">Arquitectura</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">CAP, replicación, Raft, message queues.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.distributed-systems.net/index.php/books/distributed-systems-3rd-edition-2017/" target="_blank">📖 Tanenbaum</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Machine Learning</span><div class="course-tags"><span class="badge badge-purple">Especial</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Regresión, clasificación, redes neuronales básicas.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.fast.ai/" target="_blank">🎓 Fast.ai</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Forense, Malware, Threat Intel</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Análisis de discos, malware estático/dinámico, MITRE ATT&CK.</div><div class="course-resources"><a class="resource-link link-course" href="https://attack.mitre.org/" target="_blank">🎓 MITRE ATT&CK</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Proyecto Final (Tesis)</span><div class="course-tags"><span class="badge badge-purple">Tesis</span></div></div><div class="course-desc">Hado v1.0 o SIEM open-source para LATAM.</div></div>
+<div class="course"><div class="course-header"><span class="course-title">🤖 Módulo IA 4: Claude Code y Agentes</span><div class="course-tags"><span class="badge badge-ai">IA</span><span class="badge badge-blue">Avanzado</span></div></div><div class="course-desc">Plan Mode, TDD con agentes, CLAUDE.md, Document & Clear.</div><div class="course-resources"><a class="resource-link link-ai" href="#" onclick="showTab('ai')">📖 Claude Code</a></div></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🎓 FASE 5: Maestría (Meses 55-78)</h2><div class="phase-meta">Criptografía, Redes Avanzadas, Cloud, Investigación + IA</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Criptografía Aplicada</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">RSA, curvas elípticas, TLS 1.3, ZK proofs, post-quantum.</div><div class="course-resources"><a class="resource-link link-book" href="https://crypto.stanford.edu/~dabo/cryptobook/" target="_blank">📖 Boneh (GRATIS)</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Seguridad de Redes Avanzada</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Firewalls NG, IDS/IPS, zero-trust, SD-WAN.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.firewall.cx/" target="_blank">📖 Firewall.cx</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Arquitectura a Escala</span><div class="course-tags"><span class="badge badge-blue">Arquitectura</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">System design, sharding, caching, CDNs, load balancing.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.designingdataintensiveapplications.com/" target="_blank">📖 DDIA</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Cloud y DevSecOps</span><div class="course-tags"><span class="badge badge-blue">Cloud</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">AWS, Docker, Kubernetes, Terraform, CI/CD seguro.</div><div class="course-resources"><a class="resource-link link-course" href="https://aws.amazon.com/training/digital/" target="_blank">🎓 AWS Free</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Investigación y Publicación</span><div class="course-tags"><span class="badge badge-purple">Investigación</span></div></div><div class="course-desc">Papers, blogs, open-source, conferencias.</div><div class="course-resources"><a class="resource-link link-course" href="https://arxiv.org/" target="_blank">📄 arXiv</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">🤖 Módulo IA 5: IA en Investigación</span><div class="course-tags"><span class="badge badge-ai">IA</span><span class="badge badge-purple">Maestría</span></div></div><div class="course-desc">Literature review, análisis de papers, research assistant.</div><div class="course-resources"><a class="resource-link link-ai" href="#" onclick="showTab('ai')">📖 IA Research</a></div></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>💼 FASE 6: Empleabilidad (Meses 79-84)</h2><div class="phase-meta">Portfolio, Entrevistas, Certs, Trabajo Remoto + IA</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Portfolio y Marca Personal</span><div class="course-tags"><span class="badge badge-blue">Carrera</span></div></div><div class="course-desc">GitHub, LinkedIn, blog técnico, arquitectura documentada.</div></div>
+<div class="course"><div class="course-header"><span class="course-title">Entrevistas y System Design</span><div class="course-tags"><span class="badge badge-blue">Carrera</span></div></div><div class="course-desc">Coding interviews, system design, behavioral (STAR).</div><div class="course-resources"><a class="resource-link link-lab" href="https://pramp.com/" target="_blank">💻 Pramp</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">🤖 Módulo IA 6: IA en el Trabajo</span><div class="course-tags"><span class="badge badge-ai">IA</span><span class="badge badge-blue">Carrera</span></div></div><div class="course-desc">10x productividad remota: reportes, logs, documentación.</div><div class="course-resources"><a class="resource-link link-ai" href="#" onclick="showTab('ai')">📖 IA Carrera</a></div></div>
+</div></div>
+</div>
+
+<div id="ai" class="tab-content">
+<div class="tip-box"><h4>🤖 La IA es tu Copiloto, no tu Piloto</h4><p>La IA no te reemplaza. <strong>Te acelera.</strong> Pero solo si tú mantienes el control. Basado en documentación real de 2026.</p></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="number" style="color:var(--ai)">45%</div><div class="label">Código IA con vulnerabilidades</div></div>
+<div class="stat-card"><div class="number" style="color:var(--ai)">50%</div><div class="label">IA elige métodos inseguros</div></div>
+<div class="stat-card"><div class="number" style="color:var(--ai)">∞</div><div class="label">Tu ventaja: entender el POR QUÉ</div></div>
+</div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧭 1. Filosofía: El Efecto del Agua Ascendente</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="mindset-box"><h4>🌊 El Rising Water Effect</h4><p>La IA ha <strong>subido el piso</strong>: más personas pueden producir código. Pero también ha <strong>subido el techo más rápido</strong>: menos personas pueden producir sistemas robustos.</p></div>
+<div class="principle-box"><h5>✅ La IA acelera MECÁNICAS, no JUICIO</h5><p>Escribe funciones rápido. Genera tests. Pero <strong>NO</strong> decide arquitectura. <strong>NO</strong> evalúa riesgos. Eso es tu trabajo.</p></div>
+<div class="principle-box"><h5>✅ Trata el output de IA como "código junior sin revisar"</h5><p>Nunca deployes código IA sin revisarlo. La IA no tiene responsabilidad legal. Tú sí.</p></div>
+<div class="principle-box"><h5>✅ Invierte en FUNDAMENTOS, no en prompts</h5><p>Saber escribir un buen prompt es útil. Saber <strong>por qué</strong> el código funciona es invaluable.</p></div>
+<div class="risk-box"><h5>⚠️ La Trampa del "Vibe Coding"</h5><p>"Vibe coding" = prompt a producción sin revisión. Caso Moltbook (2025): app 100% vibe-coded expuso millones de registros. Caso Enrichlead: la IA puso toda la lógica de seguridad en el cliente.</p></div>
+</div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>⚠️ 2. Los 6 Riesgos de Seguridad del Código IA</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="risk-box"><h5>🔴 Riesgo 1: Credenciales Hardcodeadas</h5><p>La IA genera código con API keys escritas directamente. <strong>Fix:</strong> Variables de entorno. .gitignore. GitGuardian.</p></div>
+<div class="risk-box"><h5>🔴 Riesgo 2: Remote Code Execution (RCE)</h5><p>Claude generó código usando <code>pickle</code> de Python. <strong>Fix:</strong> Pregunta "¿Cuáles son los riesgos de seguridad?"</p></div>
+<div class="risk-box"><h5>🔴 Riesgo 3: Autenticación Rota</h5><p>Sin rate limiting, sin verificación de email, permisos excesivos. <strong>Fix:</strong> Revisión manual obligatoria.</p></div>
+<div class="risk-box"><h5>🔴 Riesgo 4: Inyecciones (SQL, XSS, Command)</h5><p>La IA concatena input de usuario en strings SQL. <strong>Fix:</strong> Parametrización SIEMPRE.</p></div>
+<div class="risk-box"><h5>🔴 Riesgo 5: Dependencias Fantasma</h5><p>La IA alucina nombres de paquetes. Algunos son maliciosos. <strong>Fix:</strong> npm audit / pip-audit.</p></div>
+<div class="risk-box"><h5>🔴 Riesgo 6: Deuda Técnica Masiva</h5><p>El codebase crece más rápido de lo que nadie puede entender. <strong>Fix:</strong> Tests, documentación, ownership.</p></div>
+</div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🛡️ 3. Framework de Seguridad para Código IA</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="principle-box"><h5>1. Aislamiento a Nivel de Infraestructura</h5><p>NGINX o Cloudflare Zero Trust como gate de entrada. Seguridad incluso si el código está roto.</p></div>
+<div class="principle-box"><h5>2. Multi-Stage Security Prompting</h5><p>Paso 1: Construye la feature. Paso 2: Actúa como Security Engineer y revisa tu propio código. Paso 3: Reescribe endurecido.</p></div>
+<div class="principle-box"><h5>3. Guardrails (.cursorrules / .mdc)</h5><p>Archivos de reglas que establecen líneas rojas para la IA. PROHIBIDO: hardcoded secrets. REQUERIDO: parameterized queries.</p></div>
+<div class="principle-box"><h5>4. TDD con Agentes</h5><p>"Escribe tests → Deben fallar → Commit → Escribe implementación → NO modifiques tests → Sigue hasta que pasen."</p></div>
+<div class="principle-box"><h5>5. Humano en el Loop</h5><p>Auth, pagos, permisos, datos sensibles: SIEMPRE revisión humana. Sin excepciones.</p></div>
+</div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>💻 4. Claude Code Best Practices</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="ai-card"><h4>🎯 Plan Mode: Shift + Tab</h4><p>Antes de cualquier tarea grande, cambia a Plan Mode. Crea/revisa el plan, luego ejecuta.</p></div>
+<div class="ai-card"><h4>📝 CLAUDE.md — Contexto Persistente</h4><p>Crea CLAUDE.md en la raíz del proyecto. Claude lo lee automáticamente en cada sesión.</p></div>
+<div class="ai-card"><h4>🧠 Document & Clear</h4><p>Cuando el contexto se pesa: dump a markdown, /clear, empieza fresco.</p></div>
+<div class="ai-card"><h4>🔧 Alias Esenciales</h4><p><code>alias cc='claude --dangerously-skip-permissions'</code></p></div>
+<div class="ai-card"><h4>🧪 Ultrathink</h4><p>Menciona "ultrathink" para forzar razonamiento máximo en problemas complejos.</p></div>
+</div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🎯 5. Prompt Engineering para CyberSec</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="principle-box"><h5>1. Deep Contextual Priming</h5><p>"Eres un analista SOC experto en movimiento lateral cloud-native."</p></div>
+<div class="principle-box"><h5>2. Strict Output Constraints</h5><p>"No proporciones preámbulo. Retorna solo el objeto JSON."</p></div>
+<div class="principle-box"><h5>3. Chain-of-Thought (CoT)</h5><p>"Paso 1: deofusca. Paso 2: identifica endpoints. Paso 3: explica intención."</p></div>
+<div class="ai-card"><h4>🎭 Técnicas Avanzadas</h4><p><strong>Few-Shot Prompting:</strong> 2-3 ejemplos para threat hunting.<br><strong>Adversarial Prompting:</strong> Ataca tus propios sistemas de IA.<br><strong>Self-Correction:</strong> "Revisa tu análisis por errores."</p></div>
+</div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🛠️ 6. Tu Arsenal de IA</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="tools-grid">
+<div class="tool-card"><h4 style="color:var(--ai)">🧠 Ollama (Local)</h4><p>LLM offline. Copiloto permanente sin costo.</p><div class="install">ollama.com<br>ollama run codellama</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">🤖 Claude Code</h4><p>Agente en terminal. Plan Mode, TDD.</p><div class="install">npm i -g @anthropic-ai/claude-code</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">✏️ Cursor</h4><p>IDE con IA. .cursorrules.</p><div class="install">cursor.com</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">🔌 Continue.dev</h4><p>Extensión VS Code. Conecta Ollama.</p><div class="install">VS Code Marketplace</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">📓 NotebookLM</h4><p>Podcasts de estudio desde PDFs.</p><div class="install">notebooklm.google.com</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">🎯 Gemini</h4><p>Tutor personal gratuito.</p><div class="install">gemini.google.com</div></div>
+</div>
+</div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>📋 7. IA por Fase de Carrera</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<table><tr><th>Fase</th><th>Usa IA para...</th><th>NUNCA para...</th></tr>
+<tr><td><strong>F0</strong></td><td>Explicar conceptos, practicar inglés</td><td>Resolver problemas por ti</td></tr>
+<tr><td><strong>F1</strong></td><td>Revisar código, explicar errores</td><td>Escribir tus proyectos</td></tr>
+<tr><td><strong>F2</strong></td><td>Brainstorming, schemas SQL</td><td>Generar auth o crypto</td></tr>
+<tr><td><strong>F3</strong></td><td>Análisis de algoritmos, parsing</td><td>Generar exploits sin entender</td></tr>
+<tr><td><strong>F4</strong></td><td>Code review, tests, documentación</td><td>Diseñar arquitectura de tesis</td></tr>
+<tr><td><strong>F5</strong></td><td>Literature review, hipótesis</td><td>Escribir paper completo</td></tr>
+<tr><td><strong>F6</strong></td><td>LinkedIn, entrevistas, cover letters</td><td>Mentir sobre habilidades</td></tr>
+</table>
+</div></div>
+<div class="progress-section">
+<h3>📋 Checklist: ¿Eres Dueño de tu Código?</h3>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Puedo explicar cada línea de código IA</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Nunca deployo código IA sin revisar</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Tengo .cursorrules o CLAUDE.md</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Uso variables de entorno, nunca hardcodeo secrets</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Audito dependencias después de sesiones IA</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Escribo tests ANTES de pedir implementación</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Puedo diseñar un sistema en papel sin IA</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Uso Ollama local para tareas sensibles</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Entiendo: IA acelera mecánicas, no juicio</span></div>
+</div>
+</div>
+
+<div id="panel" class="tab-content">
+<div class="tip-box"><h4>🛡️ Panel de Control de Sesiones</h4><p>Registra cada sesión. Exporta/Importa JSON para backup o sync con HP Arch Linux.</p></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="number" id="panel-sessions">0</div><div class="label">Sesiones</div></div>
+<div class="stat-card"><div class="number" id="panel-hours">0</div><div class="label">Horas</div></div>
+<div class="stat-card"><div class="number" id="panel-streak">0</div><div class="label">Racha 🔥</div></div>
+<div class="stat-card"><div class="number" id="panel-ip">0</div><div class="label">IP</div></div>
+</div>
+<div class="panel-card" style="border-color:var(--accent)">
+<h4>🧭 Smart State</h4>
+<div id="smart-state-display" style="color:var(--text2);font-size:.9em"><p>Analizando...</p></div>
+</div>
+<div class="panel-card">
+<h4>✍️ Registrar Sesión</h4>
+<div class="panel-row">
+<select id="p-phase" class="panel-input" onchange="updatePanelTask()">
+<option value="0">F0: Fundamentos</option><option value="1">F1: Pregrado Año 1</option><option value="2">F2: Pregrado Año 2</option><option value="3">F3: Pregrado Año 3</option><option value="4">F4: Pregrado Año 4</option><option value="5">F5: Maestría</option><option value="6">F6: Empleabilidad</option>
+</select>
+<select id="p-week" class="panel-input" onchange="updatePanelTask()">
+<option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option><option value="6">Semana 6</option><option value="7">Semana 7</option><option value="8">Semana 8</option><option value="9">Semana 9</option><option value="10">Semana 10</option><option value="11">Semana 11</option><option value="12">Semana 12</option>
+</select>
+<select id="p-day" class="panel-input"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select>
+</div>
+<div class="panel-row">
+<input id="p-topic" class="panel-input" style="flex:1" placeholder="Tema estudiado hoy...">
+<input id="p-lesson" class="panel-input" style="flex:1" placeholder="Lección / Commit de la derrota...">
+</div>
+<div class="panel-row">
+<label style="color:var(--text2);font-size:.85em">⚡ Energía:</label>
+<select id="p-energy" class="panel-input"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+<label style="color:var(--text2);font-size:.85em">⭐ Score:</label>
+<select id="p-score" class="panel-input"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected>5</option><option>10</option></select>
+<label style="color:var(--text2);font-size:.85em">⏱️ Min:</label>
+<input id="p-duration" class="panel-input" type="number" value="60" min="1" max="480" style="width:70px">
+</div>
+<div class="panel-row">
+<label style="display:flex;align-items:center;gap:6px;color:var(--text2);font-size:.85em;cursor:pointer"><input type="checkbox" id="p-verified"> 🏆 Semana verificada</label>
+<label style="display:flex;align-items:center;gap:6px;color:var(--text2);font-size:.85em;cursor:pointer"><input type="checkbox" id="p-extra"> 🔥 Práctica extra</label>
+</div>
+<div class="panel-row" style="margin-top:10px">
+<button class="panel-btn" onclick="saveSession()">💾 Guardar</button>
+<button class="panel-btn panel-btn-secondary" onclick="generateBrief()">🎯 Mission Brief</button>
+<button class="panel-btn panel-btn-secondary" onclick="quickStart()">🚀 Quick Start</button>
+</div>
+<div class="panel-row" style="margin-top:8px">
+<button class="panel-btn panel-btn-secondary" onclick="exportJSON()">📤 Exportar</button>
+<button class="panel-btn panel-btn-secondary" onclick="importJSON()">📥 Importar</button>
+<button class="panel-btn panel-btn-secondary" onclick="importArch()">🐧 Arch</button>
+</div>
+<div id="brief-area" style="display:none;margin-top:12px">
+<div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+<button class="copy-btn" onclick="copyBrief()">📋 Copiar</button>
+<button class="copy-btn" onclick="window.open('https://gemini.google.com/app','_blank')">🤖 Gemini</button>
+<button class="copy-btn" onclick="window.open('https://notebooklm.google.com','_blank')">📓 NotebookLM</button>
+</div>
+<div class="brief-output" id="brief-text"></div>
+</div>
+</div>
+<div class="panel-card">
+<h4>📌 Tarea de Hoy</h4>
+<div id="panel-task" style="color:var(--text2);font-size:.9em;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">Selecciona fase y semana...</div>
+<div style="margin-top:8px;color:var(--text2);font-size:.82em" id="panel-book"></div>
+</div>
+<div class="panel-card">
+<h4>📜 Bitácora</h4>
+<div id="session-log" style="max-height:300px;overflow-y:auto"><p style="color:var(--text2);font-size:.85em">Sin sesiones aún.</p></div>
+</div>
+<div class="panel-card">
+<h4>🐧 Sync Arch Linux</h4>
+<textarea id="arch-import" class="panel-input" style="width:100%;min-height:70px;font-family:monospace;font-size:.75em" placeholder='Pega JSON de Arch aquí'></textarea>
+</div>
+</div>
+
+<div id="today" class="tab-content">
+<div class="tip-box"><h4>📖 Modo Hoy — Optimizado para móvil</h4></div>
+<div class="panel-card" style="border-color:var(--accent3)">
+<h4>🎯 Tu Sesión de Hoy</h4>
+<div id="today-task" style="font-size:1.1em;color:var(--text);margin-bottom:12px">Cargando...</div>
+<div id="today-book" style="color:var(--text2);font-size:.9em;margin-bottom:12px"></div>
+<div id="today-cs50" style="color:var(--text2);font-size:.85em;margin-bottom:16px"></div>
+<a class="big-btn" href="#" id="today-read-btn" target="_blank">📖 Lectura Principal</a>
+<a class="big-btn big-btn-secondary" href="https://gemini.google.com/app" target="_blank">🤖 Gemini</a>
+<a class="big-btn big-btn-secondary" href="https://notebooklm.google.com" target="_blank">📓 NotebookLM</a>
+<a class="big-btn big-btn-secondary" href="#" onclick="showTab('ai')">🤖 Módulo IA</a>
+</div>
+<div class="panel-card">
+<h4>⚡ Registro Rápido</h4>
+<div class="panel-row">
+<select id="t-phase" class="panel-input"><option value="0">F0</option><option value="1">F1</option><option value="2">F2</option><option value="3">F3</option><option value="4">F4</option><option value="5">F5</option><option value="6">F6</option></select>
+<select id="t-week" class="panel-input"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+<select id="t-day" class="panel-input"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select>
+</div>
+<input id="t-topic" class="panel-input" style="width:100%;margin-bottom:8px" placeholder="Tema estudiado">
+<div class="panel-row">
+<select id="t-energy" class="panel-input"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+<select id="t-score" class="panel-input"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected>5</option><option>10</option></select>
+<input id="t-duration" class="panel-input" type="number" value="45" min="1" max="300" style="width:80px">
+</div>
+<button class="big-btn" onclick="saveTodaySession()">💾 Guardar Sesión</button>
+</div>
+<div class="panel-card"><h4>📚 Lecturas del Día</h4><div id="today-readings"></div></div>
+<div class="panel-card"><h4>🎧 Audio del Día</h4><div id="today-audio"></div></div>
+</div>
+
+<div id="tools" class="tab-content">
+<div class="tip-box"><h4>🛠️ Toolbox Local (Todo Gratuito)</h4></div>
+<div class="tools-grid">
+<div class="tool-card"><h4>📝 VS Code</h4><p>IDE universal.</p><div class="install">code.visualstudio.com</div></div>
+<div class="tool-card"><h4>🐧 VirtualBox + VMs</h4><p>Virtualización para labs.</p><div class="install">virtualbox.org</div></div>
+<div class="tool-card"><h4>🐳 Docker Desktop</h4><p>Containers para labs.</p><div class="install">docker.com</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">🧠 Ollama (Local)</h4><p>LLM offline gratuito.</p><div class="install">ollama.com</div></div>
+<div class="tool-card"><h4>📓 Obsidian</h4><p>Segundo cerebro.</p><div class="install">obsidian.md</div></div>
+<div class="tool-card"><h4>🌐 Draw.io</h4><p>Diagramas de arquitectura.</p><div class="install">diagrams.net</div></div>
+<div class="tool-card"><h4>🔍 Wireshark</h4><p>Análisis de red.</p><div class="install">wireshark.org</div></div>
+<div class="tool-card"><h4>🗄️ PostgreSQL</h4><p>Base de datos profesional.</p><div class="install">postgresql.org</div></div>
+<div class="tool-card"><h4>⚡ Git + GitHub</h4><p>Control de versiones.</p><div class="install">git-scm.com</div></div>
+<div class="tool-card"><h4>🔐 KeePassXC</h4><p>Password manager local.</p><div class="install">keepassxc.org</div></div>
+<div class="tool-card"><h4>🎯 Burp Suite</h4><p>Pentesting web.</p><div class="install">portswigger.net</div></div>
+<div class="tool-card"><h4>📊 Wazuh</h4><p>SIEM open-source.</p><div class="install">wazuh.com</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">🤖 Claude Code</h4><p>Agente terminal.</p><div class="install">npm i -g @anthropic-ai/claude-code</div></div>
+<div class="tool-card"><h4 style="color:var(--ai)">✏️ Cursor</h4><p>IDE con IA.</p><div class="install">cursor.com</div></div>
+</div>
+</div>
+
+<div id="labs" class="tab-content">
+<div class="warning-box"><h4>⚠️ Reglas de Oro</h4><p><strong>NUNCA</strong> ataques redes ajenas. <strong>Siempre</strong> redes aisladas. <strong>Documenta todo</strong>.</p></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 1: Red Aislada</h2><div class="phase-meta">VirtualBox | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">Kali (attacker) + Ubuntu (target) + Metasploitable 2 (vulnerable) en vboxnet0.</div>
+<div class="course-resources"><span class="resource-link link-lab">1. VirtualBox → Host Network Manager</span><span class="resource-link link-lab">2. Kali: kali.org/get-kali</span><span class="resource-link link-lab">3. Metasploitable: sourceforge.net/projects/metasploitable</span><span class="resource-link link-lab">4. nmap -sn 192.168.56.0/24</span></div>
+</div></div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 2: Apps Vulnerables</h2><div class="phase-meta">Docker | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">DVWA, Juice Shop, WebGoat en Docker.</div>
+<div class="install" style="margin-bottom:12px">docker run --rm -it -p 80:80 vulnerables/web-dvwa<br>docker run --rm -p 3000:3000 bkimminich/juice-shop</div>
+<div class="course-resources"><span class="resource-link link-lab">Practica: SQLi, XSS, CSRF, IDOR</span></div>
+</div></div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 3: SIEM + Detección</h2><div class="phase-meta">Docker | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">Wazuh All-in-One en Docker.</div>
+<div class="install" style="margin-bottom:12px">git clone https://github.com/wazuh/wazuh-docker.git<br>cd wazuh-docker/single-node<br>docker-compose up -d</div>
+</div></div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 4: Active Directory</h2><div class="phase-meta">VirtualBox | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">Windows Server 2022 (DC) + Windows 10 + Kali.</div>
+<div class="course-resources"><span class="resource-link link-lab">Practica: Kerberoasting, Pass-the-Hash, BloodHound</span></div>
+</div></div></div>
+</div>
+
+<div id="audio" class="tab-content">
+<div class="tip-box"><h4>🎧 68 Clases en Audio para NotebookLM / Ollama</h4><p>Copia el prompt, pégalo en NotebookLM → Audio Overview → Customize. Cada clase está diseñada para ser una lección extensa de 30-55 minutos.</p></div>
+<div class="audio-filter">
+<button class="audio-filter-btn active" onclick="filterAudio('all')">Todas (68)</button>
+<button class="audio-filter-btn" onclick="filterAudio(0)">Fase 0 (8)</button>
+<button class="audio-filter-btn" onclick="filterAudio(1)">Fase 1 (10)</button>
+<button class="audio-filter-btn" onclick="filterAudio(2)">Fase 2 (10)</button>
+<button class="audio-filter-btn" onclick="filterAudio(3)">Fase 3 (10)</button>
+<button class="audio-filter-btn" onclick="filterAudio(4)">Fase 4 (10)</button>
+<button class="audio-filter-btn" onclick="filterAudio(5)">Fase 5 (12)</button>
+<button class="audio-filter-btn" onclick="filterAudio(6)">Fase 6 (8)</button>
+</div>
+<div id="audio-container"></div>
+</div>
+
+<div id="certs" class="tab-content">
+<div class="tip-box"><h4>🏅 Estrategia de Certificaciones</h4><p>Prepárate gratis. Certifícate solo cuando estés listo (Fase 6).</p></div>
+<div class="tools-grid">
+<div class="tool-card"><h4>🟢 GitHub Foundations</h4><p>Git, Actions, colaboración.</p><div class="install">~$50-100 | Fácil</div></div>
+<div class="tool-card"><h4>🟢 LPI Linux Essentials</h4><p>Base Linux global.</p><div class="install">~$120 | Fácil</div></div>
+<div class="tool-card"><h4>🟡 CompTIA Security+</h4><p>Entry-level cybersec. DoD 8570.</p><div class="install">~$400 | Media</div></div>
+<div class="tool-card"><h4>🟡 AWS Cloud Practitioner</h4><p>Fundamentos cloud.</p><div class="install">~$100 | Media</div></div>
+<div class="tool-card"><h4>🟠 eJPT (INE)</h4><p>Pentesting hands-on.</p><div class="install">~$200 | Media</div></div>
+<div class="tool-card"><h4>🟠 OSCP</h4><p>Estándar oro. 24h examen.</p><div class="install">~$1,600 | Difícil</div></div>
+<div class="tool-card"><h4>🔴 CISSP</h4><p>Arquitectura enterprise.</p><div class="install">~$750 | Difícil</div></div>
+</div>
+<div class="progress-section" style="margin-top:16px">
+<h3>📋 Checklist Pre-Certificación</h3>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">200+ horas de labs</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">3 lenguajes: Python, C/Go, JS/TS</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">5+ proyectos GitHub documentados</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">10+ artículos técnicos</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">2+ contribuciones open-source</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">50+ LeetCode medianos/difíciles</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">3+ sistemas documentados</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Inglés técnico fluido</span></div>
+</div>
+</div>
+
+<div id="mindset" class="tab-content">
+<div class="mindset-box"><h4>🧠 "Picar Código" vs "Diseñar Sistemas"</h4><p>Los bootcamps enseñan <strong>sintaxis</strong>. Un ingeniero diseña <strong>arquitecturas</strong>. Eso paga $100k+/año.</p></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🔄 Los 5 Pilares del Pensamiento Sistémico</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-title">1. Abstracción-Jerarquía</div><div class="course-desc">Usuario → API → Negocio → Persistencia → Infra. Cada capa es un sistema con contratos.</div></div>
+<div class="course"><div class="course-title">2. Estado-Transición</div><div class="course-desc">Transiciones atómicas, trazables, seguras. Dibuja diagramas antes de programar.</div></div>
+<div class="course"><div class="course-title">3. Fallo-Primero</div><div class="course-desc">Asume que todo fallará. Diseña para recuperación. Separa junior de senior.</div></div>
+<div class="course"><div class="course-title">4. Seguridad por Diseño</div><div class="course-desc">Propiedad emergente. Threat modeling (STRIDE) en cada proyecto.</div></div>
+<div class="course"><div class="course-title">5. Composición-Reutilización</div><div class="course-desc">Elige componentes correctos. Define sus interacciones.</div></div>
+</div></div>
+<div class="tip-box"><h4>✍️ Ritual Diario de Arquitecto</h4><p>Antes de VS Code: 1) Dibuja en papel. 2) Escribe contratos. 3) 3 ataques + 3 defensas. 4) Luego programa.</p></div>
+<div class="progress-section"><h3>📚 Libros que Reconfiguran el Cerebro</h3>
+<table><tr><th>Libro</th><th>Qué enseña</th><th>Dónde</th></tr><tr><td>Nand2Tetris</td><td>Computadora desde cero</td><td>nand2tetris.org</td></tr><tr><td>OSTEP</td><td>Sistemas operativos</td><td>pages.cs.wisc.edu/~remzi/OSTEP/</td></tr><tr><td>Crafting Interpreters</td><td>Lenguajes de programación</td><td>craftinginterpreters.com</td></tr><tr><td>DDIA</td><td>Sistemas a escala</td><td>Compra usado</td></tr><tr><td>AOSA</td><td>Arquitectos reales</td><td>aosabook.org</td></tr><tr><td>Crypto 101</td><td>Criptografía accesible</td><td>crypto101.io</td></tr></table>
+</div>
+</div>
+
+<div id="tracker" class="tab-content">
+<div class="progress-section"><h3>📊 Progreso Global</h3><div class="progress-bar-bg"><div class="progress-bar-fill" id="global-progress" style="width:0%">0%</div></div></div>
+<div class="progress-section"><h3>✅ FASE 0</h3><div id="tracker-f0"></div></div>
+<div class="progress-section"><h3>✅ FASE 1</h3><div id="tracker-f1"></div></div>
+<div class="progress-section"><h3>✅ FASE 2</h3><div id="tracker-f2"></div></div>
+<div class="progress-section"><h3>✅ FASE 3</h3><div id="tracker-f3"></div></div>
+<div class="progress-section"><h3>✅ FASE 4</h3><div id="tracker-f4"></div></div>
+<div class="progress-section"><h3>✅ FASE 5</h3><div id="tracker-f5"></div></div>
+<div class="progress-section"><h3>✅ FASE 6</h3><div id="tracker-f6"></div></div>
+<div style="text-align:center;margin-top:14px"><button onclick="resetProgress()" style="padding:10px 20px;background:var(--danger);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700">🗑️ Resetear</button></div>
+</div>
+
+<footer>
+<p>UNI-AUTO ULTIMATE v3.1 | PC + Móvil | 2026-2032</p>
+<p style="margin-top:5px;font-size:.78em">Guarda en PC y móvil. Doble click. 100% offline.</p>
+<p style="margin-top:3px;font-size:.72em;color:var(--text2)">Basado en: OSSU, MIT OCW, Harvard CS50, Nand2Tetris, Claude Code Best Practices 2026</p>
+</footer>
+</div>
+
+<script>
+// ── Core ──
+function showTab(tabId){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+  if(tabId==='today') updateTodayTab();
+}
+function togglePhase(header){
+  const c=header.nextElementSibling;
+  const a=header.querySelector('span:last-child');
+  c.classList.toggle('open');
+  a.textContent=c.classList.contains('open')?'▲':'▼';
+}
+function toggleCheck(box){
+  box.classList.toggle('checked');
+  box.textContent=box.classList.contains('checked')?'✓':'';
+  box.nextElementSibling.classList.toggle('done');
+}
+
+// ── Data ──
+const PHASE_NAMES=['F0: Fundamentos','F1: Pregrado Año 1','F2: Pregrado Año 2','F3: Pregrado Año 3','F4: Pregrado Año 4','F5: Maestría','F6: Empleabilidad'];
+const BOOKS_BY_PHASE={
+0:"📖 The Linux Command Line + Khan Academy",
+1:"📖 Think Python 2e + Pro Git",
+2:"📖 Nand2Tetris + OSTEP",
+3:"📖 CLRS + Crafting Interpreters",
+4:"📖 DDIA + Refactoring Guru",
+5:"📖 Applied Cryptography (Boneh) + Distributed Systems",
+6:"📖 Cracking Coding Interview + System Design Interview"
+};
+const CS50X={
+0:"CS50x Sem 0 — Scratch: pensamiento computacional",
+1:"CS50x Sem 1 — C: compilación, tipos, punteros",
+2:"CS50x Sem 2 — Arrays: memoria, cadenas, cifrado",
+3:"CS50x Sem 3 — Algorithms: búsqueda, ordenamiento, Big O",
+4:"CS50x Sem 4 — Memory: punteros, malloc, estructuras",
+5:"CS50x Sem 5 — Data Structures: listas, árboles, hash",
+6:"CS50x Sem 6 — Python: sintaxis, listas, dicts",
+7:"CS50x Sem 7 — SQL: SELECT, JOINs, SQLite",
+8:"CS50x Sem 8 — Web: HTML, CSS, JS, DOM",
+9:"CS50x Sem 9 — Flask: rutas, Jinja2, sesiones",
+10:"CS50x Sem 10 — Proyecto Final"
+};
+
+function getTask(phase,week,day){
+const tasks={
+0:{1:"Khan Academy Álgebra + CS50 Sem 0",2:"Linux Journey + Python variables",3:"Condicionales + bucles",4:"Funciones + Git init"},
+1:{1:"Python for Everybody",2:"CS50 Sem 1 (C)",3:"CS50 Sem 2 (Arrays)",4:"Estructuras de datos",5:"Matemáticas discretas",6:"Redes OSI/TCP-IP",7:"Git avanzado",8:"Proyecto: Gestor contraseñas",9:"Repaso + pytest",10:"CS50 Sem 3-4",11:"CS50 Sem 4-5",12:"Proyecto final Fase 1"},
+2:{1:"Nand2Tetris Sem 1-2",2:"Nand2Tetris Sem 3-4",3:"OSTEP: procesos y memoria",4:"OSTEP: concurrencia",5:"SQL y normalización",6:"PostgreSQL",7:"HTML5 + CSS",8:"DOM + Fetch API",9:"Flask",10:"API REST",11:"Seguridad: CIA Triad",12:"Proyecto POS web"},
+3:{1:"Algoritmos: DP, greedy",2:"Grafos avanzados",3:"Teoría: autómatas",4:"Máquinas de Turing",5:"Crafting Interpreters",6:"Parser recursivo",7:"Hado DSL parser",8:"Pentesting: reconocimiento",9:"Pentesting: explotación",10:"Blue Team: SIEM",11:"Blue Team: logs",12:"Proyecto: Scanner vulns"},
+4:{1:"Patrones: SOLID",2:"Arquitectura MVC/Microservicios",3:"Sistemas distribuidos: CAP",4:"Raft + message queues",5:"ML: regresión",6:"Redes neuronales",7:"Forense: disco",8:"Malware: estático",9:"MITRE ATT&CK",10:"Threat hunting",11:"Proyecto final: diseño",12:"Proyecto final: implementación"},
+5:{1:"Cripto: RSA",2:"Curvas elípticas, TLS 1.3",3:"Zero-knowledge proofs",4:"Post-quantum crypto",5:"Firewalls NG",6:"IDS/IPS avanzados",7:"System Design: sharding",8:"System Design: caching",9:"AWS: IAM, VPC",10:"Docker + Kubernetes",11:"Terraform + CI/CD",12:"Investigación: paper",13:"Publicación",14:"Open-source",15:"Charla meetup",16:"Blog avanzado",17:"Networking",18:"Mentoría",19:"Especialización",20:"Especialización",21:"Especialización",22:"Especialización",23:"Especialización",24:"Proyecto maestría"},
+6:{1:"Portfolio: GitHub + LinkedIn",2:"Blog técnico",3:"Mock interviews",4:"System design practice",5:"Aplicaciones remotas",6:"Negociación salarial"}
+};
+return(tasks[phase]&&tasks[phase][week])||`${PHASE_NAMES[phase]} — Semana ${week}`;
+}
+
+// ── Sessions ──
+function getSessions(){return JSON.parse(localStorage.getItem('uni-auto-sessions')||'[]');}
+function saveSessions(s){localStorage.setItem('uni-auto-sessions',JSON.stringify(s));}
+
+function updatePanelStats(){
+const s=getSessions();
+const totalMin=s.reduce((a,e)=>a+(e.duration_min||0),0);
+const hours=Math.round(totalMin/60*10)/10;
+let streak=0;
+const dates=[...new Set(s.map(e=>e.date.slice(0,10)))].sort();
+const today=new Date().toISOString().slice(0,10);
+let check=new Date(); check.setDate(check.getDate()-1);
+if(dates.includes(today)) streak=1;
+while(dates.includes(check.toISOString().slice(0,10))){streak++;check.setDate(check.getDate()-1);}
+let ip=0;
+for(const e of s){ip+=e.score*10;if(e.verified_100)ip+=50;if(e.extra_practice)ip+=20;}
+document.getElementById('panel-sessions').textContent=s.length;
+document.getElementById('panel-hours').textContent=hours;
+document.getElementById('panel-streak').textContent=streak;
+document.getElementById('panel-ip').textContent=ip;
+document.getElementById('stat-streak').textContent=streak;
+document.getElementById('stat-ip').textContent=ip;
+document.getElementById('stat-hours').textContent=hours;
+document.getElementById('stat-sessions').textContent=s.length;
+}
+
+function renderLog(){
+const s=getSessions();
+const log=document.getElementById('session-log');
+if(!s.length){log.innerHTML='<p style="color:var(--text2);font-size:.85em">Sin sesiones aún.</p>';return;}
+log.innerHTML=s.slice().reverse().map(e=>{
+const t=e.verified_100?'🏆':'';
+const x=e.extra_practice?'🔥':'';
+const dt=new Date(e.date).toLocaleString('es-GT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+return`<div style="border-bottom:1px solid var(--border);padding:8px 0;font-size:.82em"><div style="font-weight:700;color:var(--accent)">${t}${x} F${e.phase} W${e.week} · ${e.day} · ${dt}</div><div style="color:var(--text)">${e.topic}</div><div style="color:var(--text2)">⭐ ${e.score}/10 · ⚡ ${e.energy}/5 · ⏱️ ${e.duration_min}min</div>${e.lesson?`<div style="color:var(--accent3);margin-top:3px;font-size:.8em">💡 ${e.lesson}</div>`:''}</div>`;
+}).join('');
+}
+
+function updatePanelTask(){
+const ph=parseInt(document.getElementById('p-phase').value);
+const wk=parseInt(document.getElementById('p-week').value);
+document.getElementById('panel-task').innerHTML=`<strong>${PHASE_NAMES[ph]} — Semana ${wk}:</strong><br>${getTask(ph,wk,'Lunes')}`;
+document.getElementById('panel-book').textContent=BOOKS_BY_PHASE[ph]||'';
+}
+
+function saveSession(){
+const ph=parseInt(document.getElementById('p-phase').value);
+const wk=parseInt(document.getElementById('p-week').value);
+const day=document.getElementById('p-day').value;
+const topic=document.getElementById('p-topic').value||'Sin tema';
+const lesson=document.getElementById('p-lesson').value||'';
+const energy=parseInt(document.getElementById('p-energy').value);
+const score=parseInt(document.getElementById('p-score').value);
+const dur=parseInt(document.getElementById('p-duration').value)||0;
+const verified=document.getElementById('p-verified').checked;
+const extra=document.getElementById('p-extra').checked;
+const entry={id:Math.random().toString(36).slice(2),date:new Date().toISOString(),phase:ph,week:wk,day:day,topic:topic,lesson:lesson,energy:energy,score:score,duration_min:dur,verified_100:verified,extra_practice:extra,platform:'HTML Panel'};
+const s=getSessions(); s.push(entry); saveSessions(s);
+updatePanelStats(); renderLog(); updateSmartState();
+document.getElementById('p-topic').value='';
+document.getElementById('p-lesson').value='';
+alert('✅ Sesión guardada');
+}
+
+function saveTodaySession(){
+const ph=parseInt(document.getElementById('t-phase').value);
+const wk=parseInt(document.getElementById('t-week').value);
+const day=document.getElementById('t-day').value;
+const topic=document.getElementById('t-topic').value||'Sin tema';
+const energy=parseInt(document.getElementById('t-energy').value);
+const score=parseInt(document.getElementById('t-score').value);
+const dur=parseInt(document.getElementById('t-duration').value)||0;
+const entry={id:Math.random().toString(36).slice(2),date:new Date().toISOString(),phase:ph,week:wk,day:day,topic:topic,lesson:'',energy:energy,score:score,duration_min:dur,verified_100:false,extra_practice:false,platform:'Mobile Quick'};
+const s=getSessions(); s.push(entry); saveSessions(s);
+updatePanelStats(); renderLog(); updateSmartState(); updateTodayTab();
+document.getElementById('t-topic').value='';
+alert('✅ Sesión guardada');
+}
+
+function generateBrief(){
+const ph=parseInt(document.getElementById('p-phase').value);
+const wk=parseInt(document.getElementById('p-week').value);
+const day=document.getElementById('p-day').value;
+const energy=parseInt(document.getElementById('p-energy').value);
+const s=getSessions();
+const last=s.length?s[s.length-1]:{};
+const role=energy>=4?'GENERAL':(energy>=2?'SOCRATICO':'HISTORIADOR');
+const today=new Date().toLocaleDateString('es-GT',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const task=getTask(ph,wk,day);
+const cs50x=CS50X[Math.max(0,wk-1)]||'';
+const book=BOOKS_BY_PHASE[ph]||'';
+const brief=`MISSION BRIEF — ${today}
+PILOTO: Christian Toledo
+FASE: ${ph} (${PHASE_NAMES[ph]}) | SEMANA: ${wk} | DIA: ${day} | ENERGIA: ${energy}/5
+ULTIMA SESION: ${last.topic||'Primera sesion'}
+TAREA DE HOY: ${task}
+${cs50x?'CS50x: '+cs50x:''}
+LECTURA: ${book}
+ROL: ${role}
+INSTRUCCIONES PARA TUTOR IA:
+1. Activa el rol indicado.
+2. NO des la solucion directa.
+3. Si energia <= 2, haz revision.
+4. Genera entrada de diario para el Panel.
+5. Soy Christian Toledo. Mac M4 + HP Arch Linux.
+6. IA es copiloto, no piloto.`;
+document.getElementById('brief-text').textContent=brief;
+document.getElementById('brief-area').style.display='block';
+}
+function copyBrief(){navigator.clipboard.writeText(document.getElementById('brief-text').textContent).then(()=>alert('Copiado'));}
+function quickStart(){generateBrief();window.open('https://gemini.google.com/app','_blank');}
+function exportJSON(){const s=getSessions();const blob=new Blob([JSON.stringify(s,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='uni_auto_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(!Array.isArray(data))throw new Error('No es array');const s=getSessions();const ex=new Set(s.map(x=>x.id));let added=0;for(const entry of data){if(!ex.has(entry.id)){s.push(entry);ex.add(entry.id);added++;}}saveSessions(s);updatePanelStats();renderLog();updateSmartState();alert(`${added} sesiones importadas`);}catch(err){alert('Error: '+err.message);}};r.readAsText(f);};inp.click();}
+function importArch(){const raw=document.getElementById('arch-import').value.trim();if(!raw){alert('Pega JSON primero');return;}try{const data=JSON.parse(raw);if(!Array.isArray(data))throw new Error('No es array');const s=getSessions();const ex=new Set(s.map(x=>x.id||`${x.date}|${x.phase}|${x.week}`));let added=0;for(const entry of data){const key=entry.id||`${entry.date}|${entry.phase||0}|${entry.week||1}`;if(!ex.has(key)){entry.platform='Arch Linux';s.push(entry);ex.add(key);added++;}}saveSessions(s);updatePanelStats();renderLog();updateSmartState();alert(`${added} sesiones importadas`);document.getElementById('arch-import').value='';}catch(err){alert('Error: '+err.message);}}
+
+function updateSmartState(){
+const s=getSessions();
+if(!s.length){document.getElementById('smart-state-display').innerHTML='<p>Empieza registrando tu primera sesion.</p>';return;}
+const phases=[...new Set(s.map(e=>e.phase))].sort((a,b)=>a-b);
+const lastPhase=Math.max(...phases);
+const advanceCount=s.filter(e=>e.phase===lastPhase).length;
+const nextPhase=advanceCount>=5&&lastPhase<6?lastPhase+1:lastPhase;
+const totalMin=s.reduce((a,e)=>a+(e.duration_min||0),0);
+const today=new Date().toISOString().slice(0,10);
+const studiedToday=s.some(e=>e.date.startsWith(today));
+document.getElementById('smart-state-display').innerHTML=`
+<p><strong style="color:var(--accent)">Fase recomendada:</strong> ${PHASE_NAMES[nextPhase]}</p>
+<p><strong>Sesiones F${lastPhase}:</strong> ${advanceCount} ${advanceCount>=5?'(listo para avanzar)':`(${5-advanceCount} mas para avanzar)`}</p>
+<p><strong>Horas totales:</strong> ${Math.round(totalMin/60*10)/10}h</p>
+<p><strong>Hoy:</strong> ${studiedToday?'✅ Estudiaste':'❌ No has estudiado'}</p>
+<p><strong>Libro:</strong> ${BOOKS_BY_PHASE[nextPhase]||''}</p>`;
+if(!studiedToday){document.getElementById('p-phase').value=nextPhase;updatePanelTask();}
+}
+
+function updateTodayTab(){
+const s=getSessions();let phase=0,week=1;
+if(s.length){
+const phases=[...new Set(s.map(e=>e.phase))].sort((a,b)=>a-b);
+const lp=Math.max(...phases);
+const wc=s.filter(e=>e.phase===lp).length;
+phase=wc>=5&&lp<6?lp+1:lp;
+const weeksInPhase=s.filter(e=>e.phase===phase).map(e=>e.week);
+week=weeksInPhase.length?Math.max(...weeksInPhase):1;
+}
+const dayNames=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+const todayDay=dayNames[new Date().getDay()];
+const task=getTask(phase,week,todayDay);
+const cs50x=CS50X[Math.max(0,week-1)]||'';
+const book=BOOKS_BY_PHASE[phase]||'';
+document.getElementById('today-task').innerHTML=`<strong style="color:var(--accent)">${PHASE_NAMES[phase]} — Semana ${week} · ${todayDay}</strong><br><br>${task}`;
+document.getElementById('today-book').textContent=book;
+document.getElementById('today-cs50').textContent=cs50x?`CS50x: ${cs50x}`:'';
+const readings=[
+{url:'https://es.khanacademy.org/math',text:'📐 Khan Academy',phases:[0]},
+{url:'https://cs50.harvard.edu/x/2026/',text:'🎓 CS50x',phases:[0,1,2,3]},
+{url:'https://linuxjourney.com/',text:'🐧 Linux Journey',phases:[0,1]},
+{url:'https://www.py4e.com/',text:'🎓 Python',phases:[1]},
+{url:'https://www.nand2tetris.org/',text:'🎓 Nand2Tetris',phases:[2]},
+{url:'http://pages.cs.wisc.edu/~remzi/OSTEP/',text:'📖 OSTEP',phases:[2]},
+{url:'https://sqlbolt.com/',text:'📖 SQLBolt',phases:[2]},
+{url:'https://craftinginterpreters.com/',text:'🎓 Compiladores',phases:[3]},
+{url:'https://tryhackme.com/',text:'💻 TryHackMe',phases:[3,4]},
+{url:'https://attack.mitre.org/',text:'🎓 MITRE ATT&CK',phases:[4,5]},
+{url:'https://crypto.stanford.edu/~dabo/cryptobook/',text:'📖 Cripto Boneh',phases:[5]},
+];
+const relevant=readings.filter(r=>r.phases.includes(phase));
+document.getElementById('today-readings').innerHTML=relevant.map(r=>`<a class="big-btn big-btn-secondary" href="${r.url}" target="_blank" style="margin-bottom:8px;font-size:.9em;padding:10px">${r.text}</a>`).join('')||'<p style="color:var(--text2);font-size:.85em">Sin lecturas especificas.</p>';
+const audioPrompts=[
+{phase:0,title:'Fundamentos de Titanio',text:'Deep Dive 15 min: Linux + Python, 15 comandos, variables, tipos.'},
+{phase:1,title:'Python Intermedio',text:'Deep Dive 20 min: listas, dicts, sets, analogias, comprehensions.'},
+{phase:2,title:'Nand2Tetris + SO',text:'Deep Dive 25 min: NAND hasta assembler, procesos, memoria virtual.'},
+{phase:3,title:'Algoritmos y Compiladores',text:'Deep Dive 25 min: Big O, DP, grafos, parsers, Hado DSL.'},
+{phase:4,title:'Arquitectura a Escala',text:'Deep Dive 25 min: CAP, sharding, caching, POS para 10k tiendas.'},
+{phase:5,title:'Criptografia Avanzada',text:'Deep Dive 25 min: RSA, curvas elipticas, TLS 1.3, ZK proofs.'},
+{phase:6,title:'Portafolio y Carrera',text:'Debate 20 min: GitHub vs certs vs networking, trabajo remoto.'}
+];
+const au=audioPrompts.find(a=>a.phase===phase)||audioPrompts[0];
+document.getElementById('today-audio').innerHTML=`<div class="audio-card"><h5>🎧 ${au.title}</h5><p style="font-size:.85em;color:var(--text2)">${au.text}</p><button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('p').textContent).then(()=>alert('Copiado'))">📋 Copiar</button></div>`;
+if(s.length){document.getElementById('t-phase').value=phase;document.getElementById('t-week').value=week;document.getElementById('t-day').value=todayDay;}
+}
+
+// ── Tracker ──
+const trackerData={
+'tracker-f0':['Matematicas: Algebra, Geometria, Precalculo','Pensamiento Computacional (CS50)','Linux para Principiantes','Ingles Tecnico','Modulo IA 0: Filosofia del Copiloto'],
+'tracker-f1':['Python Imperativo','Programacion en C','Estructuras de Datos y Algoritmos','Matematicas Discretas','Git y Control de Versiones','Redes de Computadoras I','Modulo IA 1: Prompt Engineering'],
+'tracker-f2':['Nand2Tetris I y II','Sistemas Operativos','Bases de Datos y SQL','Web Full Stack','Seguridad Fundamentos','Modulo IA 2: Vibe Coding Seguro'],
+'tracker-f3':['Algoritmos Avanzados','Teoria de la Computacion','Compiladores e Interpretes','Pentesting (Red Team)','Blue Team / Defensa','Modulo IA 3: IA en CyberSec'],
+'tracker-f4':['Ingenieria de Software','Sistemas Distribuidos','Machine Learning','Forense y Malware','Proyecto Final Pregrado','Modulo IA 4: Claude Code'],
+'tracker-f5':['Criptografia Avanzada','Seguridad de Redes','Arquitectura a Escala','Cloud y DevSecOps','Investigacion y Publicacion','Modulo IA 5: IA en Investigacion'],
+'tracker-f6':['Portafolio Profesional','Entrevistas Tecnicas','Networking Profesional','Aplicacion a Trabajos Remotos','Modulo IA 6: IA en el Trabajo']
+};
+function initTracker(){for(const[id,items]of Object.entries(trackerData)){const c=document.getElementById(id);if(!c)continue;const saved=JSON.parse(localStorage.getItem('uni-auto-'+id)||'[]');c.innerHTML=items.map((item,i)=>{const ch=saved.includes(i)?'checked':'';const dn=saved.includes(i)?'done':'';const ck=saved.includes(i)?'✓':'';return`<div class="check-item"><div class="check-box ${ch}" onclick="toggleTrackerCheck('${id}',${i},this)">${ck}</div><span class="check-text ${dn}">${item}</span></div>`;}).join('');}updateGlobalProgress();}
+function toggleTrackerCheck(id,index,box){box.classList.toggle('checked');box.textContent=box.classList.contains('checked')?'✓':'';box.nextElementSibling.classList.toggle('done');let s=JSON.parse(localStorage.getItem('uni-auto-'+id)||'[]');if(s.includes(index))s=s.filter(x=>x!==index);else s.push(index);localStorage.setItem('uni-auto-'+id,JSON.stringify(s));updateGlobalProgress();}
+function updateGlobalProgress(){let t=0,d=0;for(const[id,items]of Object.entries(trackerData)){t+=items.length;const s=JSON.parse(localStorage.getItem('uni-auto-'+id)||'[]');d+=s.length;}const p=t>0?Math.round((d/t)*100):0;document.getElementById('global-progress').style.width=p+'%';document.getElementById('global-progress').textContent=p+'%';document.getElementById('stat-progress').textContent=p+'%';document.getElementById('stat-total').textContent=t;}
+function resetProgress(){if(confirm('Borrar TODO?')){for(const id of Object.keys(trackerData)){localStorage.removeItem('uni-auto-'+id);}localStorage.removeItem('uni-auto-sessions');initTracker();updatePanelStats();renderLog();updateSmartState();}}
+
+// ── Audio Prompts (68 clases extensas) ──
+const ALL_AUDIO_PROMPTS=[
+{phase:0,title:"🎓 Clase 0.1: El Mapa de Tu Carrera — De Secundaria a Maestría",min:35,text:"Genera una clase magistral en audio de 35 minutos para un estudiante autodidacta de Guatemala que quiere cambiar de profesion hacia ciberseguridad. Explica: por que una carrera autodidacta es viable en 2026, como esta estructurada en 6 fases, que esperar cada ano, y por que el tiempo no importa pero la consistencia si. Tono: mentor experimentado que cree en el estudiante. Incluye analogias de escalada de montana."},
+{phase:0,title:"🎓 Clase 0.2: Matematicas para Hackers — Algebra y Precalculo",min:40,text:"Genera una clase extensa en audio de 40 minutos sobre matematicas esenciales para ciberseguridad. Cubre: propiedades de exponentes y logaritmos (base para criptografia), funciones y sus graficas, sistemas de ecuaciones, introduccion a matrices. NO des formulas sin explicar el POR QUE. Usa analogias de candados, llaves y cajas fuertes. Tono: profesor que conecta matematicas con seguridad real."},
+{phase:0,title:"🎓 Clase 0.3: Pensamiento Computacional — Como Piensa una Computadora",min:35,text:"Genera una clase en audio de 35 minutos sobre pensamiento computacional. Explica: descomposicion (dividir problemas grandes), reconocimiento de patrones (ver similitudes), abstraccion (ignorar detalles irrelevantes), y diseno de algoritmos (pasos ordenados). Usa el ejemplo de preparar desayuno como algoritmo. Relaciona cada concepto con como piensa un hacker al analizar un sistema. Tono: didactico y entretenido."},
+{phase:0,title:"🎓 Clase 0.4: Linux Desde Cero — La Terminal es Tu Espada",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre Linux para principiantes. Cubre: historia de Unix/Linux, por que los hackers usan Linux, la filosofia de todo es un archivo, 25 comandos esenciales (ls, cd, pwd, cat, grep, find, chmod, chown, ps, top, kill, ssh, scp, tar, curl, wget, man, echo, mkdir, rm, cp, mv, ln, df, du). Para cada comando: que hace, cuando usarlo, ejemplo real. Tono: entusiasta, como un sensei ensenando la primera kata."},
+{phase:0,title:"🎓 Clase 0.5: Ingles Tecnico — El Idioma de la Elite Tecnologica",min:30,text:"Genera una clase en audio de 30 minutos sobre ingles tecnico para IT. Explica: por que el 95 por ciento de documentacion esta en ingles, como leer documentacion tecnica sin traductor, vocabulario esencial (server, client, request, response, authentication, authorization, encryption, decryption, vulnerability, exploit, patch, firewall, proxy, payload, handshake). Tecnica de lectura: leer en ingles, pensar en espanol. Tono: motivador, como un coach de idiomas."},
+{phase:0,title:"🎓 Clase 0.6: Filosofia del Copiloto IA — Dominar, No Depender",min:40,text:"Genera una clase extensa en audio de 40 minutos sobre el uso etico y efectivo de IA en el aprendizaje tecnico. Explica: el Rising Water Effect, por que la IA sube el piso pero el techo sube mas rapido, la diferencia entre usar IA como tutor vs usarla como sustituto del cerebro. Reglas de oro: nunca deploy sin revisar, nunca copiar sin entender, siempre poder explicar en voz alta. Casos reales: Moltbook, Enrichlead. Tono: serio pero esperanzador."},
+{phase:0,title:"🎓 Clase 0.7: Configuracion de Estacion de Trabajo — Mac + Arch Linux",min:35,text:"Genera una clase en audio de 35 minutos sobre como configurar una estacion de trabajo dual: Mac M4 para produccion y HP con Arch Linux para trinchera/labs. Explica: por que dos maquinas, como sincronizar archivos entre ellas (Git, Syncthing, o USB), instalacion de Ollama local en ambas, configuracion de VS Code con Continue.dev, y primeros pasos con Obsidian como segundo cerebro. Tono: practico, paso a paso."},
+{phase:0,title:"🎓 Clase 0.8: Git y GitHub — Tu Primer Portfolio Profesional",min:40,text:"Genera una clase extensa en audio de 40 minutos sobre Git y GitHub desde cero. Cubre: que es control de versiones, instalacion, git init, add, commit, status, log, branch, checkout, merge, push, pull, clone, gitignore, README.md profesional, GitHub Pages. Explica con analogias de guardar versiones de un libro. Tono: profesor paciente que celebra cada commit."},
+{phase:1,title:"🎓 Clase 1.1: Python Imperativo — Tu Primer Lenguaje de Poder",min:45,text:"Genera una clase magistral en audio de 45 minutos sobre Python para principiantes. Cubre: instalacion, variables, tipos de datos (int, float, str, bool, list, dict, tuple, set), operadores, input/output, condicionales (if/elif/else), bucles (for, while), funciones (def, return, parametros, args, kwargs), manejo de archivos (open, read, write), manejo de excepciones (try/except/finally). Para cada concepto: que es, sintaxis, ejemplo real, error comun. Tono: entusiasta, como un coach que celebra cada Hello World."},
+{phase:1,title:"🎓 Clase 1.2: Programacion en C — Entendiendo la Maquina",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre C. Cubre: compilacion (preprocesador, compilador, linker), tipos de datos, operadores, punteros (el concepto mas temido, explicado con analogias de direcciones postales), arrays, strings (char asterisco), estructuras (struct), memoria dinamica (malloc, free), y por que C es el lenguaje de los sistemas operativos. Relaciona con ciberseguridad: buffer overflows, memory leaks. Tono: exigente pero justo, como un sensei."},
+{phase:1,title:"🎓 Clase 1.3: Estructuras de Datos — El Armazon del Software",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre estructuras de datos. Cubre: arrays, listas enlazadas (simple, doble, circular), pilas (stacks) y colas (queues), arboles (binarios, BST, AVL), tablas hash, grafos (dirigidos, no dirigidos, ponderados). Para cada una: representacion visual, operaciones basicas, complejidad temporal Big O, y caso de uso real en ciberseguridad. Tono: arquitecto que explica los cimientos de un edificio."},
+{phase:1,title:"🎓 Clase 1.4: Algoritmos Basicos — La Logica de la Eficiencia",min:45,text:"Genera una clase en audio de 45 minutos sobre algoritmos fundamentales. Cubre: busqueda lineal y binaria, ordenamiento (bubble, selection, insertion, merge, quick sort), recursividad, complejidad Big O (O(1), O(n), O(log n), O(n cuadrado), O(n log n)). Para cada algoritmo: como funciona paso a paso, cuando usarlo, implementacion mental en Python. Tono: detective explicando como resolver un caso eficientemente."},
+{phase:1,title:"🎓 Clase 1.5: Matematicas Discretas — La Logica de la Computacion",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre matematicas discretas. Cubre: logica proposicional (AND, OR, NOT, XOR, implicacion), tablas de verdad, teoria de conjuntos, relaciones y funciones, combinatoria (permutaciones, combinaciones), teoria de grafos (caminos, ciclos, arboles, conectividad). Relaciona cada tema con ciberseguridad: criptografia, analisis de redes, deteccion de anomalias. Tono: matematico apasionado que hace las matematicas accesibles."},
+{phase:1,title:"🎓 Clase 1.6: Redes de Computadoras I — El Sistema Nervioso de Internet",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre redes. Cubre: modelo OSI (7 capas explicadas una por una con analogias), modelo TCP/IP, direccionamiento IP (IPv4, IPv6, subnetting, CIDR), protocolos (HTTP/HTTPS, DNS, DHCP, FTP, SSH, SMTP), puertos bien conocidos, NAT, firewalls basicos. Para cada capa OSI: que hace, que equipos operan ahi, que ataques son posibles. Tono: cartografo que dibuja el mapa de Internet."},
+{phase:1,title:"🎓 Clase 1.7: Prompt Engineering — Hablar con Maquinas Inteligentes",min:40,text:"Genera una clase en audio de 40 minutos sobre prompt engineering para desarrolladores. Cubre: los tres pilares (Contexto, Restriccion, Chain-of-Thought), tecnicas de zero-shot, few-shot, y role prompting, como pedir explicaciones sin que la IA de la respuesta directa, como usar IA para debugging (darle el error, no pedirle la solucion), y como usar IA para generar tests. Tono: linguista que ensena un nuevo idioma."},
+{phase:1,title:"🎓 Clase 1.8: Proyecto — Gestor de Contrasenas con Cifrado AES",min:35,text:"Genera una clase en audio de 35 minutos guiando la construccion de un gestor de contrasenas en Python. Explica: diseno de arquitectura (CLI, SQLite, cifrado), eleccion de biblioteca de cifrado (cryptography.fernet), estructura de la base de datos, menu interactivo, y por que NUNCA se debe usar IA para generar la logica de cifrado. Tono: arquitecto de software revisando planos."},
+{phase:1,title:"🎓 Clase 1.9: CS50x Semanas 1-5 — Pensando en C y Memoria",min:45,text:"Genera una clase en audio de 45 minutos resumiendo y profundizando las semanas 1-5 de CS50x. Cubre: compilacion en C, tipos de datos, condicionales, bucles, arrays, strings, criptografia basica (Caesar, Vigenere), y los fundamentos de memoria. Tono: como si fueras el profesor David J. Malan explicando en espanol para Guatemala."},
+{phase:1,title:"🎓 Clase 1.10: Git Avanzado — Flujos Profesionales",min:35,text:"Genera una clase en audio de 35 minutos sobre Git avanzado. Cubre: branching strategies (Git Flow, GitHub Flow), pull requests, code review, rebasing vs merging, stashing, cherry-picking, y resolucion de conflictos. Explica con analogias de trabajo en equipo en una obra de construccion. Tono: lider tecnico que ensena colaboracion."},
+{phase:2,title:"🎓 Clase 2.1: Nand2Tetris — Construyendo una Computadora Desde Cero",min:50,text:"Genera una clase magistral en audio de 50 minutos sobre Nand2Tetris Parte I. Cubre: compuertas logicas (NAND, NOT, AND, OR, XOR), algebra de Boole, multiplexores, demultiplexores, half-adder, full-adder, ALU (Arithmetic Logic Unit), registros, memoria RAM, contadores de programa. Para cada componente: que hace, por que existe, como se construye desde componentes mas simples. Tono: ingeniero que construye un rascacielos desde los cimientos."},
+{phase:2,title:"🎓 Clase 2.2: Assembler y VM — El Puente Entre Hardware y Software",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre Nand2Tetris Parte II. Cubre: lenguaje assembly (sintaxis, instrucciones A y C, simbolos), ensamblador (como traduce assembly a binario), maquina virtual stack-based (segmentos de memoria, stack arithmetic, acceso a memoria, branching, funciones). Tono: traductor que ensena dos idiomas simultaneamente."},
+{phase:2,title:"🎓 Clase 2.3: Sistemas Operativos — El Cerebro de la Computadora",min:55,text:"Genera una clase magistral en audio de 55 minutos sobre sistemas operativos basado en OSTEP. Cubre: procesos (creacion, estados, PCB), llamadas al sistema, mecanismos de virtualizacion de CPU (time sharing, context switch), scheduling (FIFO, SJF, RR, MLFQ), memoria virtual (paginacion, segmentacion, TLB), concurrencia (threads, locks, condition variables), y deadlocks. Para cada tema: analogia del mundo real, problema que resuelve, y conexion con ciberseguridad. Tono: neurocirujano explicando el cerebro de una computadora."},
+{phase:2,title:"🎓 Clase 2.4: SQL y Bases de Datos — El Almacen de la Informacion",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre bases de datos relacionales. Cubre: diseno relacional, normalizacion (1NF, 2NF, 3NF, BCNF), llaves primarias y foraneas, indices, transacciones ACID, SQL completo (SELECT, INSERT, UPDATE, DELETE, JOINs, GROUP BY, HAVING, subqueries), y optimizacion de queries. Relaciona con seguridad: SQL injection, least privilege en DB. Tono: bibliotecario que organiza millones de libros."},
+{phase:2,title:"🎓 Clase 2.5: Web Full Stack — La Triada de Internet",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre desarrollo web. Cubre: HTML5 semantico, CSS (selectores, box model, flexbox, grid, media queries), JavaScript (DOM manipulation, eventos, fetch API, async/await), APIs REST (metodos HTTP, status codes, JSON, autenticacion basica), y Flask (rutas, Jinja2, sesiones, formularios). Para cada tecnologia: que hace, como se conecta con las demas, y vulnerabilidades comunes. Tono: arquitecto que disena una casa con tres materiales."},
+{phase:2,title:"🎓 Clase 2.6: Seguridad Fundamentos — La Triada CIA",min:45,text:"Genera una clase en audio de 45 minutos sobre fundamentos de ciberseguridad. Cubre: Confidencialidad, Integridad, Disponibilidad (CIA), autenticacion vs autorizacion, criptografia simetrica (AES) y asimetrica (RSA), hashing (SHA-256), certificados TLS/SSL, HTTPS, threat modeling basico (STRIDE), y OWASP Top 10 introduccion. Tono: guardia de seguridad que ensena a proteger un edificio."},
+{phase:2,title:"🎓 Clase 2.7: Vibe Coding Seguro — IA Sin Comprometer Seguridad",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre desarrollo asistido por IA de manera segura. Cubre: los 6 riesgos de seguridad del codigo IA (credenciales hardcodeadas, RCE, auth rota, inyecciones, dependencias fantasmas, deuda tecnica), framework de 5 capas (aislamiento, multi-stage prompting, guardrails, TDD, human-in-the-loop), y como configurar .cursorrules. Casos reales: Moltbook, Enrichlead. Tono: auditor de seguridad que ensena a usar herramientas peligrosas con precaucion."},
+{phase:2,title:"🎓 Clase 2.8: Proyecto POS Web — Arquitectura Real",min:40,text:"Genera una clase en audio de 40 minutos guiando la construccion de un sistema POS web completo. Explica: arquitectura (frontend, backend, base de datos), autenticacion JWT, roles y permisos, logs de auditoria, y por que cada decision de seguridad importa. Tono: CTO que revisa un proyecto con un equipo junior."},
+{phase:2,title:"🎓 Clase 2.9: PostgreSQL en Produccion — Mas Alla de SQLite",min:35,text:"Genera una clase en audio de 35 minutos sobre PostgreSQL. Cubre: instalacion, psql, creacion de usuarios y bases de datos, constraints, views, stored procedures, backups (pg_dump), y conexion desde Python con psycopg2. Tono: DBA experimentado que ensena las herramientas del oficio."},
+{phase:2,title:"🎓 Clase 2.10: CS50x Semanas 6-9 — Python, SQL y Web",min:40,text:"Genera una clase en audio de 40 minutos sobre las semanas 6-9 de CS50x. Cubre: Python (sintaxis, listas, diccionarios, archivos), SQL (SQLite, SELECT, JOINs), HTML/CSS/JS basico, y Flask. Conecta cada tema con el proyecto POS. Tono: profesor universitario que hace conexiones entre materias."},
+{phase:3,title:"🎓 Clase 3.1: Algoritmos Avanzados — Programacion Dinamica y Greedy",min:50,text:"Genera una clase magistral en audio de 50 minutos sobre algoritmos avanzados. Cubre: programacion dinamica (memoizacion, tabulacion, ejemplos clasicos: fibonacci, knapsack, longest common subsequence), algoritmos greedy (activity selection, Huffman coding), divide y venceras (merge sort, quick sort, binary search), y backtracking. Para cada tecnica: cuando aplicarla, cuando NO, y complejidad. Tono: estratega militar que planea campanas de diferentes maneras."},
+{phase:3,title:"🎓 Clase 3.2: Teoria de la Computacion — Los Limites de lo Computable",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre teoria de la computacion. Cubre: automatas finitos deterministas y no deterministas, expresiones regulares, gramaticas formales (tipo 0-3), maquinas de Turing, problema de la parada, clases de complejidad P y NP, NP-completitud, y la pregunta del millon: P vs NP. Relaciona con compiladores y parsing. Tono: filosofo-matematico que explora los limites del pensamiento."},
+{phase:3,title:"🎓 Clase 3.3: Compiladores — Construyendo Hado v0.5",min:55,text:"Genera una clase magistral en audio de 55 minutos sobre compiladores, conectada directamente con el proyecto Hado. Cubre: analisis lexico (tokens, regex, lexer), analisis sintactico (gramaticas, parsers recursivos descendentes, AST), analisis semantico (scope, type checking), generacion de codigo intermedio, y optimizacion. Usa Crafting Interpreters como guia. Explica por que entender compiladores te hace mejor arquitecto de seguridad. Tono: artesano que ensena a forjar herramientas."},
+{phase:3,title:"🎓 Clase 3.4: Pentesting — El Arte del Hacking Etico",min:55,text:"Genera una clase extensa en audio de 55 minutos sobre pentesting. Cubre: metodologia (reconocimiento, escaneo, enumeracion, explotacion, post-explotacion, reporte), herramientas (nmap, dirb, gobuster, Burp Suite, Metasploit, sqlmap), tecnicas de reconocimiento pasivo y activo, escaneo de vulnerabilidades, y escritura de reportes profesionales. Enfasis en etica y legalidad. Tono: hacker etico que ensena a pensar como atacante para defender mejor."},
+{phase:3,title:"🎓 Clase 3.5: Blue Team — Defender es Mas Dificil que Atacar",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre defensa cibernetica. Cubre: SIEM (concepto, arquitectura, fuentes de logs), analisis de logs (Sysmon, Windows Event Logs, auth logs), deteccion de intrusos (IDS/IPS, reglas Snort/Suricata), hardening de sistemas (CIS Benchmarks), respuesta a incidentes (NIST framework), y threat hunting. Tono: guardian de una fortaleza que conoce cada punto debil."},
+{phase:3,title:"🎓 Clase 3.6: IA en Ciberseguridad — El Nuevo Campo de Batalla",min:45,text:"Genera una clase en audio de 45 minutos sobre el uso de IA en ciberseguridad. Cubre: deteccion de anomalias con ML, analisis de malware con IA, generacion automatica de reglas SIEM, Few-Shot Prompting para threat hunting, Adversarial Prompting para red teaming tus propios sistemas, y el futuro de la IA en SOC. Tono: cientifico que explica una nueva revolucion tecnologica."},
+{phase:3,title:"🎓 Clase 3.7: Proyecto Scanner de Vulnerabilidades — Arquitectura de Seguridad",min:40,text:"Genera una clase en audio de 40 minutos guiando la construccion de un scanner de vulnerabilidades web en Python. Explica: arquitectura del scanner (crawler, detector de payloads, reporter), deteccion de SQLi (error-based, boolean-based, time-based), deteccion de XSS (reflected, stored, DOM), y generacion de reportes HTML. Tono: arquitecto de seguridad que disena una herramienta profesional."},
+{phase:3,title:"🎓 Clase 3.8: LeetCode Estrategia — Pensando Bajo Presion",min:35,text:"Genera una clase en audio de 35 minutos sobre como resolver problemas de LeetCode efectivamente. Cubre: patrones comunes (two pointers, sliding window, BFS/DFS, DP), como leer un problema, como disenar la solucion antes de codear, y como explicar tu pensamiento en una entrevista. Tono: entrenador de deportes que prepara para la competencia."},
+{phase:3,title:"🎓 Clase 3.9: CS50x Semanas 10-12 — Proyecto Final y Beyond",min:35,text:"Genera una clase en audio de 35 minutos sobre la culminacion de CS50x. Cubre: semana 10 (proyecto final), como elegir un proyecto que impresione, como documentarlo, como presentarlo, y como usarlo como portfolio. Tono: director de tesis que celebra la graduacion."},
+{phase:3,title:"🎓 Clase 3.10: TryHackMe y VulnHub — Tu Gimnasio de Hacking",min:35,text:"Genera una clase en audio de 35 minutos sobre plataformas de practica de ciberseguridad. Cubre: como usar TryHackMe (rooms para principiantes, rutas de aprendizaje), VulnHub (maquinas para descargar y practicar localmente), OverTheWire (wargames), y como documentar cada maquina hackeada como portfolio. Tono: sensei que asigna entrenamiento diario."},
+{phase:4,title:"🎓 Clase 4.1: Patrones de Diseno — El Vocabulario de los Arquitectos",min:50,text:"Genera una clase magistral en audio de 50 minutos sobre patrones de diseno. Cubre: SOLID (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion), patrones creacionales (Factory, Singleton, Builder), estructurales (Adapter, Decorator, Facade), y de comportamiento (Observer, Strategy, Command). Para cada patron: problema que resuelve, diagrama mental, implementacion conceptual, y caso en ciberseguridad. Tono: maestro carpintero que ensena las tecnicas clasicas."},
+{phase:4,title:"🎓 Clase 4.2: Arquitectura de Software — Microservicios vs Monolitos",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre arquitectura de software. Cubre: monolitos (cuando usarlos), microservicios (beneficios, desafios, comunicacion sincrona vs asincrona), APIs RESTful (diseno, versionado, documentacion con OpenAPI), GraphQL (cuando usarlo), event-driven architecture, y CQRS. Relaciona con seguridad: surface attack, zero trust, service mesh. Tono: arquitecto que disena ciudades digitales."},
+{phase:4,title:"🎓 Clase 4.3: Sistemas Distribuidos — Consistencia en un Mundo Caotico",min:55,text:"Genera una clase magistral en audio de 55 minutos sobre sistemas distribuidos. Cubre: teorema CAP (consistencia, disponibilidad, tolerancia a particiones), replicacion (sincrona vs asincrona), sharding (estrategias, re-sharding), caching (estrategias, invalidacion), CDNs, load balancing (algoritmos, health checks), message queues (RabbitMQ, Kafka), y consenso distribuido (Raft). Para cada tema: problema real, solucion, y trade-offs. Tono: ingeniero civil que construye puentes entre continentes."},
+{phase:4,title:"🎓 Clase 4.4: Machine Learning para Seguridad — La IA que Defiende",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre ML aplicado a ciberseguridad. Cubre: regresion logistica para deteccion de intrusiones, arboles de decision para clasificacion de malware, clustering (K-means) para deteccion de anomalias en trafico de red, redes neuronales basicas (perceptron, backpropagation), y el concepto de adversarial ML. Tono: cientifico de datos que trabaja en inteligencia de seguridad."},
+{phase:4,title:"🎓 Clase 4.5: Forense Digital — El Arte de la Evidencia",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre forense digital. Cubre: adquisicion de evidencia (imagen de disco, memory dump), analisis de sistemas de archivos (NTFS, ext4), recuperacion de datos borrados, analisis de logs (Windows Event Viewer, syslog), lineas de tiempo (timelines), y cadena de custodia. Relaciona con casos legales reales. Tono: detective forense que ensena a reconstruir escenas del crimen digital."},
+{phase:4,title:"🎓 Clase 4.6: Malware Analysis — Desarmando al Enemigo",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre analisis de malware. Cubre: tipos de malware (virus, worms, trojans, ransomware, spyware, rootkits), analisis estatico (strings, hashes, PE headers, disassembly basico), analisis dinamico (sandboxing, behavior monitoring, network traffic analysis), IOCs (Indicators of Compromise), y YARA rules. Tono: epidemiologo que desarma un virus bajo el microscopio."},
+{phase:4,title:"🎓 Clase 4.7: Claude Code y Agentes — Programacion con IA Avanzada",min:45,text:"Genera una clase en audio de 45 minutos sobre el uso avanzado de Claude Code. Cubre: Plan Mode (Shift+Tab), TDD con agentes de IA, CLAUDE.md para contexto persistente, git worktrees para subagentes paralelos, patron Document & Clear para manejo de contexto, y ultrathink para problemas complejos. Tono: piloto de caza que ensena a usar el autopiloto sin perder el control."},
+{phase:4,title:"🎓 Clase 4.8: MITRE ATT&CK — El Diccionario del Adversario",min:40,text:"Genera una clase en audio de 40 minutos sobre el framework MITRE ATT&CK. Cubre: tacticas (Initial Access, Execution, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Discovery, Lateral Movement, Collection, Exfiltration, Impact), tecnicas, sub-tecnicas, procedimientos, y como usar ATT&CK para threat hunting y red teaming. Tono: estratega militar que estudia el manual del enemigo."},
+{phase:4,title:"🎓 Clase 4.9: Proyecto Final de Pregrado — Hado v1.0 o SIEM",min:40,text:"Genera una clase en audio de 40 minutos sobre como ejecutar un proyecto final de pregrado nivel tesis. Explica: eleccion de tema (Hado DSL v1.0 o SIEM para LATAM), diseno de arquitectura, metodologia de desarrollo, documentacion tecnica, tests exhaustivos, y presentacion. Tono: director de tesis que guia la ultima etapa."},
+{phase:4,title:"🎓 Clase 4.10: System Design Interviews — Disenando Bajo Presion",min:45,text:"Genera una clase en audio de 45 minutos sobre entrevistas de system design. Cubre: como abordar una pregunta de diseno (clarificar requisitos, estimar capacidad, disenar API, modelo de datos, arquitectura de alto nivel, detalles, identificar cuellos de botella), ejemplos (URL shortener, Twitter feed, WhatsApp), y como hablar de trade-offs. Tono: entrevistador senior que ensena a pensar en voz alta."},
+{phase:5,title:"🎓 Clase 5.1: Criptografia Aplicada — La Matematica de la Confianza",min:55,text:"Genera una clase magistral en audio de 55 minutos sobre criptografia moderna. Cubre: criptografia simetrica avanzada (AES modos: ECB, CBC, GCM), criptografia asimetrica (RSA: generacion de llaves, cifrado, firma digital), curvas elipticas (ECDSA, Ed25519, ventajas sobre RSA), intercambio de llaves Diffie-Hellman, TLS 1.3 handshake completo (paso a paso), zero-knowledge proofs (concepto, zk-SNARKs introduccion), y post-quantum cryptography (lattice-based, NIST standards). Para cada algoritmo: como funciona, por que es seguro, y como se rompe. Tono: criptografo que explica los secretos del universo."},
+{phase:5,title:"🎓 Clase 5.2: Seguridad de Redes Avanzada — Fortalezas Digitales",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre seguridad de redes avanzada. Cubre: firewalls de nueva generacion (pfSense, OPNsense, reglas avanzadas), IDS/IPS (Suricata, Snort, reglas custom), segmentacion de red (VLANs, microsegmentacion), zero-trust architecture (NIST 800-207), VPNs (WireGuard, IPsec, OpenVPN), SD-WAN security, y network access control (NAC). Tono: ingeniero de fortificaciones que disena defensas impenetrables."},
+{phase:5,title:"🎓 Clase 5.3: Arquitectura a Escala — Millones de Usuarios",min:55,text:"Genera una clase magistral en audio de 55 minutos sobre diseno de sistemas a escala. Cubre: sharding (estrategias, re-sharding, consistent hashing), caching (Redis, Memcached, estrategias de invalidacion), CDNs (como funcionan, edge computing), load balancing (L4 vs L7, algoritmos avanzados), circuit breakers, bulkheads, rate limiting, y database scaling (read replicas, write-heavy vs read-heavy). Caso real: disenar un sistema POS para 10,000 tiendas en LATAM. Tono: arquitecto jefe que disena rascacielos digitales."},
+{phase:5,title:"🎓 Clase 5.4: Cloud Computing y DevSecOps — La Nube Segura",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre cloud y DevSecOps. Cubre: AWS fundamentos (IAM, VPC, EC2, S3, RDS, Lambda), Azure y GCP comparativa, containers (Docker, Kubernetes: pods, services, ingress, RBAC), Infrastructure as Code (Terraform, CloudFormation), CI/CD seguro (GitHub Actions, secret scanning, SAST/DAST), y observabilidad (Prometheus, Grafana, ELK). Tono: piloto de nave espacial que conoce cada panel de control."},
+{phase:5,title:"🎓 Clase 5.5: Investigacion Tecnica — Publicando Conocimiento",min:45,text:"Genera una clase en audio de 45 minutos sobre investigacion tecnica. Cubre: como elegir un tema de investigacion, literature review (Google Scholar, arXiv, IEEE), metodologia cientifica aplicada a CS, escritura academica tecnica, peer review, publicacion en blogs vs papers, y como presentar en conferencias virtuales. Tono: investigador senior que guia a un aprendiz."},
+{phase:5,title:"🎓 Clase 5.6: Zero Trust — Nadie es Confiable",min:40,text:"Genera una clase en audio de 40 minutos sobre arquitectura Zero Trust. Cubre: principios (never trust, always verify), identidad como perimetro, microsegmentacion, least privilege, continuous verification, Zero Trust Network Access (ZTNA), y casos de implementacion en LATAM. Tono: estratega de seguridad que redisenia las defensas desde cero."},
+{phase:5,title:"🎓 Clase 5.7: Kubernetes Security — La Orquestacion Segura",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre seguridad en Kubernetes. Cubre: RBAC, network policies, pod security standards, secrets management (Vault, Sealed Secrets), image scanning (Trivy, Clair), runtime security (Falco), y supply chain security (Sigstore, SLSA). Tono: capitan de barco que asegura cada contenedor."},
+{phase:5,title:"🎓 Clase 5.8: Threat Intelligence — Conociendo al Enemigo",min:40,text:"Genera una clase en audio de 40 minutos sobre threat intelligence. Cubre: fuentes de inteligencia (OSINT, dark web, feeds comerciales), indicadores (IOCs, TTPs), frameworks (MITRE ATT&CK, Cyber Kill Chain), plataformas (MISP, OpenCTI), y como usar inteligencia para hardening proactivo. Tono: analista de inteligencia que estudia al adversario."},
+{phase:5,title:"🎓 Clase 5.9: Post-Quantum Cryptography — Preparandose para el Futuro",min:40,text:"Genera una clase en audio de 40 minutos sobre criptografia post-cuantica. Cubre: por que los ordenadores cuanticos amenazan RSA y ECC, algoritmos lattice-based (CRYSTALS-Kyber, CRYSTALS-Dilithium), hash-based signatures (SPHINCS+), NIST PQC standards, y migracion hacia PQC. Tono: profeta tecnologico que prepara para una tormenta que aun no llega."},
+{phase:5,title:"🎓 Clase 5.10: Blockchain y Smart Contracts — Seguridad Descentralizada",min:40,text:"Genera una clase en audio de 40 minutos sobre blockchain y seguridad. Cubre: fundamentos de blockchain, smart contracts, vulnerabilidades comunes (reentrancy, integer overflow, access control), auditoria de contratos, y casos de hacks famosos (The DAO, Poly Network). Tono: notario digital que verifica contratos inmutables."},
+{phase:5,title:"🎓 Clase 5.11: Red Teaming Avanzado — Simulando al Adversario",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre red teaming avanzado. Cubre: metodologia (planificacion, ejecucion, analisis), tecnicas avanzadas de movimiento lateral, pivoting, tunneling, evasion de EDR, living off the land, y reporte ejecutivo. Tono: comando especialista que entrena fuerzas de defensa."},
+{phase:5,title:"🎓 Clase 5.12: Proyecto de Maestria — Defensa Publica",min:35,text:"Genera una clase en audio de 35 minutos sobre como defender un proyecto de maestria. Explica: estructura de la defensa, como presentar resultados, como responder preguntas dificiles, y como convertir la defensa en una oportunidad de networking. Tono: decano que preside una defensa de tesis."},
+{phase:6,title:"🎓 Clase 6.1: Portfolio que Vende — GitHub como Curriculum",min:40,text:"Genera una clase en audio de 40 minutos sobre construccion de portfolio tecnico. Cubre: READMEs profesionales, documentacion de arquitectura (diagramas, decisiones tecnicas), proyectos que impresionan, contribuciones open-source, y como contar la historia de cada proyecto. Tono: reclutador tecnico que revela que realmente busca."},
+{phase:6,title:"🎓 Clase 6.2: LinkedIn para Developers — Marca Personal Tecnica",min:35,text:"Genera una clase en audio de 35 minutos sobre optimizacion de LinkedIn para developers. Cubre: headline efectiva, about section que cuenta una historia, experiencia con metricas, skills endorsement, recomendaciones, publicaciones tecnicas, y networking estrategico. Tono: marketer digital especializado en tecnologia."},
+{phase:6,title:"🎓 Clase 6.3: Entrevistas Tecnicas — Coding + System Design",min:50,text:"Genera una clase extensa en audio de 50 minutos sobre entrevistas tecnicas. Cubre: coding interviews (como pensar en voz alta, edge cases, optimizacion, testing), system design interviews (framework de 4S: Scenario, Service, Storage, Scale), behavioral interviews (STAR method), y preguntas para hacer al entrevistador. Tono: entrevistador senior que ensena a jugar el juego."},
+{phase:6,title:"🎓 Clase 6.4: Trabajo Remoto — Viviendo de la Tecnologia",min:45,text:"Genera una clase extensa en audio de 45 minutos sobre trabajo remoto en tecnologia. Cubre: donde buscar trabajos (LinkedIn, Wellfound, Turing, Toptal, Upwork), como aplicar efectivamente, negociacion salarial (investigar rangos, argumentar valor), contratos internacionales (W-8BEN, facturacion), y productividad remota. Enfocado en LATAM y presupuesto limitado. Tono: nomada digital que ensena a vivir sin fronteras."},
+{phase:6,title:"🎓 Clase 6.5: Certificaciones — Cuando y Cuales",min:40,text:"Genera una clase en audio de 40 minutos sobre estrategia de certificaciones. Cubre: roadmap de certificaciones (GitHub Foundations a LPI Linux a Security+ a AWS Cloud a eJPT a OSCP a CISSP), como estudiar para cada una con recursos gratuitos, y cuando invertir dinero en certificaciones. Tono: consejero academico que optimiza recursos."},
+{phase:6,title:"🎓 Clase 6.6: IA en el Trabajo — Ser 10x Sin Perder el Control",min:40,text:"Genera una clase en audio de 40 minutos sobre uso profesional de IA en el trabajo. Cubre: automatizacion de reportes, analisis de logs con IA, documentacion tecnica automatizada, comunicacion con equipos internacionales, y como posicionarte como alguien que domina la IA sin depender de ella. Tono: mentor que ensena a usar superpoderes con responsabilidad."},
+{phase:6,title:"🎓 Clase 6.7: Freelancing y Consultoria — Tu Propia Empresa",min:40,text:"Genera una clase en audio de 40 minutos sobre freelancing en ciberseguridad. Cubre: nichos rentables (pentesting, auditoria, compliance), como conseguir primeros clientes, pricing, contratos, y escalamiento de un freelance a una consultora. Tono: emprendedor que construyo un negocio desde cero."},
+{phase:6,title:"🎓 Clase 6.8: Continuar Aprendiendo — La Carrera es un Maraton",min:35,text:"Genera una clase final en audio de 35 minutos sobre aprendizaje continuo. Cubre: como mantenerse actualizado (newsletters, podcasts, conferencias), comunidades tecnicas, mentoria (dar y recibir), y la mentalidad de crecimiento permanente. Mensaje final: la tecnologia cambia, pero los fundamentos permanecen. Tono: mentor que despide a un aprendiz convertido en colega."}
+];
+
+function filterAudio(phase){
+  const btns=document.querySelectorAll('.audio-filter-btn');
+  btns.forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderAudio(phase);
+}
+
+function renderAudio(filterPhase){
+  const c=document.getElementById('audio-container');
+  const prompts=filterPhase==='all'?ALL_AUDIO_PROMPTS:ALL_AUDIO_PROMPTS.filter(a=>a.phase===filterPhase);
+  c.innerHTML=prompts.map((a,i)=>{
+    const globalIdx=ALL_AUDIO_PROMPTS.indexOf(a);
+    return `<div class="audio-card" data-phase="${a.phase}"><h5>🎧 ${a.title}</h5><div class="audio-meta">⏱️ ~${a.min} min · Fase ${a.phase} · Clase ${globalIdx+1}/68</div><div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:.78em;color:var(--text2);white-space:pre-wrap;max-height:120px;overflow-y:auto;margin-bottom:8px">${a.text}</div><button class="copy-btn" onclick="copyAudioPrompt(${globalIdx})">📋 Copiar Prompt</button></div>`;
+  }).join('');
+}
+
+function copyAudioPrompt(idx){
+  navigator.clipboard.writeText(ALL_AUDIO_PROMPTS[idx].text).then(()=>alert('📋 Prompt copiado'));
+}
+
+// ── Mobile Detection ──
+function detectMobile(){
+  const isMobile=window.innerWidth<=768;
+  document.getElementById('mobile-banner').style.display=isMobile?'block':'none';
+}
+window.addEventListener('resize',detectMobile);
+
+// ── Init ──
+initTracker();
+renderAudio('all');
+updatePanelStats();
+renderLog();
+updatePanelTask();
+updateSmartState();
+updateTodayTab();
+detectMobile();
+</script>
+</body>
+</html>

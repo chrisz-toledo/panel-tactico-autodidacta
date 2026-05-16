@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AEGIS v2.0 — Tutor Autónomo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--font-sans:'Inter',system-ui,-apple-system,sans-serif;--font-mono:'JetBrains Mono',monospace}
+[data-theme="dark"]{
+  --bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a1f2e;
+  --bg-chat-user:#2563eb22;--bg-chat-bot:#1e293b;
+  --text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;
+  --accent-blue:#3b82f6;--accent-green:#22c55e;--accent-gold:#f59e0b;
+  --accent-red:#ef4444;--accent-purple:#a855f7;--accent-cyan:#06b6d4;
+  --border:#1e293b;--glass:rgba(30,41,59,0.5);
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+  --glow-blue:0 0 20px rgba(59,130,246,0.15);
+  --input-bg:#0f172a;--scrollbar:#334155;
+}
+[data-theme="light"]{
+  --bg-primary:#f8fafc;--bg-secondary:#f1f5f9;--bg-card:#ffffff;
+  --bg-chat-user:#eff6ff;--bg-chat-bot:#f1f5f9;
+  --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+  --accent-blue:#2563eb;--accent-green:#16a34a;--accent-gold:#d97706;
+  --accent-red:#dc2626;--accent-purple:#9333ea;--accent-cyan:#0891b2;
+  --border:#e2e8f0;--glass:rgba(241,245,249,0.8);
+  --shadow:0 4px 24px rgba(0,0,0,0.08);
+  --glow-blue:0 0 20px rgba(37,99,235,0.08);
+  --input-bg:#ffffff;--scrollbar:#cbd5e1;
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-sans);background:var(--bg-primary);
+  color:var(--text-primary);display:flex;flex-direction:column;
+  transition:background .3s,color .3s;
+}
+
+
+/* ── MAIN LAYOUT (DASHBOARD + CHAT) ────────────── */
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+}
+
+.dashboard-area {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chat-sidebar {
+  width: 400px;
+  border-left: 1px solid var(--border);
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.chat-sidebar.hidden {
+  display: none;
+}
+
+/* ── DASHBOARD WIDGETS ─────────────────────────── */
+.widget {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.widget-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── VECTOR GRID ───────────────────────────────── */
+.vector-grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.vector-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: all 0.2s;
+}
+.vector-dot.done {
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(34,197,94,0.4);
+}
+.vector-dot.current {
+  background: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(6,182,212,0.6);
+  animation: pulseDot 1.5s infinite;
+}
+@keyframes pulseDot {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── HEADER ────────────────────────────────────── */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;background:var(--bg-secondary);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+  backdrop-filter:blur(12px);z-index:10;
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{
+  font-size:18px;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.logo-sub{font-size:11px;color:var(--text-muted);font-weight:500}
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;
+  background:var(--glass);border:1px solid var(--border);
+}
+.badge-xp{color:var(--accent-gold)}
+.badge-streak{color:var(--accent-green)}
+.header-right{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  background:none;border:1px solid var(--border);border-radius:8px;
+  color:var(--text-secondary);cursor:pointer;padding:6px 8px;font-size:16px;
+  transition:all .2s;
+}
+.icon-btn:hover{background:var(--glass);color:var(--text-primary);transform:scale(1.05)}
+
+/* ── CHAT AREA ─────────────────────────────────── */
+.chat-container{
+  flex:1;display:flex;flex-direction:column;
+  max-width:800px;width:100%;margin:0 auto;
+  overflow:hidden;
+}
+.chat-messages{
+  flex:1;overflow-y:auto;padding:20px 16px;
+  display:flex;flex-direction:column;gap:12px;
+  scroll-behavior:smooth;
+}
+.chat-messages::-webkit-scrollbar{width:6px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:3px}
+
+/* ── MESSAGE BUBBLES ───────────────────────────── */
+.msg{display:flex;gap:10px;max-width:92%;animation:msgIn .35s ease}
+.msg-bot{align-self:flex-start}
+.msg-user{align-self:flex-end;flex-direction:row-reverse}
+.msg-avatar{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;background:var(--glass);border:1px solid var(--border);
+}
+.msg-user .msg-avatar{background:var(--accent-blue);border-color:var(--accent-blue);font-size:14px;color:#fff}
+.msg-bubble{
+  padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6;
+  position:relative;word-wrap:break-word;
+}
+.msg-bot .msg-bubble{
+  background:var(--bg-chat-bot);border:1px solid var(--border);
+  border-top-left-radius:4px;
+}
+.msg-user .msg-bubble{
+  background:var(--accent-blue);color:#fff;
+  border-top-right-radius:4px;border:none;
+}
+.msg-bubble a{color:var(--accent-cyan);text-decoration:none;font-weight:600}
+.msg-bubble a:hover{text-decoration:underline}
+.msg-time{font-size:10px;color:var(--text-muted);margin-top:4px}
+@keyframes msgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SPECIAL CARDS (inside bubbles) ────────────── */
+.card-inline{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:14px;margin-top:10px;
+}
+.card-inline h4{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--accent-cyan)}
+.card-inline p{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.task-badge{
+  display:inline-block;padding:3px 8px;border-radius:6px;
+  font-size:11px;font-weight:600;margin-right:6px;margin-bottom:4px;
+}
+.task-theory{background:rgba(59,130,246,0.15);color:var(--accent-blue)}
+.task-practice{background:rgba(34,197,94,0.15);color:var(--accent-green)}
+.task-project{background:rgba(245,158,11,0.15);color:var(--accent-gold)}
+.task-review{background:rgba(168,85,247,0.15);color:var(--accent-purple)}
+.task-rest{background:rgba(100,116,139,0.15);color:var(--text-muted)}
+
+/* ── POMODORO INLINE ───────────────────────────── */
+.pomo-inline{
+  display:flex;align-items:center;gap:16px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:16px;margin-top:10px;
+}
+.pomo-ring{position:relative;width:72px;height:72px;flex-shrink:0}
+.pomo-ring svg{transform:rotate(-90deg);width:72px;height:72px}
+.pomo-ring circle{fill:none;stroke-width:4;stroke-linecap:round}
+.pomo-ring .track{stroke:var(--border)}
+.pomo-ring .fill{stroke:var(--accent-blue);transition:stroke-dashoffset 1s linear}
+.pomo-time{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:var(--font-mono);font-size:16px;font-weight:700;
+}
+.pomo-info{flex:1}
+.pomo-label{font-size:13px;font-weight:700;margin-bottom:2px}
+.pomo-sub{font-size:11px;color:var(--text-secondary)}
+.pomo-controls{display:flex;gap:6px;margin-top:8px}
+
+/* ── BUTTONS ───────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;
+  border:none;cursor:pointer;transition:all .2s;font-family:var(--font-sans);
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--accent-blue);color:#fff}
+.btn-primary:hover{background:#2563eb;box-shadow:var(--glow-blue)}
+.btn-success{background:var(--accent-green);color:#fff}
+.btn-success:hover{background:#16a34a}
+.btn-secondary{background:var(--glass);color:var(--text-primary);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg-card)}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+.btn-lg{padding:12px 24px;font-size:15px;border-radius:12px}
+
+/* ── QUICK ACTIONS ─────────────────────────────── */
+.quick-actions{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;
+}
+.quick-btn{
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;
+  background:var(--glass);border:1px solid var(--border);
+  color:var(--text-secondary);cursor:pointer;transition:all .2s;
+}
+.quick-btn:hover{color:var(--accent-cyan);border-color:var(--accent-cyan);background:rgba(6,182,212,0.08)}
+
+/* ── INPUT BAR ─────────────────────────────────── */
+.chat-input-bar{
+  padding:12px 16px;background:var(--bg-secondary);
+  border-top:1px solid var(--border);flex-shrink:0;
+}
+.chat-input-wrap{
+  display:flex;gap:8px;max-width:800px;margin:0 auto;
+}
+.chat-input{
+  flex:1;padding:12px 16px;border-radius:12px;font-size:14px;
+  background:var(--input-bg);border:1px solid var(--border);
+  color:var(--text-primary);font-family:var(--font-sans);
+  outline:none;transition:border-color .2s;
+}
+.chat-input:focus{border-color:var(--accent-blue)}
+.chat-input::placeholder{color:var(--text-muted)}
+.send-btn{
+  width:44px;height:44px;border-radius:12px;border:none;
+  background:var(--accent-blue);color:#fff;font-size:18px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.send-btn:hover{background:#2563eb;transform:scale(1.05)}
+
+/* ── TOAST ─────────────────────────────────────── */
+.toast-container{position:fixed;top:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{
+  padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;
+  color:#fff;animation:toastIn .3s ease;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+}
+.toast-success{background:var(--accent-green)}
+.toast-info{background:var(--accent-blue)}
+.toast-gold{background:linear-gradient(135deg,#f59e0b,#d97706)}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── RESPONSIVE ────────────────────────────────── */
+@media(max-width:600px){
+  .header{padding:10px 14px}
+  .logo{font-size:15px}
+  .badge{font-size:11px;padding:3px 8px}
+  .chat-messages{padding:14px 10px}
+  .msg{max-width:96%}
+  .msg-bubble{padding:10px 14px;font-size:13px}
+  .pomo-inline{flex-direction:column;text-align:center}
+  .quick-actions{justify-content:center}
+}
+
+@keyframes msgFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.msg { animation: msgFadeIn 0.3s ease-out forwards; }
+
+@keyframes typing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.typing-dot {
+  display: inline-block; width: 6px; height: 6px; background: var(--text-muted);
+  border-radius: 50%; margin: 0 2px;
+}
+.typing-dot:nth-child(1) { animation: typing 1s infinite 0s; }
+.typing-dot:nth-child(2) { animation: typing 1s infinite 0.2s; }
+.typing-dot:nth-child(3) { animation: typing 1s infinite 0.4s; }
+
+@keyframes badgeBounce {
+  0% { transform: scale(0.5); filter: brightness(1); }
+  50% { transform: scale(1.1); filter: brightness(1.5); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+.badge-anim { animation: badgeBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; color: gold; display:inline-block; }
+
+@keyframes pulseBtn {
+  0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+}
+.btn-primary { animation: pulseBtn 2s infinite; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div>
+      <div class="logo">AEGIS</div>
+      <div class="logo-sub">v2.0 — Tutor Autónomo</div>
+    </div>
+    <span class="badge badge-xp" id="badge-xp">⚡ 0 XP</span>
+    <span class="badge badge-streak" id="badge-streak">🔥 0 días</span>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn" onclick="toggleChat()" title="Chat AI">💬</button>
+      <button class="icon-btn" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+    <button class="icon-btn" onclick="exportData()" title="Exportar datos">📤</button>
+  </div>
+</header>
+
+<!-- CHAT -->
+
+<div class="main-layout">
+  <!-- DASHBOARD AREA -->
+  <div class="dashboard-area" id="dashboard">
+    <div class="widget">
+      <div class="widget-title">🌐 Vector Grid (Fases 0-7) <span id="dashPhaseInfo"></span></div>
+      <div class="vector-grid-container" id="vectorGrid"></div>
+    </div>
+    
+    <div style="display:flex; gap:20px;">
+      <div class="widget" style="flex:1;">
+        <div class="widget-title">📋 Misión Actual</div>
+        <div id="dashTodayTask"></div>
+        <div class="widget-title" style="margin-top:20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:10px;">🏅 Logros Tácticos</div>
+        <div id="dashTrophies" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;"></div>
+      </div>
+      <div class="widget" style="width:300px; text-align:center;">
+        <div class="widget-title">⏱️ Reloj Táctico</div>
+        <div id="dashPomodoro">
+          <div class="pomo-ring" style="width:120px; height:120px; margin:0 auto;">
+            <svg><circle class="track" cx="60" cy="60" r="54"></circle><circle class="fill" cx="60" cy="60" r="54" id="dashPomoFill" stroke-dasharray="339.29" stroke-dashoffset="0"></circle></svg>
+            <div class="pomo-time" id="dashPomoTime" style="font-size:24px;">25:00</div>
+          </div>
+          <p id="dashPomoState" style="margin-top:10px; font-weight:bold; color:var(--text-secondary);">ESPERANDO INICIO</p>
+          <div style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
+            <button class="btn btn-primary" onclick="processInput('iniciar')" id="dashBtnStart">▶ Iniciar</button>
+            <button class="btn btn-secondary" onclick="processInput('detener')">⏹ Detener</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXTERNAL INTELLIGENCE WIDGET -->
+    <div class="widget" style="margin-top: 20px;">
+      <div class="widget-title">🧠 Generadores de Inteligencia (Offline)</div>
+      <div style="display:flex; gap:10px; margin-bottom: 15px;">
+        <button class="btn" style="background:var(--accent-purple); color:white;" onclick="generateDashPrompt('gemini')">✨ Prompt Copiloto (Gemini)</button>
+        <button class="btn" style="background:var(--accent-gold); color:white;" onclick="generateDashPrompt('notebooklm')">🎧 Prompt Audio (NotebookLM)</button>
+      </div>
+      <textarea id="dashPromptOutput" class="panel-input" style="width:100%; height:120px; background:var(--input-bg); color:var(--text-primary); border:1px solid var(--border); border-radius:8px; padding:10px; display:none;" readonly></textarea>
+      <button id="dashCopyBtn" class="btn btn-secondary" style="margin-top:10px; display:none;" onclick="copyDashPrompt()">📋 Copiar al Portapapeles</button>
+    </div>
+
+    <!-- CONTROL TÁCTICO WIDGET -->
+    <div class="widget" style="margin-top: 20px;">
+      <div class="widget-title">⚙️ Control Táctico & Navegación</div>
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <button class="btn btn-secondary" onclick="dashShowProgress()">📊 Ver Progreso Global</button>
+        <button class="btn btn-secondary" onclick="dashShowPhases()">🗺️ Mapa de Fases</button>
+        <button class="btn btn-secondary" style="background:var(--accent-red); color:white;" onclick="dashResetPhase()">🔄 Reset de Fase Actual</button>
+        <button class="btn btn-secondary" style="background:var(--accent-green); color:white;" onclick="dashForceType('practice')">🛠️ Forzar Práctica</button>
+        <button class="btn btn-secondary" style="background:var(--accent-purple); color:white;" onclick="dashForceType('review')">🔄 Forzar Repaso</button>
+      </div>
+    </div>
+
+  </div>
+
+  
+    <!-- KNOWLEDGE LIBRARY WIDGET -->
+    <div class="widget" style="margin-top: 20px;">
+      <div class="widget-title">📚 Librería de Inteligencia (Fuentes NotebookLM)</div>
+      
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:10px; font-size:13px;">
+        <!-- Core & Math -->
+        <a href="https://cs50.harvard.edu/x/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🎓 Harvard CS50x</a>
+        <a href="https://es.khanacademy.org/math" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">📐 Khan Academy Math</a>
+        <a href="https://openstax.org/details/books/algebra-and-trigonometry" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">📖 OpenStax Algebra</a>
+        
+        <!-- Systems & Architecture -->
+        <a href="https://www.nand2tetris.org/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">⚙️ Nand2Tetris</a>
+        <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🖥️ OSTEP (OS)</a>
+        <a href="https://craftinginterpreters.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🛠️ Crafting Interpreters</a>
+        <a href="https://www.designingdataintensiveapplications.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🏗️ DDIA (System Design)</a>
+        
+        <!-- Cyber Security -->
+        <a href="https://portswigger.net/web-security" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">☠️ PortSwigger (Red Team)</a>
+        <a href="https://wazuh.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🛡️ Wazuh SIEM</a>
+        <a href="https://tryhackme.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">💻 TryHackMe</a>
+        <a href="https://attack.mitre.org/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🗺️ MITRE ATT&CK</a>
+        <a href="https://crypto.stanford.edu/~dabo/cryptobook/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🔐 Criptografía (Boneh)</a>
+        
+        <!-- AI, Cloud & Career -->
+        <a href="https://huggingface.co/learn/nlp-course/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🤖 Hugging Face (IA)</a>
+        <a href="https://aws.amazon.com/training/digital/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">☁️ AWS Skill Builder</a>
+        <a href="https://pramp.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">💼 Pramp (Mock Interviews)</a>
+        <a href="https://linuxjourney.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🐧 Linux Journey</a>
+        <a href="https://sqlbolt.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🗄️ SQLBolt</a>
+        <a href="https://refactoring.guru/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🧩 Refactoring Guru</a>
+
+        <!-- Elite Advanced -->
+        <a href="https://12factor.net/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🌐 The 12-Factor App</a>
+        <a href="https://visualgo.net/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🧠 VisuAlgo</a>
+        <a href="https://beej.us/guide/bgnet/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🔌 Beej's Guide (Redes C)</a>
+        <a href="https://wiki.archlinux.org/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🐧 Arch Linux Wiki</a>
+        <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🤖 Anthropic Prompt Eng</a>
+
+        <!-- Elite Interactive Platforms -->
+        <a href="https://roadmap.sh" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🗺️ Roadmap.sh</a>
+        <a href="https://github.com/donnemartin/system-design-primer" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🏛️ System Design Primer</a>
+        <a href="https://academy.hackthebox.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🎯 HackTheBox Academy</a>
+        <a href="https://fullstackdeeplearning.com/" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start;">🧠 Full Stack Deep Learning</a>
+      </div>
+      
+      <div class="widget-title" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">📖 Libros Maestros (Enlaces Activos)</div>
+      <div style="font-size: 11px; color: #4ade80; margin-bottom: 8px;">Haz clic para descargar los PDFs y luego arrástralos a NotebookLM:</div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:10px; font-size:13px;">
+        <a href="https://github.com/RavinRau/Ebooks/raw/main/Software%20Engineering%20Principle/The%20Pragmatic%20Programmer%20Your%20Journey%20to%20Mastery,%2020th%20Anniversary%20Edition%20by%20Andrew%20Hunt%20David%20Hurst%20Thomas.pdf" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start; border-left: 3px solid #4ade80;">📘 The Pragmatic Programmer</a>
+        <a href="https://github.com/ropalma/ICMC-USP/raw/master/Book%20-%20Clean%20Architecture%20-%20Robert%20Cecil%20Martin.pdf" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start; border-left: 3px solid #4ade80;">📐 Clean Architecture</a>
+        <a href="https://theswissbay.ch/pdf/Gentoomen%20Library/Programming/Misc/Charles%20Petzold%20-%20Code%20-%20The%20Hidden%20Language%20of%20Computer%20Hardware%20and%20Software.pdf" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start; border-left: 3px solid #4ade80;">⚡ Code (Charles Petzold)</a>
+        <a href="https://github.com/ninosplit/books/raw/master/Grokking%20Algorithms.pdf" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start; border-left: 3px solid #4ade80;">🧩 Grokking Algorithms</a>
+        <a href="https://www.kea.nu/files/textbooks/humblepy/blackhatpython.pdf" target="_blank" class="btn btn-secondary" style="text-align:left; justify-content:flex-start; border-left: 3px solid #4ade80;">🐍 Black Hat Python</a>
+      </div>
+    </div>
+
+  <!-- CHAT SIDEBAR -->
+  <div class="chat-sidebar hidden" id="chatSidebar">
+    <div class="chat-container">
+  <div class="chat-messages" id="chat"></div>
+</div>
+
+<!-- INPUT BAR -->
+<div class="chat-input-bar">
+  <div class="chat-input-wrap">
+    <input type="text" class="chat-input" id="user-input" placeholder="Escribe un mensaje o comando..." autocomplete="off">
+    <button class="send-btn" onclick="sendMessage()" title="Enviar">➤</button>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+<script>
+// ══════════════════════════════════════════════════════════
+// AEGIS v2.0 — DATA LAYER
+// ══════════════════════════════════════════════════════════
+
+const START_DATE = '2026-01-05'; // Monday — Day 0
+
+// ── CURRICULUM: 8 phases, 10 years ──────────────────────
+const PHASES = [
+  {id:0,name:"Fundamentos Absolutos",weeks:12,
+   courses:["CS50x 2026 (Harvard)","CS50P — Python","Linux Journey","Khan Academy Álgebra"],
+   projects:["Mi primer sitio HTML/CSS","CLI calculator en Python","Script de automatización Bash","Portfolio personal v1"],
+   resources:["https://cs50.harvard.edu/x/","https://cs50.harvard.edu/python/","https://linuxjourney.com/","https://es.khanacademy.org/math/algebra"],
+   daily:{
+     theory:"Leer documentación oficial o ver lecture del curso principal. Tomar notas en Obsidian.",
+     practice:"Resolver 5-10 ejercicios del Problem Set actual o del lab correspondiente.",
+     project:"Avanzar en el proyecto de la semana. Commit al repo de GitHub.",
+     review:"Repasar notas de la semana. Hacer flashcards. Revisar ejercicios fallidos.",
+     rest:"Día libre. Practica CodeCombat si quieres, o descansa completamente."
+   }},
+  {id:1,name:"Programación Intermedia",weeks:16,
+   courses:["CS50W — Web Programming","Think Python 2e","Nand2Tetris Part 1","MIT 6.042J — Math for CS"],
+   projects:["Blog con Flask","Juego en Python (Pygame)","Computadora virtual Nand2Tetris","API REST con FastAPI"],
+   resources:["https://cs50.harvard.edu/web/","https://greenteapress.com/wp/think-python-2e/","https://www.nand2tetris.org/","https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/"],
+   daily:{
+     theory:"Estudiar el capítulo correspondiente. Hacer diagramas de los conceptos clave.",
+     practice:"Implementar el código del capítulo. Resolver exercises y challenges.",
+     project:"Diseñar, implementar y testear una feature nueva del proyecto semanal.",
+     review:"Code review de tu propio código. Refactorizar. Documentar.",
+     rest:"Descanso o práctica libre en CodeCombat."
+   }},
+  {id:2,name:"Estructuras de Datos y Algoritmos",weeks:20,
+   courses:["OSSU — Algorithms Part 1","Nand2Tetris Part 2","MIT 18.06 — Linear Algebra","LeetCode Easy/Medium"],
+   projects:["Implementar 10 data structures","Compilador básico","Visualizador de algoritmos","Bot de Discord"],
+   resources:["https://github.com/ossu/computer-science","https://www.nand2tetris.org/","https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/"],
+   daily:{
+     theory:"Estudiar el algoritmo o estructura del día. Dibujar diagramas paso a paso.",
+     practice:"Resolver 3 problemas de LeetCode del tema actual.",
+     project:"Construir la implementación propia de la estructura o el proyecto final.",
+     review:"Revisar soluciones alternativas. Analizar complejidad O(n).",
+     rest:"Descanso o CodeCombat."
+   }},
+  {id:3,name:"Ciberseguridad Básica",weeks:20,
+   courses:["OverTheWire Bandit","TryHackMe Pre-Security","OWASP Top 10","PortSwigger Web Security Academy"],
+   projects:["Resolver Bandit completo","Completar Pre-Security Path","Lab de inyección SQL","Escáner de puertos propio"],
+   resources:["https://overthewire.org/wargames/bandit/","https://tryhackme.com/path/outline/presecurity","https://owasp.org/www-project-top-ten/","https://portswigger.net/web-security"],
+   daily:{
+     theory:"Leer sobre la vulnerabilidad del día. Entender el vector de ataque.",
+     practice:"Resolver niveles del wargame o labs prácticos correspondientes.",
+     project:"Construir herramienta de seguridad o documentar un writeup completo.",
+     review:"Revisar writeups de otros. Actualizar notas de seguridad.",
+     rest:"Descanso o CTF casual."
+   }},
+  {id:4,name:"Ciberseguridad Avanzada",weeks:24,
+   courses:["TryHackMe SOC Level 1","Hack The Box Starting Point","CS50 Cybersecurity","NIST Framework"],
+   projects:["Completar SOC path","10 máquinas HTB resueltas","Sistema de detección de intrusiones","Informe de auditoría de seguridad"],
+   resources:["https://tryhackme.com/path/outline/soclevel1","https://www.hackthebox.com/starting-point","https://cs50.harvard.edu/cybersecurity/"],
+   daily:{
+     theory:"Estudiar técnicas de defensa, forense digital o análisis de malware.",
+     practice:"Resolver máquinas HTB o rooms de TryHackMe.",
+     project:"Avanzar en el proyecto de seguridad de la semana.",
+     review:"Documentar hallazgos. Actualizar playbook de respuesta.",
+     rest:"Descanso o Bug Bounty casual."
+   }},
+  {id:5,name:"IA & Machine Learning",weeks:28,
+   courses:["fast.ai Practical Deep Learning","Stanford CS229","Hugging Face NLP Course","Made With ML"],
+   projects:["Clasificador de imágenes","Chatbot con RAG","Fine-tune de modelo LLM","Agente autónomo con LangChain"],
+   resources:["https://www.fast.ai/","https://cs229.stanford.edu/","https://huggingface.co/learn/nlp-course/"],
+   daily:{
+     theory:"Ver lecture/leer capítulo. Tomar notas de fórmulas y conceptos.",
+     practice:"Implementar el modelo del día en un notebook Jupyter.",
+     project:"Entrenar, evaluar y mejorar tu modelo de la semana.",
+     review:"Leer paper relacionado. Comparar resultados. Optimizar hiperparámetros.",
+     rest:"Descanso o explorar modelos en Hugging Face."
+   }},
+  {id:6,name:"Especialización y Open Source",weeks:32,
+   courses:["Advanced ML (deeplearning.ai)","Bug Bounty Platforms","Open Source Contribution Guide","System Design"],
+   projects:["Contribuir a 3 repos open source","Encontrar 5 vulnerabilidades reales","Crear una librería pública","Publicar paper o blog técnico"],
+   resources:["https://www.deeplearning.ai/","https://www.hackerone.com/","https://opensource.guide/"],
+   daily:{
+     theory:"Investigar el tema avanzado. Leer papers o documentación de la librería.",
+     practice:"Implementar proof-of-concept o resolver challenge avanzado.",
+     project:"Contribuir al proyecto open source o avanzar en investigación.",
+     review:"Peer review, testing, documentación técnica.",
+     rest:"Networking, conferencias online, o descanso."
+   }},
+  {id:7,name:"Maestría y Liderazgo Técnico",weeks:36,
+   courses:["Research Papers (arXiv)","Mentoría y Teaching","Publicación Académica","Portfolio Profesional Final"],
+   projects:["Crear curso online propio","Publicar investigación","Mentorear a 3 personas","Portfolio final de élite"],
+   resources:["https://arxiv.org/list/cs/recent","https://www.coursera.org/teach"],
+   daily:{
+     theory:"Leer los últimos papers del campo. Identificar tendencias.",
+     practice:"Implementar ideas de los papers. Experimentar con arquitecturas.",
+     project:"Crear contenido educativo o avanzar en publicación.",
+     review:"Revisar trabajo de mentees. Actualizar portfolio.",
+     rest:"Reflexión, planificación estratégica, o descanso."
+   }}
+];
+
+// ── PLAYLISTS ───────────────────────────────────────────
+const PLAYLISTS = {
+  deep_focus:{name:"Deep Focus",icon:"🧠",best_for:"Programación intensa",
+    science:"40Hz gamma entrainment mejora la memoria de trabajo y concentración sostenida.",
+    tracks:[
+      {name:"Lofi Hip Hop Radio — beats to study to",url:"https://www.youtube.com/watch?v=jfKfPfyJRdk"},
+      {name:"Brain.fm Focus — Neural Phase Locking",url:"https://www.brain.fm/"},
+      {name:"Deep Focus Playlist — Spotify",url:"https://open.spotify.com/playlist/37i9dQZF1DWZeKCadgRdKQ"}
+    ]},
+  creative:{name:"Creative Mode",icon:"🎨",best_for:"Diseño y brainstorming",
+    science:"Ondas alpha (8-12Hz) facilitan pensamiento divergente y creatividad.",
+    tracks:[
+      {name:"Chill Vibes — Spotify",url:"https://open.spotify.com/playlist/37i9dQZF1DX889U0CL85jj"},
+      {name:"Ambient Worlds — YouTube",url:"https://www.youtube.com/watch?v=hFcLyDb6niA"}
+    ]},
+  high_energy:{name:"High Energy",icon:"⚡",best_for:"Sprints de código y debugging",
+    science:"Música 130+ BPM eleva dopamina y norepinefrina para tareas repetitivas.",
+    tracks:[
+      {name:"Power Gaming Playlist — Spotify",url:"https://open.spotify.com/playlist/37i9dQZF1DWTyiBJ6yEqeu"},
+      {name:"Synthwave Retro — YouTube",url:"https://www.youtube.com/watch?v=4xDzrJKXOOY"}
+    ]},
+  recovery:{name:"Recovery Mode",icon:"🌿",best_for:"Post-estudio y relajación",
+    science:"Música a 60 BPM sincroniza con el ritmo cardíaco en reposo, reduce cortisol 30%.",
+    tracks:[
+      {name:"Peaceful Piano — Spotify",url:"https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO"},
+      {name:"Nature Sounds — YouTube",url:"https://www.youtube.com/watch?v=eKFTSSKCzWA"}
+    ]}
+};
+
+// ── COUNCIL OF MASTERS ──────────────────────────────────
+const MASTERS = [
+  {name:"Alan Turing",icon:"🧠",wisdom:"A veces son las personas de quienes nadie espera nada las que hacen las cosas que nadie puede imaginar."},
+  {name:"Grace Hopper",icon:"⚓",wisdom:"La frase más peligrosa del idioma es: 'Siempre lo hemos hecho así'."},
+  {name:"Ada Lovelace",icon:"✨",wisdom:"La máquina puede hacer lo que sepamos ordenarle que haga. El desafío es aprender a ordenar."},
+  {name:"Linus Torvalds",icon:"🐧",wisdom:"Talk is cheap. Show me the code."},
+  {name:"Donald Knuth",icon:"📖",wisdom:"La optimización prematura es la raíz de todos los males en programación."},
+  {name:"Barbara Liskov",icon:"🏛️",wisdom:"La abstracción es la herramienta más poderosa contra la complejidad."},
+  {name:"Dijkstra",icon:"🗺️",wisdom:"La simplicidad es prerequisito de la fiabilidad."},
+  {name:"John Carmack",icon:"🎮",wisdom:"Si quieres algo que nunca has tenido, haz algo que nunca has hecho. Itera más rápido."},
+  {name:"Margaret Hamilton",icon:"🚀",wisdom:"No había opción de fallar. Construimos el software para que fuera infalible."},
+  {name:"Satoshi Nakamoto",icon:"₿",wisdom:"Si no crees o no lo entiendes, no tengo tiempo para convencerte, lo siento."}
+];
+
+// ── STATE ───────────────────────────────────────────────
+const DEFAULT_STATE = {
+  xp:0,streak:0,max_streak:0,total_days:0,total_minutes:0,
+  sessions:[],last_study_date:null,energy:3,
+  pomodoros_today:0,pomodoro_minutes_today:0,
+  current_phase:0,achievements:[]
+, conceptMastery:{}, fatigueRisk:0, motivationLevel:0.5, consecutive_bad_sessions:0, chatHistory:[], userName:null, soundEnabled:true};
+let STATE = JSON.parse(localStorage.getItem('aegis_v2_state')||'null')||{...DEFAULT_STATE};
+
+function save(){
+  if(STATE.chatHistory && STATE.chatHistory.length > 50) STATE.chatHistory = STATE.chatHistory.slice(-50);
+  localStorage.setItem('aegis_v2_state',JSON.stringify(STATE));
+}
+</script>
+<script>
+// ══════════════════════════════════════════════════════════
+// AEGIS v2.0 — CORE ENGINE (getTodayTask + Pomodoro + Chat)
+// ══════════════════════════════════════════════════════════
+
+// ── getTodayTask() ──────────────────────────────────────
+function getTodayTask(){
+  const start = new Date(START_DATE);
+  const today = new Date();
+  today.setHours(0,0,0,0); start.setHours(0,0,0,0);
+  const diffDays = Math.floor((today - start) / 86400000);
+  if(diffDays < 0) return {phase:PHASES[0],week:0,dayOfWeek:today.getDay(),dayNum:0,type:'rest',
+    title:'El plan aún no comienza',detail:'Tu fecha de inicio es el '+START_DATE+'. ¡Prepárate!',course:'',resources:[]};
+
+  // Calculate phase and week
+  let totalWeeks = Math.floor(diffDays / 7);
+  let phase = PHASES[0], weekInPhase = 0, accumulated = 0;
+  for(const p of PHASES){
+    if(totalWeeks < accumulated + p.weeks){
+      phase = p;
+      weekInPhase = totalWeeks - accumulated;
+      break;
+    }
+    accumulated += p.weeks;
+    if(p.id === 7){ phase = PHASES[7]; weekInPhase = totalWeeks - accumulated; break; }
+  }
+
+  const dow = today.getDay(); // 0=Sun, 1=Mon...
+  const courseIdx = weekInPhase % phase.courses.length;
+  const projectIdx = Math.floor(weekInPhase / 4) % phase.projects.length;
+  const course = phase.courses[courseIdx];
+  const project = phase.projects[projectIdx];
+
+  // Day type based on day of week
+  let type, typeBadge, typeLabel, detail;
+  switch(dow){
+    case 1: case 3: // Mon, Wed → theory
+      type='theory'; typeBadge='task-theory'; typeLabel='📘 Teoría';
+      detail=phase.daily.theory;
+      break;
+    case 2: case 4: // Tue, Thu → practice
+      type='practice'; typeBadge='task-practice'; typeLabel='💪 Práctica';
+      detail=phase.daily.practice;
+      break;
+    case 5: // Fri → project
+      type='project'; typeBadge='task-project'; typeLabel='🔨 Proyecto';
+      detail=phase.daily.project + ' Proyecto actual: ' + project;
+      break;
+    case 6: // Sat → review
+      type='review'; typeBadge='task-review'; typeLabel='🔄 Repaso/Élite';
+      detail=phase.daily.review;
+      break;
+    default: // Sun → rest
+      type='rest'; typeBadge='task-rest'; typeLabel='🌿 Descanso';
+      detail=phase.daily.rest;
+  }
+  
+  const monthNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const dayNames = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const exactDesc = `Hoy, ${dayNames[dow].toLowerCase()}, ${today.getDate()} de ${monthNames[today.getMonth()]} de ${today.getFullYear()}. Fase ${phase.id}, Semana ${weekInPhase+1}, Día ${dow}. ${course||'Actividad General'} — ${typeLabel}: ${detail}`;
+
+
+
+
+  return {
+    phase, week:weekInPhase+1, dayOfWeek:dow, dayNum:diffDays+1,
+    type, typeBadge, typeLabel,
+    title:`Fase ${phase.id}: ${phase.name} — Semana ${weekInPhase+1}, ${dayNames[dow]}`,
+    detail, course, project, exactDesc,
+    resources:phase.resources||[]
+  };
+}
+
+
+// ── CALIBRATION ENGINE ──────────────────────────────────
+const CalibrationEngine = {
+  processSession: function(sessionData) {
+    const { concept, score, effortRating } = sessionData;
+    
+    if (!STATE.conceptMastery) STATE.conceptMastery = {};
+    const currentMastery = STATE.conceptMastery[concept] || 0.1;
+    const expectedScore = currentMastery * 10;
+    const actualScore = score;
+    const kFactor = 0.15;
+    
+    const newMastery = Math.min(1.0, Math.max(0.0, currentMastery + kFactor * (actualScore - expectedScore) / 10));
+    STATE.conceptMastery[concept] = newMastery;
+    
+    if (score < 5 && effortRating > 3) {
+      STATE.consecutive_bad_sessions = (STATE.consecutive_bad_sessions || 0) + 1;
+    } else {
+      STATE.consecutive_bad_sessions = 0;
+    }
+    STATE.fatigueRisk = Math.min(1.0, ((STATE.consecutive_bad_sessions||0) * 0.3));
+    
+    STATE.motivationLevel = STATE.motivationLevel || 0.5;
+    if (score > 8) STATE.motivationLevel = Math.min(1.0, STATE.motivationLevel + 0.1);
+    else if (effortRating < 3) STATE.motivationLevel = Math.max(0.0, STATE.motivationLevel - 0.1);
+    
+    return {
+      mastery: newMastery,
+      fatigue: STATE.fatigueRisk,
+      motivation: STATE.motivationLevel
+    };
+  }
+};
+
+// ── PSYCHOLOGY ENGINE ───────────────────────────────────
+const PsychologyEngine = {
+  generateFeedback: function(sessionScore, effortRating, fatigueRisk) {
+    let message = "";
+    if (sessionScore >= 8) {
+      message = "¡Rendimiento sobresaliente! Estás dominando este tema.";
+    } else if (sessionScore >= 5) {
+      message = "Buen progreso. El aprendizaje constante construye la maestría.";
+    } else {
+      message = "Sesión desafiante. Está bien, es parte del proceso de aprendizaje. Analiza en qué fallaste.";
+    }
+    
+    if (fatigueRisk > 0.6) {
+      message += " Noto que podrías estar fatigado. Considera tomar un descanso más largo.";
+    }
+    
+    let badge = null;
+    if (effortRating === 5 && sessionScore > 7 && !STATE.achievements.includes("Mente de Acero")) {
+      badge = "Mente de Acero";
+      STATE.achievements.push(badge);
+    }
+    
+    const today = new Date().toISOString().split('T')[0];
+    const sessionsToday = STATE.sessions.filter(s => s.date === today).length;
+    if (sessionsToday >= 3 && !STATE.achievements.includes("Maratonista")) {
+      // 3 previous sessions + 1 just now = 4
+      badge = badge ? badge + ", Maratonista" : "Maratonista";
+      STATE.achievements.push("Maratonista");
+    }
+    
+    return { message, badge };
+  }
+};
+
+// ── POMODORO ────────────────────────────────────────────
+let pomoTimer=null, pomoSec=1500, pomoTotal=1500, pomoRunning=false;
+const CIRCUMFERENCE = 2 * Math.PI * 30; // r=30
+
+function startPomodoro(duration){
+  if(pomoRunning) return;
+  
+  // HARD STOP-LOSS LOGIC
+  if((STATE.fatigueRisk || 0) >= 0.8 && (!duration || duration >= 25)) {
+    addBotMsg('🛑 <strong>STOP-LOSS ACTIVADO</strong><br>Tu riesgo de fatiga cognitiva es del ' + (STATE.fatigueRisk*100).toFixed(0) + '%.<br><em>Protocolo AEGIS: Un cerebro agotado comete errores estructurales y fomenta malos hábitos de código. Está PROHIBIDO iniciar un Pomodoro de trabajo profundo ahora. Descansa o vuelve mañana.</em>');
+    showToast('Bloqueo por Fatiga: Stop-Loss', 'error');
+    return;
+  }
+
+  pomoSec = (duration||25)*60;
+  pomoTotal = pomoSec;
+  pomoRunning = true;
+
+  // Inject pomodoro card into chat
+  const html = `
+    <div class="pomo-inline" id="pomo-card">
+      <div class="pomo-ring">
+        <svg viewBox="0 0 72 72">
+          <circle class="track" cx="36" cy="36" r="30"/>
+          <circle class="fill" id="pomo-fill" cx="36" cy="36" r="30"
+            stroke-dasharray="${CIRCUMFERENCE}" stroke-dashoffset="0"/>
+        </svg>
+        <div class="pomo-time" id="pomo-time">25:00</div>
+      </div>
+      <div class="pomo-info">
+        <div class="pomo-label" id="pomo-label">🍅 Pomodoro en curso</div>
+        <div class="pomo-sub" id="pomo-sub">Concéntrate. Cierra distracciones.</div>
+        <div class="pomo-controls">
+          <button class="btn btn-secondary btn-sm" onclick="pausePomodoro()">⏸ Pausar</button>
+          <button class="btn btn-secondary btn-sm" onclick="stopPomodoro()">⏹ Detener</button>
+        </div>
+      </div>
+    </div>`;
+  AudioEngine.playStart();
+  addBotMsg('⏱️ Pomodoro iniciado — ' + Math.round(pomoTotal/60) + ' minutos. ¡A trabajar!' + html);
+
+  pomoTimer = setInterval(()=>{
+    pomoSec--;
+    updatePomoDisplay();
+    if(pomoSec <= 0){
+      clearInterval(pomoTimer); pomoRunning = false;
+      completePomodoro();
+    }
+  }, 1000);
+}
+
+function updatePomoDisplay(){
+  const m = String(Math.floor(pomoSec/60)).padStart(2,'0');
+  const s = String(pomoSec%60).padStart(2,'0');
+  const el = document.getElementById('pomo-time');
+  if(el) el.textContent = m+':'+s;
+  const fill = document.getElementById('pomo-fill');
+  if(fill) fill.style.strokeDashoffset = CIRCUMFERENCE * (1 - pomoSec/pomoTotal);
+  const label = document.getElementById('pomo-label');
+  if(label && pomoSec <= 300 && pomoSec > 0)
+    label.textContent = '🔥 ¡Últimos ' + Math.ceil(pomoSec/60) + ' minutos!';
+}
+
+function pausePomodoro(){
+  if(!pomoRunning) return;
+  clearInterval(pomoTimer); pomoRunning = false;
+  addBotMsg('⏸ Pomodoro pausado. Escribe <strong>continuar</strong> para reanudar.');
+}
+
+function resumePomodoro(){
+  if(pomoRunning || pomoSec <= 0) return;
+  pomoRunning = true;
+  pomoTimer = setInterval(()=>{
+    pomoSec--;
+    updatePomoDisplay();
+    if(pomoSec <= 0){ clearInterval(pomoTimer); pomoRunning = false; completePomodoro(); }
+  }, 1000);
+  addBotMsg('▶️ Pomodoro reanudado. ¡Sigue así!');
+}
+
+function stopPomodoro(){
+  clearInterval(pomoTimer); pomoRunning = false;
+  const elapsed = Math.round((pomoTotal - pomoSec) / 60);
+  addBotMsg('⏹ Pomodoro detenido. Estudiaste <strong>'+elapsed+' minutos</strong> de esta sesión.');
+  if(elapsed >= 5) recordSession(elapsed, 60);
+  pomoSec = 0;
+}
+
+function completePomodoro(){
+  const mins = Math.round(pomoTotal / 60);
+  STATE.pomodoros_today = (STATE.pomodoros_today||0) + 1;
+  STATE.pomodoro_minutes_today = (STATE.pomodoro_minutes_today||0) + mins;
+  STATE.last_session_mins = mins;
+  AudioEngine.playEnd();
+  
+  showToast('🍅 ¡Pomodoro completado!','success');
+  addBotMsg(`🍅 <strong>¡Pomodoro completado!</strong><br><br>¿Cómo te sentiste (esfuerzo)? (1-5)`);
+  STATE.awaitingInput = 'effort_rating';
+}
+
+function finishSessionProcess() {
+  const task = getTodayTask();
+  const concept = task.course || 'General';
+  
+  let earnedPhoenix = false;
+  if (STATE.streak === 0 && STATE.last_score > 0) {
+    earnedPhoenix = true;
+    if (!STATE.achievements.includes("Fénix")) STATE.achievements.push("Fénix");
+  }
+  
+  let earnedStrategist = false;
+  if (STATE.used_plan_today && !STATE.achievements.includes("Estratega")) {
+    earnedStrategist = true;
+    STATE.achievements.push("Estratega");
+  }
+  
+  const calibResult = CalibrationEngine.processSession({
+    concept: concept,
+    score: STATE.last_score,
+    timeTaken: STATE.last_session_mins,
+    effortRating: STATE.last_effort
+  });
+  
+  const psychResult = PsychologyEngine.generateFeedback(STATE.last_score, STATE.last_effort, calibResult.fatigue);
+  
+  recordSession(STATE.last_session_mins, STATE.last_score * 10);
+  
+  let badgeText = "";
+  const newBadges = [];
+  if (psychResult.badge) newBadges.push(psychResult.badge);
+  if (earnedPhoenix) newBadges.push("Fénix");
+  if (earnedStrategist) newBadges.push("Estratega");
+  
+  if (newBadges.length > 0) {
+    badgeText = `<br>🏅 <strong>Logros desbloqueados:</strong> <span class="badge-anim">${newBadges.join(", ")}</span>`;
+    AudioEngine.playAchievement();
+  }
+  
+  let planAdjust = "";
+  if (calibResult.mastery < 0.4) {
+    planAdjust = "Te sugiero repasar los fundamentos antes de avanzar.";
+  } else if (calibResult.mastery > 0.85) {
+    planAdjust = "¡Estás listo para la ruta élite! Intenta retos más complejos.";
+  } else {
+    planAdjust = "Sigue con el plan actual, vas a buen ritmo.";
+  }
+  
+  addBotMsg(`📊 <strong>Análisis de Sesión</strong>
+
+<div class="card-inline">
+  <p>He analizado tu rendimiento. Tu dominio en <strong>${concept}</strong> ahora es del <strong>${(calibResult.mastery*100).toFixed(1)}%</strong>.</p>
+  <p style="margin-top:6px;color:var(--accent-cyan)">🧠 ${psychResult.message}</p>
+  <p style="margin-top:6px;color:var(--accent-gold)">🎯 Sugerencia para mañana: ${planAdjust}</p>
+  ${badgeText}
+</div>
+
+¿Quieres continuar con otros 25 min? (escribe "sí" o usa un comando)
+
+<div class="quick-actions" style="margin-top:8px">
+  <button class="quick-btn" onclick="processInput('si')">🍅 Otro Pomodoro</button>
+  <button class="quick-btn" onclick="startPomodoro(5)">🧘 Descanso 5 min</button>
+  <button class="quick-btn" onclick="showCognitiveState()">🧠 Ver Estado</button>
+</div>`);
+  STATE.used_plan_today = false;
+}
+
+function rateMood(n){
+  STATE.energy = n;
+  const moods = ['','😫 Agotado','😕 Cansado','😐 Normal','😊 Bien','🔥 En la zona'];
+  save();
+  addBotMsg(`Registrado: ${moods[n]}. ${n>=4?'¡Excelente energía! Puedes seguir otro Pomodoro.':n<=2?'Tómate un descanso largo. Tu bienestar es prioridad.':'Buen estado. Descansa 5 minutos y evalúa si quieres continuar.'}`);
+}
+
+function recordSession(minutes, score){
+  const today = new Date().toISOString().split('T')[0];
+  STATE.sessions.push({date:today, minutes, score, energy:STATE.energy||3});
+  STATE.total_minutes += minutes;
+  STATE.total_days = new Set(STATE.sessions.map(s=>s.date)).size;
+  STATE.xp += Math.round(score*0.5 + minutes*0.3) + 25;
+
+  // Streak
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yStr = yesterday.toISOString().split('T')[0];
+  if(STATE.last_study_date === yStr || STATE.last_study_date === today){
+    if(STATE.last_study_date !== today) STATE.streak++;
+  } else if(STATE.last_study_date !== today) {
+    STATE.streak = 1;
+  }
+  if(STATE.streak > STATE.max_streak) STATE.max_streak = STATE.streak;
+  STATE.last_study_date = today;
+
+  // Phase progression
+  const totalWeeks = Math.floor(STATE.total_days / 5); // ~5 study days/week
+  let acc = 0;
+  for(const p of PHASES){
+    if(totalWeeks < acc + p.weeks){ STATE.current_phase = p.id; break; }
+    acc += p.weeks;
+  }
+
+  save(); updateHeader();
+  renderDashboard();
+}
+</script>
+<script>
+// ══════════════════════════════════════════════════════════
+// AEGIS v2.0 — CHAT ENGINE + UI LOGIC
+// ══════════════════════════════════════════════════════════
+
+
+// ── AUDIO ENGINE ────────────────────────────────────────
+const AudioEngine = {
+  ctx: null,
+  init: function() {
+    if (!this.ctx && window.AudioContext) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+  },
+  playTone: function(freqStart, freqEnd, duration, type='sine') {
+    if (STATE.soundEnabled === false) return;
+    this.init();
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = type;
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.frequency.setValueAtTime(freqStart, this.ctx.currentTime);
+    if (freqEnd) osc.frequency.exponentialRampToValueAtTime(freqEnd, this.ctx.currentTime + duration);
+    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+    osc.start();
+    osc.stop(this.ctx.currentTime + duration);
+  },
+  playStart: function() { this.playTone(200, 400, 0.5); },
+  playEnd: function() { this.playTone(600, 300, 0.5); },
+  playAchievement: function() {
+    if (STATE.soundEnabled === false) return;
+    this.init();
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [523.25, 659.25, 783.99].forEach((f, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime(0.1, t + i*0.15);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + i*0.15 + 0.2);
+      osc.start(t + i*0.15); osc.stop(t + i*0.15 + 0.2);
+    });
+  }
+};
+
+// ── CHAT CORE ───────────────────────────────────────────
+const chat = document.getElementById('chat');
+const userInput = document.getElementById('user-input');
+
+function getReactiveEmoji(text) {
+  if (text.match(/(cansad|agotad|fatiga|sueño|dormir)/i)) return ' 🫂☕';
+  if (text.match(/(feliz|motivad|genial|excelente|increible|bien)/i)) return ' 🚀🔥';
+  if (text.match(/(perdid|confundid|ayuda|dificil|complicad)/i)) return ' 🧭💡';
+  return '';
+}
+
+function showTypingIndicator() {
+  const div = document.createElement('div');
+  div.className = 'msg msg-bot typing-msg';
+  div.innerHTML = `<div class="msg-avatar">🧙</div><div><div class="msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function addBotMsg(html, delay, isHistory=false){
+  if(isHistory) {
+    const div = document.createElement('div');
+    div.className = 'msg msg-bot';
+    const now = new Date(delay).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+    div.innerHTML = `<div class="msg-avatar">🧙</div><div><div class="msg-bubble">${html}</div><div class="msg-time">${now}</div></div>`;
+    chat.appendChild(div);
+    return;
+  }
+  
+  const typing = showTypingIndicator();
+  setTimeout(()=>{
+    typing.remove();
+    const div = document.createElement('div');
+    div.className = 'msg msg-bot';
+    const d = new Date();
+    const now = d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+    div.innerHTML = `<div class="msg-avatar">🧙</div><div><div class="msg-bubble">${html}</div><div class="msg-time">${now}</div></div>`;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    
+    // Save to history
+    if (!STATE.chatHistory) STATE.chatHistory = [];
+    STATE.chatHistory.push({sender: 'bot', text: html, time: d.getTime()});
+    save();
+  }, delay || 800);
+}
+
+function addUserMsg(text, isHistory=false, time=null){
+  const div = document.createElement('div');
+  div.className = 'msg msg-user';
+  const now = time ? new Date(time).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}) : new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML = `<div class="msg-avatar">TÚ</div><div><div class="msg-bubble">${text}</div><div class="msg-time">${now}</div></div>`;
+  chat.appendChild(div);
+  if(!isHistory) chat.scrollTop = chat.scrollHeight;
+  
+  if(!isHistory) {
+    if (!STATE.chatHistory) STATE.chatHistory = [];
+    STATE.chatHistory.push({sender: 'user', text: text, time: new Date().getTime()});
+    save();
+  }
+}
+
+
+
+
+function sendMessage(){
+  const text = userInput.value.trim();
+  if(!text) return;
+  addUserMsg(text);
+  userInput.value = '';
+  processInput(text);
+}
+
+userInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') sendMessage();
+});
+
+// ── NLP-LITE: COMMAND ROUTER ────────────────────────────
+function processInput(raw){
+  const text = raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  const emoji = getReactiveEmoji(raw);
+  
+  if (STATE.awaitingInput === 'user_name') {
+    STATE.userName = raw.trim();
+    STATE.awaitingInput = null;
+    save();
+    generateWelcome();
+    return;
+  }
+
+  
+  if (STATE.awaitingInput === 'expected_difficulty') {
+    const val = parseInt(text);
+    if (val >= 1 && val <= 5) {
+      STATE.expected_difficulty = val;
+      STATE.awaitingInput = null;
+      showTodayTask();
+      setTimeout(()=>startPomodoro(25), 1500);
+    } else {
+      addBotMsg('Por favor ingresa un número del 1 al 5.');
+    }
+    return;
+  }
+  
+  if (STATE.awaitingInput === 'effort_rating') {
+    const val = parseInt(text);
+    if (val >= 1 && val <= 5) {
+      STATE.last_effort = val;
+      STATE.awaitingInput = 'session_score';
+      addBotMsg('¿Qué tal tu rendimiento? (1-10)');
+    } else {
+      addBotMsg('Por favor ingresa un número del 1 al 5.');
+    }
+    return;
+  }
+  
+  if (STATE.awaitingInput === 'session_score') {
+    const val = parseInt(text);
+    if (val >= 1 && val <= 10) {
+      STATE.last_score = val;
+      STATE.awaitingInput = null;
+      finishSessionProcess();
+    } else {
+      addBotMsg('Por favor ingresa un número del 1 al 10.');
+    }
+    return;
+  }
+
+  
+  setTimeout(()=>{
+    // Study start
+    if(text.match(/^(si|s[ií]|iniciar|empezar|estudiar|start|vamos|comenzar|dale)/)){
+      const task = getTodayTask();
+      if(task.type === 'rest'){
+        addBotMsg('🌿 Hoy es día de descanso. Pero si quieres estudiar, ¡adelante! Tu disciplina es admirable. ¿Cómo calificarías la dificultad esperada para hoy? (1-5)');
+        STATE.awaitingInput = 'expected_difficulty';
+      } else {
+        addBotMsg('¿Cómo calificarías la dificultad esperada para hoy? (1-5)');
+        STATE.awaitingInput = 'expected_difficulty';
+      }
+      return;
+    }
+
+    // Music
+    if(text.match(/(musica|playlist|audio|spotify|youtube|focus)/)){
+      showPlaylists(); return;
+    }
+
+    // Progress
+    if(text.match(/(progreso|stats|estadistica|racha|xp|nivel|como voy)/)){
+      showProgress(); return;
+    }
+
+    // Plan
+    if(text.match(/(plan|tarea|hoy|que toca|que estudio|agenda|programa)/)){
+      STATE.used_plan_today = true;
+      showTodayTask(); return;
+    }
+
+    // Advice
+    if(text.match(/(consejo|motivacion|maestro|sabiduria|animo|motivame)/)){
+      addBotMsg(getMotivation() + emoji); return;
+    }
+
+    // Pomodoro
+    if(text.match(/(pomodoro|timer|temporizador|25 min|reloj)/)){
+      startPomodoro(25); return;
+    }
+
+    // Resume
+    if(text.match(/(continuar|resume|reanudar|seguir)/)){
+      if(pomoSec > 0 && !pomoRunning){ resumePomodoro(); }
+      else { addBotMsg('No hay Pomodoro en pausa. ¿Quieres iniciar uno nuevo?'); }
+      return;
+    }
+
+    // Break
+    if(text.match(/(descanso|break|pausa|relax|5 min)/)){
+      startPomodoro(5); return;
+    }
+
+    // Resources
+    if(text.match(/(recurso|enlace|link|fuente|material)/)){
+      showResources(); return;
+    }
+
+    // Phases
+    if(text.match(/(fase|fases|curriculum|curriculo|roadmap|camino)/)){
+      showPhases(); return;
+    }
+
+    // Estado
+    if(text.match(/(estado|cognitivo|motores|analisis)/)){
+      showCognitiveState(); return;
+    }
+
+    
+    if(text.match(/^(buenos dias|buenosdias|buen dia)/)){ generateWelcome(); return; }
+    if(text.match(/^(prompt|gemini)/)){ showPromptCommand(); return; }
+    if(text.match(/^(libro|notebook|podcast)/)){ showLibroCommand(); return; }
+    if(text.match(/^(sonido|audio|mutear)/)){ 
+      STATE.soundEnabled = !STATE.soundEnabled; save();
+      addBotMsg(`Sonidos ${STATE.soundEnabled ? 'activados 🔊' : 'desactivados 🔇'}`);
+      return;
+    }
+
+    // Help
+    if(text.match(/(ayuda|help|comando|que puedo|opciones|menu)/)){
+      showHelp(); return;
+    }
+
+    // Anything else → motivation
+    addBotMsg(getMotivation() + emoji);
+  }, 400 + Math.random()*400);
+}
+
+// ── RESPONSE GENERATORS ─────────────────────────────────
+function showTodayTask(){
+  const t = getTodayTask();
+  addBotMsg(`📋 <strong>${t.title}</strong>
+
+<div class="card-inline">
+  <span class="${t.typeBadge} task-badge">${t.typeLabel}</span>
+  <h4>${t.course||'Actividad del día'}</h4>
+  <p>${t.detail}</p>
+</div>
+
+<div class="quick-actions">
+  <button class="quick-btn" onclick="startPomodoro(25)">🍅 Iniciar Pomodoro</button>
+  <button class="quick-btn" onclick="showPlaylists()">🎵 Música</button>
+  <button class="quick-btn" onclick="addBotMsg(getMotivation())">💬 Consejo</button>
+</div>`);
+}
+
+function showPlaylists(){
+  let html = '🎵 <strong>Playlists científicas para estudiar:</strong>\n\n';
+  for(const [key,pl] of Object.entries(PLAYLISTS)){
+    html += `<div class="card-inline" style="margin-bottom:8px">
+      <h4>${pl.icon} ${pl.name} — ${pl.best_for}</h4>
+      <p style="font-size:11px;margin-bottom:6px">${pl.science}</p>
+      ${pl.tracks.map(t=>`<a href="${t.url}" target="_blank" rel="noopener" style="display:block;font-size:12px;margin:2px 0">▶ ${t.name}</a>`).join('')}
+    </div>`;
+  }
+  addBotMsg(html);
+}
+
+function showProgress(){
+  const hours = Math.floor(STATE.total_minutes/60);
+  const mins = STATE.total_minutes%60;
+  const phase = PHASES[Math.min(STATE.current_phase,7)];
+  const energyEmoji = ['','😫','😕','😐','😊','🔥'][STATE.energy||3];
+  const sessionsToday = STATE.sessions.filter(s=>s.date===new Date().toISOString().split('T')[0]).length;
+  addBotMsg(`📊 <strong>Tu progreso AEGIS</strong>
+
+<div class="card-inline">
+  <p>⚡ <strong>XP Total:</strong> ${STATE.xp.toLocaleString()}</p>
+  <p>🔥 <strong>Racha actual:</strong> ${STATE.streak} días (máx: ${STATE.max_streak})</p>
+  <p>📅 <strong>Días de estudio:</strong> ${STATE.total_days}</p>
+  <p>⏱️ <strong>Tiempo total:</strong> ${hours}h ${mins}m</p>
+  <p>🧠 <strong>Sesiones hoy:</strong> ${sessionsToday}</p>
+  <p>🍅 <strong>Pomodoros hoy:</strong> ${STATE.pomodoros_today||0}</p>
+  <p>${energyEmoji} <strong>Energía:</strong> ${STATE.energy||3}/5</p>
+  <p>🗺️ <strong>Fase actual:</strong> ${phase.name}</p>
+</div>`);
+}
+
+function getMotivation(){
+  const m = MASTERS[Math.floor(Math.random()*MASTERS.length)];
+  return `${m.icon} <strong>${m.name}</strong> dice:
+
+<div class="card-inline">
+  <p><em>"${m.wisdom}"</em></p>
+</div>`;
+}
+
+function showResources(){
+  const task = getTodayTask();
+  if(!task.resources.length){
+    addBotMsg('📚 No hay recursos específicos para esta actividad. Consulta tu plan de estudios.');
+    return;
+  }
+  let html = '📚 <strong>Recursos para tu fase actual:</strong>\n\n<div class="card-inline">';
+  task.resources.forEach(r=>{
+    html += `<a href="${r}" target="_blank" rel="noopener" style="display:block;font-size:12px;margin:3px 0">🔗 ${r}</a>`;
+  });
+  html += '</div>';
+  addBotMsg(html);
+}
+
+function showPhases(){
+  let html = '🗺️ <strong>Roadmap AEGIS — 10 Años</strong>\n\n';
+  PHASES.forEach(p=>{
+    const current = p.id === STATE.current_phase;
+    html += `<div class="card-inline" style="margin-bottom:6px;${current?'border-color:var(--accent-cyan);background:rgba(6,182,212,0.05)':''}">
+      <h4>${current?'👉 ':''}<strong>Fase ${p.id}:</strong> ${p.name} (${p.weeks} semanas)</h4>
+      <p style="font-size:11px">${p.courses.join(' • ')}</p>
+    </div>`;
+  });
+  addBotMsg(html);
+}
+
+function showCognitiveState(){
+  const masteryKeys = Object.keys(STATE.conceptMastery || {});
+  let avgMastery = 0;
+  if (masteryKeys.length > 0) {
+    avgMastery = masteryKeys.reduce((acc, k) => acc + STATE.conceptMastery[k], 0) / masteryKeys.length;
+  }
+  
+  const fatigue = STATE.fatigueRisk || 0;
+  const motivation = STATE.motivationLevel || 0.5;
+  const achievements = STATE.achievements || [];
+  
+  addBotMsg(`🧠 <strong>Panel Cognitivo</strong>
+
+<div class="card-inline">
+  <p>📈 <strong>Dominio Promedio:</strong> ${(avgMastery*100).toFixed(1)}%</p>
+  <p>🔋 <strong>Riesgo de Fatiga:</strong> ${(fatigue*100).toFixed(1)}%</p>
+  <p>🔥 <strong>Nivel de Motivación:</strong> ${(motivation*100).toFixed(1)}%</p>
+  <p style="margin-top:8px">🏅 <strong>Logros:</strong> ${achievements.length > 0 ? achievements.join(', ') : 'Aún ninguno. ¡Sigue así!'}</p>
+</div>`);
+}
+
+function showHelp(){
+  addBotMsg(`🤖 <strong>Comandos disponibles:</strong>
+
+<div class="card-inline">
+  <p>📝 <strong>iniciar / sí</strong> → Comienza tu sesión de estudio</p>
+  <p>📋 <strong>plan / tarea</strong> → Muestra la tarea de hoy</p>
+  <p>🎵 <strong>música</strong> → Playlists para estudiar</p>
+  <p>📊 <strong>progreso</strong> → Tus estadísticas</p>
+  <p>💬 <strong>consejo</strong> → Sabiduría de un maestro</p>
+  <p>🍅 <strong>pomodoro</strong> → Inicia un timer de 25 min</p>
+  <p>🧘 <strong>descanso</strong> → Timer de 5 min</p>
+  <p>▶️ <strong>continuar</strong> → Reanuda Pomodoro pausado</p>
+  <p>📚 <strong>recursos</strong> → Enlaces del tema actual</p>
+  <p>🗺️ <strong>fases</strong> → Roadmap de 10 años</p>
+  <p>🧠 <strong>estado</strong> → Ver panel cognitivo y logros</p>
+</div>
+
+<div class="quick-actions">
+  <button class="quick-btn" onclick="showTodayTask()">📋 Plan</button>
+  <button class="quick-btn" onclick="startPomodoro(25)">🍅 Pomodoro</button>
+  <button class="quick-btn" onclick="showPlaylists()">🎵 Música</button>
+  <button class="quick-btn" onclick="showProgress()">📊 Progreso</button>
+  <button class="quick-btn" onclick="addBotMsg(getMotivation())">💬 Consejo</button>
+</div>`);
+}
+
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast('✅ Prompt copiado al portapapeles', 'success');
+  }).catch(()=>{
+    showToast('❌ Error al copiar', 'error');
+  });
+}
+
+function showPromptCommand() {
+  const t = getTodayTask();
+  const masteryKeys = Object.keys(STATE.conceptMastery || {});
+  const avgMastery = masteryKeys.length ? masteryKeys.reduce((a,b)=>a+STATE.conceptMastery[b],0)/masteryKeys.length : 0;
+  
+  const promptText = `Contexto: Fase ${t.phase.id}, Semana ${t.week}, Tarea: ${t.course||'General'}.
+Estado cognitivo actual del estudiante: Dominio ${(avgMastery*100).toFixed(1)}%, Fatiga ${(STATE.fatigueRisk*100).toFixed(1)}%, Motivación ${(STATE.motivationLevel*100).toFixed(1)}%.
+Últimos conceptos: ${masteryKeys.slice(-3).join(', ')}.
+Instrucción principal: Actúa como un tutor Socrático. NO me des la solución a mis preguntas. Guíame con preguntas que me hagan pensar y conectar conceptos.`;
+
+  const id = 'prmpt-' + Date.now();
+  addBotMsg(`📋 <strong>Prompt Socrático para Gemini</strong><br>
+<textarea id="${id}" style="width:100%;height:100px;background:var(--bg-card);color:var(--text-main);border:1px solid var(--border-color);border-radius:4px;padding:8px;margin-top:8px" readonly>${promptText}</textarea>
+<div class="quick-actions" style="margin-top:8px">
+  <button class="quick-btn" onclick="copyToClipboard(document.getElementById('${id}').value)">📋 Copiar</button>
+</div>`);
+}
+
+function showLibroCommand() {
+  const t = getTodayTask();
+  const promptText = `Por favor, genera un audio overview detallado (estilo podcast) sobre el tema de hoy: ${t.course} (${t.title}).
+Conceptos clave a cubrir según el plan: ${t.detail}.
+Ajuste sugerido: El estudiante tiene un nivel de fatiga del ${(STATE.fatigueRisk*100).toFixed(1)}%, así que ajusta el ritmo y la profundidad del material para que sea digerible.`;
+
+  const id = 'lib-' + Date.now();
+  addBotMsg(`🎧 <strong>Prompt para NotebookLM</strong><br>
+<textarea id="${id}" style="width:100%;height:100px;background:var(--bg-card);color:var(--text-main);border:1px solid var(--border-color);border-radius:4px;padding:8px;margin-top:8px" readonly>${promptText}</textarea>
+<div class="quick-actions" style="margin-top:8px">
+  <button class="quick-btn" onclick="copyToClipboard(document.getElementById('${id}').value)">📋 Copiar</button>
+</div>`);
+}
+
+function showWeeklySummary() {
+  const hours = Math.floor(STATE.total_minutes/60);
+  addBotMsg(`📊 <strong>Resumen Semanal</strong><br><br>¡Excelente semana, ${STATE.userName}! Has acumulado ${hours} horas de estudio total. Tu racha actual es de ${STATE.streak} días. Prepárate para los nuevos retos de esta semana. Usa /plan para ver tu itinerario.`);
+}
+
+// ── UI UTILITIES ────────────────────────────────────────
+function updateHeader(){
+  document.getElementById('badge-xp').textContent = '⚡ '+STATE.xp.toLocaleString()+' XP';
+  document.getElementById('badge-streak').textContent = '🔥 '+STATE.streak+' días';
+}
+
+function toggleTheme(){
+  const t = document.body.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme', t);
+  localStorage.setItem('aegis_v2_theme', t);
+}
+
+function showToast(text, type){
+  const c = document.getElementById('toast-container');
+  const d = document.createElement('div');
+  d.className = 'toast toast-'+(type||'info');
+  d.textContent = text;
+  c.appendChild(d);
+  setTimeout(()=>d.remove(), 4000);
+}
+
+function exportData(){
+  const json = JSON.stringify(STATE,null,2);
+  const blob = new Blob([json],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='aegis-v2-backup-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📤 Datos exportados','success');
+}
+
+// ── WELCOME MESSAGE ─────────────────────────────────────
+function generateWelcome(){
+  const hour = new Date().getHours();
+  let saludo;
+  const name = STATE.userName ? ' ' + STATE.userName : '';
+  if(hour < 6) saludo = `🌙 Buenas noches, guerrero nocturno${name}.`;
+  else if(hour < 12) saludo = `☀️ Buenos días${name}.`;
+  else if(hour < 18) saludo = `🌤️ Buenas tardes${name}.`;
+  else saludo = `🌆 Buenas noches${name}.`;
+
+  const task = getTodayTask();
+  const energyEmoji = ['','😫','😕','😐','😊','🔥'][STATE.energy||3];
+  
+  let streakMsg = '';
+  if (STATE.streak > 30) {
+    streakMsg = `🏆 ¡Impresionante! Llevas <strong>${STATE.streak} días</strong> de fuego constante. Eres imparable.`;
+  } else if (STATE.streak > 0) {
+    streakMsg = `Llevas <strong>${STATE.streak} días</strong> consecutivos estudiando. ¡No rompas la cadena!`;
+  } else {
+    if (STATE.achievements && STATE.achievements.includes('Fénix')) {
+      streakMsg = `Es momento de renacer como el <strong>Fénix</strong>. Empecemos una nueva racha hoy.`;
+    } else {
+      streakMsg = `Es un buen momento para empezar una racha. Cada día cuenta.`;
+    }
+  }
+
+  let adaptiveMsg = '';
+  if (STATE.fatigueRisk > 0.7) {
+    adaptiveMsg = `<br><em>Noto que has estado esforzándote mucho. Vamos con calma hoy, escucha a tu cuerpo.</em>`;
+  } else if (STATE.motivationLevel < 0.4) {
+    adaptiveMsg = `<br><em>¡Vamos con todo! Sé que puedes con esto. Un paso a la vez construye el castillo.</em>`;
+  }
+
+  let playlistKey = 'deep_focus';
+  if(hour >= 21 || (STATE.energy||3) <= 2 || STATE.fatigueRisk > 0.7) playlistKey = 'recovery';
+  else if(hour < 10) playlistKey = 'deep_focus';
+  else if(task.type === 'project') playlistKey = 'creative';
+  const pl = PLAYLISTS[playlistKey];
+  const track = pl.tracks[0];
+
+  addBotMsg(`${saludo} Soy <strong>AEGIS</strong>, tu tutor autónomo.
+
+${streakMsg}${adaptiveMsg}
+
+<div class="card-inline">
+  <h4>📋 Tarea Específica</h4>
+  <p style="font-size:12px"><strong>${task.exactDesc}</strong></p>
+</div>
+
+<div class="card-inline" style="margin-top:8px">
+  <h4>🎵 Música sugerida: ${pl.icon} ${pl.name}</h4>
+  <p style="font-size:11px">${pl.science}</p>
+  <a href="${track.url}" target="_blank" rel="noopener">▶ ${track.name}</a>
+</div>
+
+<div class="quick-actions" style="margin-top:12px">
+  <button class="btn btn-primary btn-lg" onclick="processInput('iniciar')">🚀 Iniciar Estudio</button>
+</div>
+
+<div class="quick-actions">
+  <button class="quick-btn" onclick="showHelp()">❓ Comandos</button>
+  <button class="quick-btn" onclick="showPromptCommand()">🤖 Prompt Socrático</button>
+</div>`);
+}
+
+
+// ── DASHBOARD LOGIC ─────────────────────────────────────
+
+let forcedTaskType = null;
+
+function dashShowProgress() {
+  const mastery = Math.round(STATE.masteryElo);
+  const info = `XP: ${STATE.xp} | Nivel: ${STATE.level} | Días seguidos: ${STATE.streak} | Maestría (Elo): ${mastery}`;
+  showToast(info, 'success');
+  // Optionally, show in the chat too
+  if(!document.getElementById('chatSidebar').classList.contains('hidden')) showProgress();
+}
+
+function dashShowPhases() {
+  let list = "Fases del Programa:\n";
+  PHASES.forEach(p => list += `Fase ${p.id}: ${p.name}\n`);
+  alert(list);
+}
+
+function dashResetPhase() {
+  if(confirm("¿Estás seguro de reiniciar la Fase actual? Esto reseteará tu fecha de inicio a la de la fase actual.")) {
+    const today = new Date();
+    STATE.start_date = today.toISOString().split('T')[0]; // Simple reset for now
+    STATE.xp = Math.max(0, STATE.xp - 100);
+    saveState();
+    location.reload();
+  }
+}
+
+function dashForceType(type) {
+  forcedTaskType = type;
+  renderDashboard();
+  showToast(`Modo cambiado a: ${type.toUpperCase()}`, 'success');
+}
+
+// Override getTodayTask to support forced type
+const originalGetTodayTask = getTodayTask;
+getTodayTask = function() {
+  const task = originalGetTodayTask();
+  if (forcedTaskType) {
+    task.type = forcedTaskType;
+    if(forcedTaskType === 'practice') { task.typeBadge = 'task-practice'; task.typeLabel = '🛠️ Práctica Forzada'; task.detail = 'Sesión práctica forzada manualmente.'; }
+    if(forcedTaskType === 'review') { task.typeBadge = 'task-review'; task.typeLabel = '🔄 Repaso Forzado'; task.detail = 'Sesión de repaso forzada manualmente.'; }
+  }
+  return task;
+}
+
+
+function submitSessionEvaluation() {
+  const focus = parseInt(document.getElementById('evalFocus').value);
+  const energy = parseInt(document.getElementById('evalEnergy').value);
+  
+  // Close Modal
+  document.getElementById('evalModal').style.display = 'none';
+  
+  // Update state (Calibration Engine)
+  STATE.energy = energy;
+  
+  // Fake old chat input processing
+  processInput(energy.toString());
+  
+  // Show a toast or small dashboard update
+  showToast(`✅ Sesión Registrada: Enfoque ${focus}/10 | Energía ${energy}/5`, 'success');
+  renderDashboard();
+}
+
+
+function generateDashPrompt(type) {
+  const task = getTodayTask();
+  let promptText = '';
+  
+  if(type === 'gemini') {
+    promptText = `Actúa como mi Tutor Copiloto Maquiavélico y Auditor Estricto.
+Contexto: Estoy en la Fase ${task.phase.id} (${task.phase.name}), Semana ${task.week}.
+Tarea de hoy: ${task.typeLabel} - ${task.detail}
+
+Instrucciones:
+1. No me des las respuestas directas. Usa el método socrático.
+2. Hazme 3 preguntas desafiantes sobre este tema para comprobar mi entendimiento.
+3. Si la tarea es de código, exígeme pensar en la complejidad Big O y el manejo de memoria.
+4. Evalúa mi respuesta como si fueras un Senior Developer estricto.`;
+  } else if (type === 'notebooklm') {
+    let format = 'Deep Dive';
+    let duration = '15 minutos';
+    if(task.type === 'practice') { format = 'The Critique'; duration = '10 minutos'; }
+    else if(task.type === 'review') { format = 'The Debate'; duration = '20 minutos'; }
+    else if(task.type === 'rest') { format = 'The Brief'; duration = '5 minutos'; }
+    
+    promptText = `Genera un episodio de podcast estilo "${format}" de ${duration} para un estudiante autodidacta.
+Tema principal: Fase ${task.phase.id} (${task.phase.name}) - ${task.detail}.
+Audiencia: Adulto autodidacta con disciplina.
+Instrucciones: Explica el concepto con analogías del mundo real (no de programación). ¿Por qué es crítico aprender esto en 2026? Usa un tono exigente pero justo. Cierra con un reto mental para cuando el oyente vuelva a su computadora.`;
+  }
+  
+  const textarea = document.getElementById('dashPromptOutput');
+  const copyBtn = document.getElementById('dashCopyBtn');
+  textarea.value = promptText;
+  textarea.style.display = 'block';
+  copyBtn.style.display = 'inline-block';
+}
+
+function copyDashPrompt() {
+  const textarea = document.getElementById('dashPromptOutput');
+  textarea.select();
+  document.execCommand('copy');
+  showToast('✅ Prompt copiado al portapapeles', 'success');
+}
+
+function toggleChat() {
+  const sidebar = document.getElementById('chatSidebar');
+  sidebar.classList.toggle('hidden');
+}
+
+function renderDashboard() {
+  // 1. Render Vector Grid (8 Phases * 4 weeks = 32 weeks approx)
+  const grid = document.getElementById('vectorGrid');
+  grid.innerHTML = '';
+  const totalPhases = PHASES.length;
+  const totalWeeks = totalPhases * 4; // Assuming 4 weeks per phase
+  
+  const todayTask = getTodayTask();
+  const currentTotalWeek = (todayTask.phase.id * 4) + todayTask.week;
+
+  for(let i=1; i<=totalWeeks; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'vector-dot';
+    if(i < currentTotalWeek) dot.classList.add('done');
+    else if(i === currentTotalWeek) dot.classList.add('current');
+    grid.appendChild(dot);
+  }
+  
+  document.getElementById('dashPhaseInfo').innerText = `[Semana Actual: ${currentTotalWeek}/${totalWeeks}]`;
+
+  // 2. Render Today Task
+  const dashTask = document.getElementById('dashTodayTask');
+  dashTask.innerHTML = `
+    <div style="margin-bottom:12px;">
+      <span class="badge ${todayTask.typeBadge}" style="font-size:14px; padding:6px 12px;">${todayTask.typeLabel}</span>
+    </div>
+    <p style="font-size:16px; font-weight:bold; color:var(--text-primary); margin-bottom:8px;">${todayTask.exactDesc}</p>
+    <p style="color:var(--text-secondary); line-height:1.6;">${todayTask.detail}</p>
+    <hr style="border:0; border-top:1px solid var(--border); margin:16px 0;">
+    <p style="font-size:12px; color:var(--text-muted);">Módulo: ${todayTask.phase.name}</p>
+  `;
+
+  // 3. Render Trophies
+  const dashTrophies = document.getElementById('dashTrophies');
+  if(dashTrophies) {
+    let tHTML = '';
+    const ach = STATE.achievements || [];
+    if(ach.includes('Fénix')) tHTML += '<span class="badge" style="background:rgba(255,100,100,0.1);color:#ff6b6b;border:1px solid #ff6b6b;">🔥 Fénix</span>';
+    if(ach.includes('Estratega')) tHTML += '<span class="badge" style="background:rgba(100,200,255,0.1);color:#4dabf7;border:1px solid #4dabf7;">🧠 Estratega</span>';
+    if(ach.includes('Mente de Acero')) tHTML += '<span class="badge" style="background:rgba(200,200,200,0.1);color:#ced4da;border:1px solid #ced4da;">🛡️ Mente de Acero</span>';
+    if(ach.includes('Maratonista')) tHTML += '<span class="badge" style="background:rgba(255,200,100,0.1);color:#fcc419;border:1px solid #fcc419;">🏃 Maratonista</span>';
+    if(STATE.streak >= 7) tHTML += '<span class="badge" style="background:rgba(100,255,100,0.1);color:#51cf66;border:1px solid #51cf66;">🗓️ Veterano (7+)</span>';
+    if(STATE.streak >= 30) tHTML += '<span class="badge" style="background:rgba(255,215,0,0.1);color:#ffd700;border:1px solid #ffd700;">👑 Leyenda (30+)</span>';
+    
+    if(tHTML === '') tHTML = '<span style="color:var(--text-muted); font-size:12px;">Comienza tu entrenamiento diario para desbloquear insignias de honor.</span>';
+    dashTrophies.innerHTML = tHTML;
+  }
+}
+
+// Intercept Pomodoro Updates for Dashboard
+const originalUpdatePomodoroUI = updatePomodoroUI;
+updatePomodoroUI = function(msgId) {
+  originalUpdatePomodoroUI(msgId);
+  
+  // Also update Dashboard
+  const dashTime = document.getElementById('dashPomoTime');
+  const dashFill = document.getElementById('dashPomoFill');
+  const dashState = document.getElementById('dashPomoState');
+  const dashStart = document.getElementById('dashBtnStart');
+
+  const m = Math.floor(POMO_STATE.timeLeft / 60).toString().padStart(2, '0');
+  const s = (POMO_STATE.timeLeft % 60).toString().padStart(2, '0');
+  dashTime.innerText = `${m}:${s}`;
+  
+  const total = (POMO_STATE.mode === 'work' ? POMO_STATE.workDur : POMO_STATE.breakDur) * 60;
+  const progress = 1 - (POMO_STATE.timeLeft / total);
+  const circ = 2 * Math.PI * 54; // 339.29
+  dashFill.style.strokeDashoffset = circ * (1 - progress);
+  
+  if(POMO_STATE.active) {
+    dashState.innerText = POMO_STATE.mode === 'work' ? '🟢 ENFOQUE TÁCTICO' : '☕ RECUPERACIÓN';
+    dashState.style.color = POMO_STATE.mode === 'work' ? 'var(--accent-green)' : 'var(--accent-blue)';
+    dashStart.disabled = true;
+  } else {
+    dashState.innerText = 'ESPERANDO INICIO';
+    dashState.style.color = 'var(--text-secondary)';
+    dashStart.disabled = false;
+  }
+}
+
+// ── INIT ────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  const savedTheme = localStorage.getItem('aegis_v2_theme');
+  if(savedTheme) document.body.setAttribute('data-theme', savedTheme);
+  
+  const today = new Date().toISOString().split('T')[0];
+  if(STATE.last_study_date !== today){
+    STATE.pomodoros_today = 0;
+    STATE.pomodoro_minutes_today = 0;
+  }
+  updateHeader();
+  renderDashboard();
+  
+  // Render history
+  if (STATE.chatHistory && STATE.chatHistory.length > 0) {
+    STATE.chatHistory.forEach(m => {
+      if(m.sender === 'bot') addBotMsg(m.text, m.time, true);
+      else addUserMsg(m.text, true, m.time);
+    });
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  if (!STATE.userName) {
+    STATE.awaitingInput = 'user_name';
+    addBotMsg('👋 ¡Hola! Antes de empezar nuestro viaje, ¿cómo te llamas?');
+  } else {
+    const lastMsg = STATE.chatHistory && STATE.chatHistory.length ? STATE.chatHistory[STATE.chatHistory.length-1] : null;
+    const isRecent = lastMsg && (Date.now() - lastMsg.time < 2 * 3600 * 1000); // 2 hours
+    const isSunday = new Date().getDay() === 0;
+    
+    if (isSunday && STATE.last_study_date !== today) {
+      showWeeklySummary();
+    } else if (isRecent) {
+      addBotMsg(`¡Qué bueno verte de nuevo, <strong>${STATE.userName}</strong>! ¿Continuamos?`);
+    } else {
+      generateWelcome();
+    }
+  }
+  
+  userInput.focus();
+});
+</script>
+    </div>
+  </div>
+
+<!-- SESSION EVALUATION MODAL -->
+<div id="evalModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,14,23,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(8px);">
+  <div class="widget" style="width: 400px; text-align:center;">
+    <h3 style="color:var(--accent-gold); margin-bottom:10px;">🎯 Misión Completada</h3>
+    <p style="color:var(--text-secondary); margin-bottom:20px;">Evalúa tu rendimiento para calibrar el algoritmo (Intel Points).</p>
+    
+    <div style="margin-bottom: 15px; text-align:left;">
+      <label style="font-size:12px; color:var(--text-muted);">Calidad de Enfoque (1-10)</label>
+      <input type="range" id="evalFocus" min="1" max="10" value="7" style="width:100%;" oninput="document.getElementById('focusVal').innerText=this.value">
+      <div style="text-align:right; font-weight:bold; color:var(--accent-cyan);" id="focusVal">7</div>
+    </div>
+    
+    <div style="margin-bottom: 25px; text-align:left;">
+      <label style="font-size:12px; color:var(--text-muted);">Nivel de Energía Post-Sesión (1-5)</label>
+      <input type="range" id="evalEnergy" min="1" max="5" value="3" style="width:100%;" oninput="document.getElementById('energyVal').innerText=this.value">
+      <div style="text-align:right; font-weight:bold; color:var(--accent-gold);" id="energyVal">3</div>
+    </div>
+    
+    <button class="btn btn-primary" style="width:100%;" onclick="submitSessionEvaluation()">Guardar Intel & Continuar</button>
+  </div>
+</div>
+
+</body>
+</html>

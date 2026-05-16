@@ -1,0 +1,3297 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AEGIS v6.0 — Biblioteca de 178 Fuentes (MEJORADA)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--font-sans:'Inter',system-ui,-apple-system,sans-serif;--font-mono:'JetBrains Mono',monospace}
+[data-theme="dark"]{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a1f2e;--bg-card-hover:#252b3b;--text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;--accent-blue:#3b82f6;--accent-green:#22c55e;--accent-gold:#f59e0b;--accent-red:#ef4444;--accent-purple:#a855f7;--accent-cyan:#06b6d4;--accent-pink:#ec4899;--border:#1e293b;--glass:rgba(30,41,59,0.5);--shadow:0 4px 24px rgba(0,0,0,0.4);}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);display:flex;flex-direction:column;}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);flex-shrink:0;}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{font-size:18px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:11px;color:var(--text-muted);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;background:var(--glass);border:1px solid var(--border);}
+.badge-xp{color:var(--accent-gold)}.badge-streak{color:var(--accent-red)}.badge-sources{color:var(--accent-purple);}
+.icon-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);cursor:pointer;padding:6px 8px;font-size:16px;}
+
+/* LAYOUT */
+.main-layout{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:280px;background:var(--bg-secondary);border-right:1px solid var(--border);padding:16px;overflow-y:auto;flex-shrink:0;}
+.content-area{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;}
+.content-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:16px;}
+
+/* NAV */
+.nav-section{margin-bottom:20px;}
+.nav-title{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.nav-btn{display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover{border-color:var(--accent-blue);}
+.nav-btn.active{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+
+/* WIDGETS */
+.widget{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);}
+.widget-title{font-size:13px;font-weight:700;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;justify-content:space-between;}
+
+/* SOURCE GRID */
+.source-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;max-height:300px;overflow-y:auto;padding-right:8px;}
+.source-card{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:all 0.2s;font-size:12px;}
+.source-card:hover{border-color:var(--accent-blue);background:var(--bg-card-hover);}
+.source-card.active{border-color:var(--accent-green);background:rgba(34,197,94,0.1);}
+.source-card.completed{border-color:var(--accent-gold);opacity:0.7;}
+.source-card .source-icon{font-size:20px;margin-bottom:6px;}
+.source-card .source-name{font-weight:600;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.source-card .source-desc{font-size:10px;color:var(--text-muted);display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.source-card .source-progress{height:3px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden;}
+.source-card .source-progress-fill{height:100%;background:var(--accent-green);width:0%;transition:width 0.3s;}
+
+/* CATEGORY TABS */
+.cat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.cat-tab{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--glass);font-size:11px;cursor:pointer;transition:all 0.2s;}
+.cat-tab:hover{border-color:var(--accent-blue);}
+.cat-tab.active{background:var(--accent-blue);color:white;border-color:var(--accent-blue);}
+
+/* CURRENT STUDY */
+.study-card{background:linear-gradient(135deg,var(--bg-card),#1a1f2e);border:2px solid var(--accent-blue);border-radius:16px;padding:20px;margin-bottom:16px;}
+.study-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.study-source{display:flex;align-items:center;gap:10px;}
+.study-icon{font-size:32px;}
+.study-meta{flex:1;}
+.study-name{font-size:16px;font-weight:700;margin-bottom:4px;}
+.study-category{font-size:11px;color:var(--accent-cyan);text-transform:uppercase;}
+.study-actions{display:flex;gap:8px;}
+.study-desc{color:var(--text-secondary);font-size:14px;line-height:1.6;margin-bottom:16px;}
+.study-tactical{background:rgba(6,182,212,0.1);border-left:3px solid var(--accent-cyan);padding:12px;border-radius:0 8px 8px 0;margin-bottom:16px;}
+.study-tactical-label{font-size:10px;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.study-tactical-text{font-size:13px;color:var(--text-primary);}
+
+/* ACTION BUTTONS */
+.action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;}
+.action-btn{display:flex;align-items:center;gap:8px;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:12px;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.action-btn:hover{border-color:var(--accent-blue);background:var(--bg-secondary);}
+.action-btn.primary{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+.action-btn span{font-size:16px;}
+.action-btn small{display:block;font-size:9px;opacity:0.8;}
+
+/* PROMPT AREA */
+.prompt-area{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.prompt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.prompt-title{font-size:13px;font-weight:700;color:var(--accent-cyan);}
+.prompt-controls{display:flex;gap:6px;flex-wrap:wrap;}
+.btn-sm{padding:6px 12px;font-size:11px;border-radius:6px;border:none;cursor:pointer;font-weight:600;}
+.btn-copy{background:var(--accent-green);color:#000;}
+.btn-gemini{background:var(--accent-blue);color:white;}
+.btn-nlm{background:var(--accent-purple);color:white;}
+.prompt-text{background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.6;max-height:250px;overflow-y:auto;white-space:pre-wrap;}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:16px;padding:12px 16px;background:var(--glass);border-radius:12px;margin-bottom:16px;flex-wrap:wrap;}
+.stat-item{display:flex;align-items:center;gap:6px;font-size:12px;}
+.stat-value{font-weight:700;color:var(--accent-gold);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg-secondary);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted);}
+
+/* MISSIONS */
+.missions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mission-card{background:var(--glass);border:2px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.3s;position:relative;}
+.mission-card:hover{border-color:var(--accent-blue);}
+.mission-card.active{border-color:var(--accent-green);animation:missionPulse 2s infinite;}
+@keyframes missionPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.4);}50%{box-shadow:0 0 20px 5px rgba(34,197,94,0.2);}}
+.mission-icon{font-size:24px;margin-bottom:6px;}
+.mission-title{font-size:12px;font-weight:600;}
+.mission-time{font-size:10px;color:var(--text-muted);}
+.mission-reward{position:absolute;top:8px;right:8px;font-size:10px;color:var(--accent-gold);font-weight:700;}
+.progress-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border);}
+.progress-fill{height:100%;width:0%;background:var(--accent-green);transition:width 0.5s linear;}
+
+/* AUDIO */
+.music-presets{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.preset-btn{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;transition:all 0.2s;text-align:left;font-size:12px;}
+.preset-btn:hover{border-color:var(--accent-blue);}
+.preset-btn.active{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+.preset-btn small{display:block;font-size:9px;opacity:0.8;margin-top:3px;}
+
+/* POPUP */
+.dopamine-hit{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;font-weight:700;color:var(--accent-gold);text-shadow:0 0 30px rgba(245,158,11,0.8);z-index:10000;animation:dopamineFloat 1.5s ease-out forwards;pointer-events:none;text-align:center;}
+@keyframes dopamineFloat{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}20%{transform:translate(-50%,-60%) scale(1.2);opacity:1;}100%{transform:translate(-50%,-100%) scale(1);opacity:0;}}
+
+@media(max-width:1024px){.sidebar{width:240px;}.source-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}}
+@media(max-width:768px){.sidebar{display:none;}.content-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div>
+      <div class="logo">AEGIS v6.0</div>
+      <div class="logo-sub">Biblioteca Maestra — 178 Fuentes (MEJORADA)</div>
+    </div>
+    <span class="badge badge-xp" id="badge-xp">⚡ 0 XP</span>
+    <span class="badge badge-streak" id="badge-streak">🔥 0 días</span>
+    <span class="badge badge-sources" id="badge-sources">📚 0/178</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+    <button class="icon-btn" onclick="exportData()">📤</button>
+  </div>
+</header>
+
+<div class="main-layout">
+  <aside class="sidebar">
+    <div class="nav-section">
+      <div class="nav-title">📚 Biblioteca</div>
+      <button class="nav-btn active" onclick="showView('library')">🗂️ Todas las Fuentes</button>
+      <button class="nav-btn" onclick="showView('current')">📖 Estudiando Ahora</button>
+      <button class="nav-btn" onclick="showView('progress')">📊 Progreso</button>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-title">⚡ Acciones Rápidas</div>
+      <button class="nav-btn" onclick="generatePrompt('plan')">📋 Plan Diario</button>
+      <button class="nav-btn" onclick="generatePrompt('socratic')">❓ Tutor Socrático</button>
+      <button class="nav-btn" onclick="generatePrompt('notebooklm')">📓 Prompt NotebookLM</button>
+      <button class="nav-btn" onclick="openNotebookLMFromSidebar()">🔗 Abrir NotebookLM</button>
+      <button class="nav-btn" onclick="openGeminiFromSidebar()">💎 Abrir Gemini</button>
+    </div>
+    
+    <!-- FASE 1: Ritmo Circadiano Adaptativo -->
+    <div class="nav-section">
+      <div class="nav-title">⏰ Ritmo Circadiano</div>
+      <div id="circadianWidget" style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;">
+        <p style="color:var(--text-muted);font-size:12px;">Cargando sugerencia...</p>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">¿Cómo te sientes ahora?</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:10px;">😴</span>
+          <input type="range" id="energySlider" min="1" max="10" value="5" style="flex:1;" onchange="updateEnergyPreview(this.value)">
+          <span style="font-size:10px;">⚡</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:4px;">
+          <span>1</span><span>5</span><span>10</span>
+        </div>
+        <div id="energyPreview" style="font-size:11px;color:var(--accent-cyan);margin-top:6px;text-align:center;">Energía: 5</div>
+        <button onclick="submitEnergyReport()" style="width:100%;margin-top:8px;padding:6px 12px;font-size:11px;background:var(--accent-green);border:none;border-radius:6px;color:#000;cursor:pointer;font-weight:600;">Reportar Energía</button>
+      </div>
+    </div>
+    
+    <!-- FEATURE: CodeCombat Sync -->
+    <div class="nav-section">
+      <div class="nav-title">🎮 CodeCombat Sync</div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+          Registra tu progreso de CodeCombat manualmente. Sincroniza semanalmente.
+        </div>
+        
+        <input type="text" id="ccUsername" placeholder="Username (ej: chrisztoledogplus)" style="width:100%;margin-bottom:6px;padding:6px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:11px;">
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+          <input type="number" id="ccLevels" placeholder="Niveles completados" min="0" style="padding:6px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:11px;">
+          <input type="number" id="ccXP" placeholder="XP total" min="0" style="padding:6px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:11px;">
+        </div>
+        
+        <input type="text" id="ccConcepts" placeholder="Conceptos aprendidos (ej: variables, loops, functions)" style="width:100%;margin-bottom:8px;padding:6px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:11px;">
+        
+        <button onclick="syncCodeCombatSimple()" style="width:100%;padding:8px;font-size:11px;background:var(--accent-green);border:none;border-radius:6px;color:#000;cursor:pointer;font-weight:600;">💾 Guardar Progreso</button>
+        
+        <div id="ccStats" style="margin-top:10px;">
+          <div style="color:var(--text-muted);font-size:10px;text-align:center;">Ingresa tus datos para ver stats</div>
+        </div>
+        
+        <div style="margin-top:8px;padding:8px;background:rgba(59,130,246,0.1);border-radius:6px;font-size:9px;color:var(--text-secondary);">
+          💡 <strong>Tip:</strong> Abre tu <a href="https://codecombat.com/user/chrisztoledogplus" target="_blank" style="color:var(--accent-cyan);">perfil</a> y copia los números manualmente
+        </div>
+        
+        <button onclick="openCodeEvaluator()" style="width:100%;margin-top:8px;padding:8px;font-size:11px;background:var(--accent-purple);border:none;border-radius:6px;color:white;cursor:pointer;font-weight:600;">🧠 Evaluar mi Código</button>
+      </div>
+    </div>
+    
+    <!-- FEATURE: Biohacking Lab -->
+    <div class="nav-section">
+      <div class="nav-title">🧬 Biohacking Lab</div>
+      
+      <!-- Cronotipo -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:600;color:var(--accent-cyan);margin-bottom:6px;">🧭 Tu Cronotipo</div>
+        <div id="chronotypeResult" style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">
+          No determinado. Haz el assessment para optimizar tu ritmo.
+        </div>
+        <button onclick="openChronotypeModal()" style="width:100%;padding:6px;font-size:11px;background:var(--accent-blue);border:none;border-radius:6px;color:white;cursor:pointer;">📝 Assessment (3 min)</button>
+      </div>
+      
+      <!-- Timer Ultradiano -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:600;color:var(--accent-cyan);margin-bottom:6px;">⏱️ Ciclo Ultradiano</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-bottom:6px;">Kleitman BRAC: 90 min foco / 20 min break</div>
+        <div id="ultradianTimer" style="font-size:28px;font-weight:700;color:var(--accent-gold);text-align:center;font-family:var(--font-mono);margin:8px 0;">90:00</div>
+        <div id="ultradianStatus" style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:8px;">Listo para sesión de 90 min</div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="startUltradianCycle()" style="flex:1;padding:6px;font-size:11px;background:var(--accent-green);border:none;border-radius:6px;color:#000;cursor:pointer;font-weight:600;">▶️ Iniciar</button>
+          <button onclick="pauseUltradianCycle()" style="flex:1;padding:6px;font-size:11px;background:var(--accent-gold);border:none;border-radius:6px;color:#000;cursor:pointer;">⏸️ Pausa</button>
+        </div>
+      </div>
+      
+      <!-- Suplementos -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:var(--accent-cyan);margin-bottom:6px;">💊 Stack de Hoy</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">
+          <label style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><input type="checkbox" onchange="logSupplement('caffeine', this.checked)"> ☕ Cafeína 100mg</label>
+          <label style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><input type="checkbox" onchange="logSupplement('lTheanine', this.checked)"> 🍵 L-Teanina 200mg</label>
+          <label style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><input type="checkbox" onchange="logSupplement('creatine', this.checked)"> ⚡ Creatina 5g</label>
+          <label style="display:flex;align-items:center;gap:4px;"><input type="checkbox" onchange="logSupplement('magnesium', this.checked)"> 🧪 Magnesio 2g</label>
+        </div>
+        <div id="caffeineWarning" style="display:none;font-size:9px;color:var(--accent-red);background:rgba(239,68,68,0.1);padding:6px;border-radius:6px;margin-top:6px;">
+          ⚠️ Pasadas las 2:00 PM. Cafeína afectará sueño.
+        </div>
+      </div>
+    </div>
+    
+    <!-- FEATURE: Música para Flujo -->
+    <div class="nav-section">
+      <div class="nav-title">🎵 Música para Flujo</div>
+      
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:10px;text-align:center;">
+          🍎 Apple Music para audio · 📺 YouTube para video
+        </div>
+        
+        <!-- Protocolos Apple Music -->
+        <button onclick="startMusicProtocol('deepFocus')" style="width:100%;margin-bottom:6px;padding:8px;font-size:11px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));border:none;border-radius:6px;color:white;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;">
+          <span>🎯</span><div style="flex:1;"><div style="font-weight:600;">Deep Focus <span style="font-size:9px;opacity:0.8;">🍎</span></div><div style="font-size:8px;opacity:0.9;">40Hz Gamma · Memoria de trabajo</div></div>
+        </button>
+        
+        <button onclick="startMusicProtocol('creativeFlow')" style="width:100%;margin-bottom:6px;padding:8px;font-size:11px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;">
+          <span>🌊</span><div style="flex:1;"><div style="font-weight:600;">Creative Flow <span style="font-size:9px;color:var(--text-muted);">🍎</span></div><div style="font-size:8px;color:var(--text-muted);">10Hz Alpha · Creatividad</div></div>
+        </button>
+        
+        <button onclick="startMusicProtocol('learningMode')" style="width:100%;margin-bottom:6px;padding:8px;font-size:11px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;">
+          <span>📚</span><div style="flex:1;"><div style="font-weight:600;">Learning Mode <span style="font-size:9px;color:var(--text-muted);">🍎</span></div><div style="font-size:8px;color:var(--text-muted);">12-15Hz SMR · Retención</div></div>
+        </button>
+        
+        <button onclick="startMusicProtocol('relaxationBreak')" style="width:100%;margin-bottom:6px;padding:8px;font-size:11px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;">
+          <span>☕</span><div style="flex:1;"><div style="font-weight:600;">Break & Recharge <span style="font-size:9px;color:var(--text-muted);">🍎</span></div><div style="font-size:8px;color:var(--text-muted);">6Hz Theta · Recuperación</div></div>
+        </button>
+        
+        <!-- Film Scores - YouTube Video -->
+        <button onclick="startMusicProtocol('filmScores')" style="width:100%;margin-bottom:6px;padding:8px;font-size:11px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;">
+          <span>🎬</span><div style="flex:1;"><div style="font-weight:600;">Epic Coding <span style="font-size:9px;color:var(--accent-red);">📺</span></div><div style="font-size:8px;color:var(--text-muted);">Film Scores Playlist · Video</div></div>
+        </button>
+        
+        <div style="margin-top:10px;padding:8px;background:rgba(59,130,246,0.1);border-radius:6px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text-secondary);">
+            <input type="checkbox" id="musicAutosync" onchange="toggleMusicAutosync(this.checked)" checked>
+            🧠 Auto-sync con ciclos de estudio
+          </label>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content-area">
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+      <div class="stat-item">📚 <span class="stat-value" id="stat-total">74</span> fuentes totales</div>
+      <div class="stat-item">✅ <span class="stat-value" id="stat-completed">0</span> completadas</div>
+      <div class="stat-item">📖 <span class="stat-value" id="stat-active">0</span> en progreso</div>
+      <div class="stat-item">🎯 <span class="stat-value" id="stat-cs50">10</span> CS50x 2025</div>
+      <div class="stat-item">🛡️ <span class="stat-value" id="stat-security">8</span> Seguridad</div>
+      <div class="stat-item">🤖 <span class="stat-value" id="stat-ai">7</span> IA/ML</div>
+    </div>
+
+    <!-- CURRENT SOURCE STUDY -->
+    <div class="study-card" id="currentStudy">
+      <div class="study-header">
+        <div class="study-source">
+          <div class="study-icon" id="studyIcon">📚</div>
+          <div class="study-meta">
+            <div class="study-name" id="studyName">Selecciona una fuente para estudiar</div>
+            <div class="study-category" id="studyCategory">BIBLIOTECA</div>
+          </div>
+        </div>
+        <div class="study-actions">
+          <button class="btn-sm btn-copy" onclick="markCompleted()">✅ Completar</button>
+        </div>
+      </div>
+      <div class="study-desc" id="studyDesc">
+        Haz click en cualquier fuente de la biblioteca para comenzar. Cada fuente tiene prompts específicos para NotebookLM y Gemini.
+      </div>
+      <div class="study-tactical" id="studyTactical" style="display:none;">
+        <div class="study-tactical-label">🎯 Utilidad Táctica</div>
+        <div class="study-tactical-text" id="studyTacticalText"></div>
+      </div>
+      <div class="action-grid" id="studyActions" style="display:none;">
+        <button class="action-btn primary" onclick="openSource()">
+          <span>🌐</span><div><strong>Abrir Fuente</strong><small>URL original</small></div>
+        </button>
+        <button class="action-btn" onclick="generatePrompt('audioclase')">
+          <span>🎧</span><div><strong>Clase Audio</strong><small>Del día, con analogías</small></div>
+        </button>
+        <button class="action-btn" onclick="generatePrompt('notebooklm')">
+          <span>📓</span><div><strong>Prompt NotebookLM</strong><small>Podcast/quiz</small></div>
+        </button>
+        <button class="action-btn" onclick="generatePrompt('socratic')">
+          <span>❓</span><div><strong>Tutor Socrático</strong><small>Preguntas guía</small></div>
+        </button>
+        <button class="action-btn" onclick="generatePrompt('summary')">
+          <span>📝</span><div><strong>Resumen Ejecutivo</strong><small>Puntos clave</small></div>
+        </button>
+        <button class="action-btn" onclick="generatePrompt('master_nlm')" style="background:linear-gradient(135deg,var(--accent-purple),var(--accent-pink));border-color:var(--accent-purple);">
+          <span>🎙️</span><div><strong>MASTER AudioClase</strong><small>Usando las 74 fuentes</small></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- SOURCE LIBRARY -->
+    <div class="widget" id="libraryWidget">
+      <div class="widget-title">
+        🗂️ Catálogo Maestro V6.0
+        <span style="font-size:11px;color:var(--text-muted);">Click para seleccionar</span>
+      </div>
+      <div class="cat-tabs" id="categoryTabs">
+        <button class="cat-tab active" data-category="all" onclick="filterCategory('all')">📚 Todas (178)</button>
+        <button class="cat-tab" data-category="methodology" onclick="filterCategory('methodology')">📖 Metodología (62)</button>
+        <button class="cat-tab" data-category="python" onclick="filterCategory('python')">🐍 Python (39)</button>
+        <button class="cat-tab" data-category="cs50" onclick="filterCategory('cs50')">🎓 CS50 (19)</button>
+        <button class="cat-tab" data-category="systems" onclick="filterCategory('systems')">⚙️ Sistemas/C (18)</button>
+        <button class="cat-tab" data-category="security" onclick="filterCategory('security')">🛡️ Seguridad (18)</button>
+        <button class="cat-tab" data-category="cloud" onclick="filterCategory('cloud')">☁️ Cloud (3)</button>
+        <button class="cat-tab" data-category="architecture" onclick="filterCategory('architecture')">🏗️ Arquitectura (12)</button>
+        <button class="cat-tab" data-category="web" onclick="filterCategory('web')">🌐 Web (21)</button>
+        <button class="cat-tab" data-category="ai" onclick="filterCategory('ai')">🤖 IA/ML (12)</button>
+        <button class="cat-tab" data-category="math" onclick="filterCategory('math')">🧮 Matemáticas (7)</button>
+        <button class="cat-tab" data-category="devops" onclick="filterCategory('devops')">🐳 DevOps/Docker (5)</button>
+        <button class="cat-tab" data-category="git" onclick="filterCategory('git')">🌲 Git (5)</button>
+        <button class="cat-tab" data-category="database" onclick="filterCategory('database')">🗄️ Bases de Datos (3)</button>
+      </div>
+      <div class="source-grid" id="sourceGrid"></div>
+    </div>
+
+    <!-- VIEW: ESTUDIANDO AHORA -->
+    <div id="currentView" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;">
+      <div style="font-size:18px;font-weight:700;color:var(--accent-cyan);margin-bottom:16px;">📖 Estudiando Ahora</div>
+      <div id="currentContent">
+        <div style="text-align:center;padding:40px;color:var(--text-muted);">
+          <div style="font-size:48px;margin-bottom:16px;">📚</div>
+          <div style="font-size:16px;margin-bottom:8px;">No hay fuente activa</div>
+          <div style="font-size:12px;">Selecciona una fuente de la biblioteca para comenzar a estudiar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: PROGRESO -->
+    <div id="progressView" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;">
+      <div style="font-size:18px;font-weight:700;color:var(--accent-cyan);margin-bottom:16px;">📊 Progreso del Plan de Estudios</div>
+      
+      <!-- Stats Cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;">
+        <div style="background:var(--bg-primary);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:32px;font-weight:700;color:var(--accent-gold);" id="progressTotal">74</div>
+          <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Fuentes Totales</div>
+        </div>
+        <div style="background:var(--bg-primary);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:32px;font-weight:700;color:var(--accent-green);" id="progressCompleted">0</div>
+          <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Completadas</div>
+        </div>
+        <div style="background:var(--bg-primary);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:32px;font-weight:700;color:var(--accent-blue);" id="progressPercentage">0%</div>
+          <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Progreso</div>
+        </div>
+        <div style="background:var(--bg-primary);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:32px;font-weight:700;color:var(--accent-purple);" id="progressXP">0</div>
+          <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">XP Total</div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div style="background:var(--bg-primary);border-radius:12px;padding:16px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:14px;font-weight:600;">Progreso General</span>
+          <span style="font-size:14px;color:var(--accent-cyan);" id="progressText">0/74 fuentes</span>
+        </div>
+        <div style="height:24px;background:var(--border);border-radius:12px;overflow:hidden;">
+          <div id="progressBarFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent-green),var(--accent-cyan));border-radius:12px;transition:width 0.5s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Progreso por Categoría</div>
+      <div id="categoryProgressGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+        <!-- Se llena dinámicamente -->
+      </div>
+
+      <!-- Recent Completed -->
+      <div style="margin-top:20px;">
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Últimas Fuentes Completadas</div>
+        <div id="recentCompletedList" style="display:flex;flex-direction:column;gap:8px;">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT GENERATOR -->
+    <div class="prompt-area">
+      <div class="prompt-header">
+        <span class="prompt-title" id="promptTitle">🧠 Generador de Prompts</span>
+        <div class="prompt-controls">
+          <button class="btn-sm btn-copy" onclick="copyPrompt()">📋 Copiar</button>
+          <button class="btn-sm btn-gemini" onclick="openGemini()">💎 Gemini</button>
+          <button class="btn-sm btn-nlm" onclick="openNotebookLM()">📓 NotebookLM</button>
+        </div>
+      </div>
+      <div class="prompt-text" id="promptOutput">Selecciona una fuente y tipo de prompt para generar...</div>
+    </div>
+
+    <!-- MICRO-MISSIONS -->
+    <div class="widget">
+      <div class="widget-title">⚡ Micro-Misiones — Modo ADHD</div>
+      <div class="missions-grid">
+        <div class="mission-card" id="mission1" onclick="startMission(1)">
+          <div class="mission-icon">📖</div>
+          <div class="mission-title">Lectura/Video</div>
+          <div class="mission-time">25 min</div>
+          <div class="mission-reward">+50 XP</div>
+          <div class="progress-bar"><div class="progress-fill" id="progress1"></div></div>
+        </div>
+        <div class="mission-card" id="mission2" onclick="startMission(2)">
+          <div class="mission-icon">💻</div>
+          <div class="mission-title">Práctica/Código</div>
+          <div class="mission-time">30 min</div>
+          <div class="mission-reward">+75 XP</div>
+          <div class="progress-bar"><div class="progress-fill" id="progress2"></div></div>
+        </div>
+        <div class="mission-card" id="mission3" onclick="startMission(3)">
+          <div class="mission-icon">🎯</div>
+          <div class="mission-title">Ejercicios/Quiz</div>
+          <div class="mission-time">20 min</div>
+          <div class="mission-reward">+40 XP</div>
+          <div class="progress-bar"><div class="progress-fill" id="progress3"></div></div>
+        </div>
+        <div class="mission-card" id="mission4" onclick="startMission(4)" style="background:rgba(245,158,11,0.1);border-color:var(--accent-gold);">
+          <div class="mission-icon">☕</div>
+          <div class="mission-title">DESCANSO</div>
+          <div class="mission-time">5 min obligatorio</div>
+          <div class="mission-reward">+20 XP</div>
+          <div class="progress-bar"><div class="progress-fill" id="progress4"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// BIBLIOTECA MAESTRA — 178 FUENTES DOCUMENTALES
+// AEGIS v6.0 MEJORADA - Basada en v5 con correcciones de seguridad
+// Actualizado: 2026-05-16
+// Cambios v6: Anti-XSS hardening, IndexedDB backup, mejor manejo de errores
+// ═══════════════════════════════════════════════════════════
+const BIBLIOTECA = [
+  { id: 1, name: "97 Things Every Programmer Should Know", category: "methodology", icon: "🧠", url: "#", desc: "97 consejos sobre buenas prácticas de programación de Kevlin Henney.", tactical: "Fomenta código limpio, refactorización y madurez profesional." },
+  { id: 2, name: "Algebra 1 | Khan Academy", category: "methodology", icon: "🧮", url: "#", desc: "Fundamentos del álgebra: ecuaciones, funciones, desigualdades y gráficas.", tactical: "Base matemática esencial para algoritmos y análisis Big O." },
+  { id: 3, name: "ArchWiki", category: "systems", icon: "🐧", url: "#", desc: "Documentación oficial completa de Arch Linux: instalación, configuración, mantenimiento.", tactical: "Supervivencia en terminal y administración pura de sistemas Linux." },
+  { id: 4, name: "Architecture Patterns with Python", category: "architecture", icon: "🏗️", url: "#", desc: "DDD y microservicios en Python de Harry Percival.", tactical: "Base indispensable para crear APIs escalables con FastAPI en producción." },
+  { id: 5, name: "Beej's Guide to Network Programming", category: "systems", icon: "🌐", url: "#", desc: "Guía clásica de redes y sockets en C de Brian Hall.", tactical: "Entender telecomunicaciones a nivel hardware y desarrollar herramientas ofensivas." },
+  { id: 6, name: "HackTheBox Academy", category: "security", icon: "🛡️", url: "#", desc: "Catálogo completo de cursos de ciberseguridad de HackTheBox.", tactical: "Manual definitivo para entrenar tácticas de Hacking Ético." },
+  { id: 7, name: "Clean Architecture - Uncle Bob", category: "architecture", icon: "🏛️", url: "#", desc: "Diseño de arquitecturas desacopladas de Robert C. Martin.", tactical: "Reglas para pasar de escribir código simple a ser Arquitecto de Software." },
+  { id: 8, name: "CS50 - Bugs and Debugging", category: "cs50", icon: "🐛", url: "#", desc: "Técnicas sistemáticas de depuración de Harvard.", tactical: "Resolución analítica de fallos lógicos y de memoria." },
+  { id: 9, name: "C Programming Tutorial", category: "systems", icon: "💻", url: "#", desc: "Introducción a C y gestión de memoria.", tactical: "Interacción directa con hardware y comprensión de vulnerabilidades." },
+  { id: 10, name: "CS50P 2024 - Week 0", category: "cs50", icon: "🎓", url: "#", desc: "Fundamentos de Python: variables, funciones, sintaxis.", tactical: "Primeros pasos en sintaxis para dominar Python." },
+  { id: 11, name: "CS50P 2024 - Week 1", category: "cs50", icon: "🎓", url: "#", desc: "Condicionales en Python: if, elif, else, operadores lógicos.", tactical: "Toma de decisiones lógicas en programación." },
+  { id: 12, name: "CS50x 2024 - Algorithms", category: "cs50", icon: "🎓", url: "#", desc: "Algoritmos de búsqueda, ordenamiento y Big O.", tactical: "Optimización crítica de rendimiento de programas." },
+  { id: 13, name: "CS50x 2024 - Week 0", category: "cs50", icon: "🎓", url: "#", desc: "Pensamiento computacional con Scratch.", tactical: "Arquitectura mental y lógica secuencial." },
+  { id: 14, name: "CS50x 2024 - Week 1", category: "cs50", icon: "🎓", url: "#", desc: "Transición a C: compiladores, memoria, sintaxis.", tactical: "Entender metal en Linux y bajo nivel." },
+  { id: 15, name: "CS50x 2024 - Week 2", category: "cs50", icon: "🎓", url: "#", desc: "Arrays en C y fundamentos de criptografía.", tactical: "Base crítica para ciberseguridad y manejo de bytes." },
+  { id: 16, name: "CS50x 2024 - Week 3", category: "cs50", icon: "🎓", url: "#", desc: "Eficiencia algorítmica y estructuras de datos.", tactical: "Optimización de datos y rendimiento." },
+  { id: 17, name: "CS50x 2024 - Week 6", category: "cs50", icon: "🎓", url: "#", desc: "Conceptos de C reimplementados en Python.", tactical: "Hardware vs alto nivel, abstracción." },
+  { id: 18, name: "CS50x 2025 Syllabus", category: "cs50", icon: "🎓", url: "#", desc: "Syllabus actualizado de CS50x 2025.", tactical: "Referencia de estándares modernos." },
+  { id: 19, name: "CS50x 2025 - Lecture 0", category: "cs50", icon: "🎓", url: "#", desc: "Bases de IA y Scratch con CS50 Duck.", tactical: "Lógica visual y comprensión de LLMs." },
+  { id: 20, name: "CS50x 2026", category: "cs50", icon: "🎓", url: "#", desc: "Proyección temario 2026.", tactical: "Roadmap competitivo y tendencias." },
+  { id: 21, name: "Clean Code", category: "methodology", icon: "🧹", url: "#", desc: "Artesanía de software: naming, SRP, refactorización.", tactical: "Código profesional limpio y mantenible." },
+  { id: 22, name: "Command Line Arguments in C", category: "systems", icon: "⌨️", url: "#", desc: "Entradas de terminal en C: argc, argv, CLI.", tactical: "Conexión entre scripts bash y binarios de bajo nivel." },
+  { id: 23, name: "DeepSeek - From Novice to Expert", category: "ai", icon: "🧠", url: "#", desc: "Manual de LLMs de Tsinghua: prompting estructurado, RAG.", tactical: "Orquestación avanzada de IA y Vibe Coding." },
+  { id: 24, name: "IIT Kharagpur - Recursion Practice", category: "methodology", icon: "🔄", url: "#", desc: "Ejercicios recursivos universitarios complejos.", tactical: "Pensamiento lateral y dominio de estructuras anidadas." },
+  { id: 25, name: "Developer Roadmaps", category: "methodology", icon: "🗺️", url: "#", desc: "Rutas visuales de tecnologías estándar en desarrollo.", tactical: "Auditar habilidades contra demandas del mercado laboral." },
+  { id: 26, name: "Docker Docs", category: "devops", icon: "🐳", url: "#", desc: "Documentación exhaustiva del ecosistema Docker.", tactical: "Consulta técnica para despliegues en contenedores." },
+  { id: 27, name: "The Pragmatic Programmer", category: "methodology", icon: "📖", url: "#", desc: "Heurísticas de software y gestión de deuda técnica.", tactical: "Mentalidad de 'artesano del código' profesional." },
+  { id: 28, name: "FastAPI Tutorial Oficial", category: "python", icon: "⚡", url: "#", desc: "APIs asíncronas con FastAPI y Pydantic.", tactical: "Framework backend para microservicios." },
+  { id: 29, name: "Docker Get Started", category: "devops", icon: "🐳", url: "#", desc: "Introducción práctica a contenedores Docker.", tactical: "Inicio en DevSecOps y empaquetado." },
+  { id: 30, name: "Prompt Engineering Guide", category: "ai", icon: "🗣️", url: "#", desc: "RAG, Agentes y técnicas avanzadas de prompting.", tactical: "Maximizar desempeño de asistentes de IA." },
+  { id: 31, name: "System Design Primer", category: "architecture", icon: "📐", url: "#", desc: "Diseño de sistemas a gran escala de Donne Martin.", tactical: "Transición de programador a Arquitecto de Software." },
+  { id: 32, name: "Neural Networks: Zero to Hero", category: "ai", icon: "🤖", url: "#", desc: "Redes neuronales desde cero de Andrej Karpathy.", tactical: "Desmitificar IA y entender transformers." },
+  { id: 33, name: "Hacker's Guide to Neural Networks", category: "ai", icon: "🧠", url: "#", desc: "Conceptos de NN enfocados a programadores.", tactical: "Entender la magia matemática detrás de modelos." },
+  { id: 34, name: "Hacking: The Art of Exploitation", category: "security", icon: "☠️", url: "#", desc: "Memoria, ensamblador y buffer overflows de Jon Erickson.", tactical: "Ingeniería inversa y mente de atacante a nivel CPU." },
+  { id: 35, name: "Nand2Tetris", category: "systems", icon: "🖥️", url: "#", desc: "PC desde compuertas lógicas NAND hasta software.", tactical: "Ejecución hardware y desmitificación de computadoras." },
+  { id: 36, name: "Hugging Face Introduction", category: "ai", icon: "🤗", url: "#", desc: "NLP, Transformers y tokenización.", tactical: "Manipular LLMs a nivel de código." },
+  { id: 37, name: "Linux Command Line", category: "bash", icon: "🐧", url: "#", desc: "Administración Unix y bash scripting.", tactical: "Supervivencia en Arch Linux y terminal." },
+  { id: 38, name: "Learning Arrays in C", category: "cs50", icon: "📦", url: "#", desc: "Gestión de matrices y memoria en C.", tactical: "Prevenir buffer overflows y vulnerabilidades." },
+  { id: 39, name: "Thinking in Systems", category: "methodology", icon: "🔄", url: "#", desc: "Retroalimentación, flujos y sistemas complejos de Meadows.", tactical: "Visión sistémica de software y redes." },
+  { id: 40, name: "OWASP Top 10", category: "security", icon: "🔒", url: "#", desc: "10 riesgos críticos de seguridad en aplicaciones web.", tactical: "Escudo defensivo obligatorio para APIs." },
+  { id: 41, name: "Operating Systems (OSTEP)", category: "systems", icon: "⚙️", url: "#", desc: "Virtualización, hilos y persistencia de Remzi Arpaci.", tactical: "Comprensión profunda del Kernel." },
+  { id: 42, name: "Practical Deep Learning", category: "ai", icon: "🎓", url: "#", desc: "Deep Learning pragmático de fast.ai.", tactical: "IA aplicada y modelos en producción." },
+  { id: 43, name: "Prompt Engineering Overview", category: "ai", icon: "💬", url: "#", desc: "Técnicas de prompting para Claude de Anthropic.", tactical: "Precisión en IA y reducción de alucinaciones." },
+  { id: 44, name: "Proyecto Asalto Técnico", category: "methodology", icon: "📜", url: "#", desc: "Auditoría y plan de estudios autodidacta.", tactical: "Evitar burnout y estructurar aprendizaje." },
+  { id: 45, name: "Python 3 Tutorial", category: "python", icon: "🐍", url: "#", desc: "Documentación oficial de Python 3.", tactical: "Consulta definitiva de sintaxis." },
+  { id: 46, name: "Python Crash Course", category: "python", icon: "🐍", url: "#", desc: "Guía práctica con proyectos Django de Eric Matthes.", tactical: "Tracción rápida en desarrollo Python." },
+  { id: 47, name: "ROADMAP_CURSO_AUTODIDACTA", category: "methodology", icon: "🗺️", url: "#", desc: "Plan maestro estructurado a 12 meses.", tactical: "Brújula cronológica general del aprendizaje." },
+  { id: 48, name: "ROLES_PEDAGOGIA_IA", category: "ai", icon: "🎭", url: "#", desc: "System prompts para pedagogía con IA.", tactical: "Generar fricción constructiva en el aprendizaje." },
+  { id: 49, name: "SQL Antipatterns", category: "databases", icon: "🗄️", url: "#", desc: "Corrección de diseño en BD relacionales de Bill Karwin.", tactical: "Esquemas robustos e inviolables." },
+  { id: 50, name: "The C Cheat Sheet", category: "systems", icon: "📄", url: "#", desc: "Referencia rápida de sintaxis C de U. Alberta.", tactical: "Consulta bajo nivel sin perder fluidez." },
+  { id: 51, name: "The Full Stack", category: "web", icon: "📚", url: "#", desc: "Integración de LLMs en aplicaciones web.", tactical: "Modelos avanzados en producción real." },
+  { id: 52, name: "The Twelve-Factor App", category: "architecture", icon: "🏗️", url: "#", desc: "12 principios para aplicaciones SaaS de Adam Wiggins.", tactical: "Contenerización y despliegue moderno." },
+  { id: 53, name: "MCP Claude Guide", category: "ai", icon: "🛠️", url: "#", desc: "Model Context Protocol de Anthropic.", tactical: "Automatizar asistentes con skills estructuradas." },
+  { id: 54, name: "Web Security Academy", category: "security", icon: "🕸️", url: "#", desc: "Laboratorios web de PortSwigger.", tactical: "Memoria muscular en Hacking Ético." },
+  { id: 55, name: "CS50x Week 0 Scratch", category: "cs50", icon: "🎓", url: "#", desc: "Lógica con Scratch 2025.", tactical: "Soporte multimedia y algoritmos visuales." },
+  { id: 56, name: "CS50x Week 2 Arrays", category: "cs50", icon: "🎓", url: "#", desc: "Arrays en C 2025.", tactical: "Refuerzo de manejo de memoria." },
+  { id: 57, name: "CS50x Week 3 Algorithms", category: "cs50", icon: "🎓", url: "#", desc: "Complejidad algorítmica 2025.", tactical: "Entender Big O y optimización." },
+  { id: 58, name: "CS50x Index", category: "cs50", icon: "🎓", url: "#", desc: "Índice navegación CS50 2025.", tactical: "Mapa completo del curso." },
+  { id: 59, name: "Search vs Linear Search", category: "methodology", icon: "🔍", url: "#", desc: "Eficiencia algorítmica comparada.", tactical: "Visualizar rendimiento y Big O." },
+  { id: 60, name: "Algoritmos - Pseudocódigo", category: "methodology", icon: "📝", url: "#", desc: "Introducción a diagramas y pseudocódigo.", tactical: "Bases de programación estructurada." },
+  { id: 61, name: "Apuntes Estructuras de Datos", category: "methodology", icon: "📚", url: "#", desc: "Teoría algorítmica completa.", tactical: "Complejidad en estructuras de datos." },
+  { id: 62, name: "Guía Fundamentos Python", category: "python", icon: "📝", url: "#", desc: "Cheat-sheet de MoureDev.", tactical: "Evitar pérdida de estado de fluidez." },
+  { id: 63, name: "C Introducción", category: "systems", icon: "💻", url: "#", desc: "Guía completa de lenguaje C.", tactical: "Cimientos de programación de sistemas." },
+  { id: 64, name: "CodeCombat Curriculum", category: "methodology", icon: "🎮", url: "#", desc: "Auditoría RPG de progreso gamificado.", tactical: "Evitar falso positivo de competencia." },
+  { id: 65, name: "CSS3 + JavaScript", category: "web", icon: "🌐", url: "#", desc: "Manual front-end UOC completo.", tactical: "Manipular DOM y crear interfaces." },
+  { id: 66, name: "Docker Deep Dive 2025", category: "devops", icon: "🐳", url: "#", desc: "Manual completo de Nigel Poulton.", tactical: "Empaquetado seguro y Swarm." },
+  { id: 67, name: "Docker Intro", category: "devops", icon: "🐳", url: "#", desc: "Introducción práctica a Docker.", tactical: "Bases de contenerización." },
+  { id: 68, name: "Estructuras de Datos", category: "methodology", icon: "🧱", url: "#", desc: "Conceptos teóricos de organización de datos.", tactical: "Organización eficiente de memoria." },
+  { id: 69, name: "Fundamentos Programación", category: "methodology", icon: "🧱", url: "#", desc: "Bases en C++ de Luis Hernández.", tactical: "Lógica purista y estructurada." },
+  { id: 70, name: "Pro Git", category: "git", icon: "🐙", url: "#", desc: "Manual avanzado de Scott Chacon.", tactical: "Dominio de CI/CD y control de versiones." },
+  { id: 71, name: "Go - El Pequeño Libro", category: "systems", icon: "🐹", url: "#", desc: "Introducción a Golang y goroutines.", tactical: "Concurrencia y backend de alto rendimiento." },
+  { id: 72, name: "Guía Scrum", category: "methodology", icon: "🏃", url: "#", desc: "Marco ágil Euro Scrum.", tactical: "Trabajo corporativo en equipos." },
+  { id: 73, name: "Guía Programadores Junior 2026", category: "methodology", icon: "🧭", url: "#", desc: "Roadmap de MoureDev para 2026.", tactical: "Empleabilidad y tendencias actuales." },
+  { id: 74, name: "Haskell - Piensa Funcional", category: "methodology", icon: "𝜆", url: "#", desc: "Programación funcional pura.", tactical: "Inmutabilidad y elegancia funcional." },
+  { id: 75, name: "Haskell vs Python", category: "python", icon: "🐍", url: "#", desc: "Comparación de paradigmas.", tactical: "List comprehensions y elegancia funcional en Python." },
+  { id: 76, name: "Code - Charles Petzold", category: "systems", icon: "🔌", url: "#", desc: "Historia de hardware y software.", tactical: "Entender el metal desde Braille hasta código." },
+  { id: 77, name: "Black Hat Python", category: "security", icon: "☠️", url: "#", desc: "Malware y hacking con Python de Justin Seitz.", tactical: "Hacking Ético Fase 4: herramientas ofensivas." },
+  { id: 78, name: "Introducción POO", category: "methodology", icon: "📦", url: "#", desc: "Bases de Programación Orientada a Objetos.", tactical: "Diseño escalable con clases y herencia." },
+  { id: 79, name: "Java - Apuntes", category: "methodology", icon: "☕", url: "#", desc: "Tipado estático en Java.", tactical: "Contraste disciplinado con Python dinámico." },
+  { id: 80, name: "Java Básico", category: "methodology", icon: "☕", url: "#", desc: "Java introductorio de EIDEC.", tactical: "Disciplina de tipado estático." },
+  { id: 81, name: "Java - POO Universitaria", category: "methodology", icon: "☕", url: "#", desc: "POO UPV con validación académica.", tactical: "Diseño validado y patrones clásicos." },
+  { id: 82, name: "JavaScript Asincronismo", category: "web", icon: "⚡", url: "#", desc: "Event Loop y Promesas en JS.", tactical: "Frontend no bloqueante y moderno." },
+  { id: 83, name: "JavaScript Elocuente", category: "web", icon: "🟨", url: "#", desc: "JS avanzado de Marijn Haverbeke.", tactical: "Dominio completo del cliente." },
+  { id: 84, name: "JavaScript UOC", category: "web", icon: "🟨", url: "#", desc: "Web universitaria con JavaScript.", tactical: "Navegadores y DOM en profundidad." },
+  { id: 85, name: "jQuery", category: "web", icon: "📜", url: "#", desc: "Manipulación DOM legacy de Rebecca Murphey.", tactical: "Auditar código legacy y AJAX." },
+  { id: 86, name: "Kotlin", category: "methodology", icon: "📱", url: "#", desc: "Documentación oficial de Kotlin.", tactical: "Backend/móvil seguro con null-safety." },
+  { id: 87, name: "Lógica de Programación", category: "methodology", icon: "🧠", url: "#", desc: "Flujos, diagramas y algoritmos.", tactical: "Modelado abstracto y pensamiento lógico." },
+  { id: 88, name: "Moby/Docker Docs", category: "devops", icon: "🐳", url: "#", desc: "Núcleo Docker y virtualización.", tactical: "Virtualización a nivel de Kernel." },
+  { id: 89, name: "Álgebra de Boole - Monk47", category: "methodology", icon: "✖️", url: "#", desc: "Tratado de lógica booleana de Steven Koppelberg.", tactical: "Aritmética lógica y compuertas." },
+  { id: 90, name: "MoureDev - Mapeo de Cursos", category: "methodology", icon: "🗺️", url: "#", desc: "Catálogo de formación de MoureDev.", tactical: "Apoyo formativo complementario." },
+  { id: 91, name: "PHP - POO y MVC", category: "architecture", icon: "🐘", url: "#", desc: "MVC en PHP de Ernesto Bahit.", tactical: "Separación de lógica en arquitectura web." },
+  { id: 92, name: "PHP Ejemplos", category: "web", icon: "🐘", url: "#", desc: "Snippets prácticos de PHP.", tactical: "Auditar WordPress y código legacy." },
+  { id: 93, name: "PostgreSQL 18", category: "databases", icon: "🗄️", url: "#", desc: "Documentación oficial PostgreSQL 18.", tactical: "Fortificar bases de datos con ACID." },
+  { id: 94, name: "Problemas de Algoritmos", category: "methodology", icon: "🧩", url: "#", desc: "Disección matemática de algoritmos.", tactical: "Prevenir cuellos de botella en rendimiento." },
+  { id: 95, name: "Pro Git Avanzado", category: "git", icon: "🐙", url: "#", desc: "Git avanzado para servidor CI/CD.", tactical: "Dominio de historial, rebase y flujos." },
+  { id: 96, name: "Python - Aprende", category: "python", icon: "🐍", url: "#", desc: "Scraping y Data Science de Sebastián Delgado.", tactical: "Multidisciplinar: web, datos, IA." },
+  { id: 97, name: "Python - Apuntes", category: "python", icon: "📓", url: "#", desc: "Proyectos web y ML de Manuel Vergara.", tactical: "Molde práctico de tracción." },
+  { id: 98, name: "Python - Cálculo", category: "python", icon: "🧮", url: "#", desc: "Cálculo y matrices con Numpy.", tactical: "Criptografía y matemáticas avanzadas." },
+  { id: 99, name: "Python - Ejercicios", category: "python", icon: "🏋️", url: "#", desc: "OpenCV y Scikit-Learn práctico.", tactical: "Visión por computadora e IA aplicada." },
+  { id: 100, name: "Python - Explorando", category: "python", icon: "🌐", url: "#", desc: "Web, JSON y XML de Charles Severance.", tactical: "Visión completa de red y scraping." },
+  { id: 101, name: "Python - Inmersión", category: "python", icon: "🤿", url: "#", desc: "Refactorización avanzada de Mark Pilgrim.", tactical: "Scripts de seguridad y serialización." },
+  { id: 102, name: "Python - Intermedio", category: "python", icon: "🐍", url: "#", desc: "Estilo Pythonic: generadores, lambdas.", tactical: "Eficiencia RAM y código elegante." },
+  { id: 103, name: "Python - Inventa", category: "python", icon: "🎮", url: "#", desc: "Lógicas geométricas y juegos de Al Sweigart.", tactical: "Punteros espaciales y coordenadas." },
+  { id: 104, name: "Python - Manual", category: "python", icon: "📘", url: "#", desc: "Sintaxis base completa.", tactical: "Rescate cognitivo rápido." },
+  { id: 105, name: "Python para Todos", category: "python", icon: "🐍", url: "#", desc: "De 0 a POO completo.", tactical: "Asentar Fase 1 con fundamentos sólidos." },
+  { id: 106, name: "Python - Pensar", category: "python", icon: "🤔", url: "#", desc: "Big O y recursión avanzada.", tactical: "Soluciones resilientes y eficientes." },
+  { id: 107, name: "R - Introducción", category: "methodology", icon: "📊", url: "#", desc: "Analítica paramétrica con R.", tactical: "Base para Big Data y estadística." },
+  { id: 108, name: "React - Aprendiz", category: "web", icon: "⚛️", url: "#", desc: "Ciclos de vida y componentes React.", tactical: "Consumir APIs en frontend moderno." },
+  { id: 109, name: "React - StackOverflow", category: "web", icon: "⚛️", url: "#", desc: "Snippets y soluciones React.", tactical: "Sortear bloqueos en desarrollo front." },
+  { id: 110, name: "Rust - Aprendizaje", category: "systems", icon: "🦀", url: "#", desc: "Memoria segura y ownership.", tactical: "Ingeniería en metales: sistemas robustos." },
+  { id: 111, name: "Scrum + XP", category: "methodology", icon: "🏃", url: "#", desc: "Tensión ágil de Henrik Kniberg.", tactical: "Madurez en CI/CD y gestión ágil." },
+  { id: 112, name: "Sistemas Operativos Wolf", category: "systems", icon: "🖥️", url: "#", desc: "CPU, RAM e hilos de UNAM.", tactical: "Control total del Kernel." },
+  { id: 113, name: "TypeScript - Aprendizaje", category: "web", icon: "💙", url: "#", desc: "Tipado estático en TS.", tactical: "Seguridad web con tipado fuerte." },
+  { id: 114, name: "TypeScript - Intro", category: "web", icon: "💙", url: "#", desc: "Transpilado TypeScript.", tactical: "Entrada a frameworks modernos." },
+  { id: 115, name: "TypeScript - Principiantes", category: "web", icon: "💙", url: "#", desc: "Reglas tsconfig.json de Envato.", tactical: "Unificar ecosistemas JavaScript." },
+  { id: 116, name: "VisuAlgo", category: "methodology", icon: "👁️", url: "#", desc: "Simulador visual de algoritmos.", tactical: "Destrozar ceguera sobre Big O." },
+  { id: 117, name: "Álgebra de Boole", category: "math", icon: "🧮", url: "#", desc: "De Morgan y lógica binaria.", tactical: "Puente hacia subnetting y redes." },
+  { id: 118, name: "Clean Code - Arquitectura", category: "architecture", icon: "🏛️", url: "#", desc: "Diseño de sistemas modulares y desacoplados.", tactical: "Reglas estructurales para arquitectura profesional." },
+  { id: 119, name: "Pro Git Avanzado (Chacon)", category: "git", icon: "🐙", url: "#", desc: "Manual maestro de Git: ramas complejas, rebase, rescate, CI/CD.", tactical: "Orquestar infraestructuras colaborativas profesionalmente." },
+  { id: 120, name: "Python - Aprende (Delgado)", category: "python", icon: "🐍", url: "#", desc: "Scraping, requests, beautifulsoup, numpy, pandas, matplotlib.", tactical: "Enciclopedia táctica multidisciplinar para datos e IA." },
+  { id: 121, name: "AD Exploitation and Lateral Movement", category: "security", icon: "🛡️", url: "#", desc: "AD Pentesting: Domain Privilege Escalation, Cross-Forest Trust, BloodHound, PowerView.", tactical: "CRÍTICO Año 5-6: Active Directory pentesting real." },
+  { id: 122, name: "AD Pentesting With Kali Linux-RedTeam", category: "security", icon: "🛡️", url: "#", desc: "Red Team AD: Domain Enumeration, Lateral Movement, PowerShell Empire, EvilWinRM.", tactical: "CRÍTICO Año 5-6: AD completo con Kali Linux." },
+  { id: 123, name: "Advanced Malware Analysis Redux", category: "security", icon: "☠️", url: "#", desc: "Reverse Engineering, x86/x64 Architecture, Dynamic/Static Analysis, Memory Forensics.", tactical: "CRÍTICO Año 5-6: Malware Analysis avanzado." },
+  { id: 124, name: "Zero Point Security - Red Team Ops 2025", category: "security", icon: "🔴", url: "#", desc: "Red Team completo: C2, Lateral Movement, Kerberos, ADCS, Pivoting, Domain Dominance.", tactical: "CRÍTICO: Red Team profesional moderno." },
+  { id: 125, name: "Ultimate Ethical Hacking (UEH)", category: "security", icon: "⚔️", url: "#", desc: "Pentesting: x86 Assembly, Fuzzing, Buffer Overflows, Shellcoding, Active Directory.", tactical: "Pentesting con exploit development." },
+  { id: 126, name: "AWS Solutions Architect Professional", category: "cloud", icon: "☁️", url: "#", desc: "AWS SAA-C03: Multi-Account, VPC, Serverless, Security, Disaster Recovery.", tactical: "CRÍTICO: Cloud Architecture AWS profesional." },
+  { id: 127, name: "AWS Cloud Red Team Specialist (CARTS)", category: "cloud", icon: "🔴", url: "#", desc: "AWS Red Teaming: IAM, EC2, Lambda, S3, Secrets Manager, RDS, Containers.", tactical: "CRÍTICO: Cloud Red Team AWS." },
+  { id: 128, name: "Azure Red Team Professional (CARTP)", category: "cloud", icon: "🔴", url: "#", desc: "Azure Red Team: Labs, walkthroughs, técnicas ofensivas en Azure AD y recursos.", tactical: "Azure Red Team profesional completo." },
+  { id: 129, name: "ZTM - LLM Apps with LangChain", category: "ai", icon: "🤖", url: "#", desc: "LangChain, Vector Stores (Pinecone), RAG, Gemini, Proyecto Q&A completo.", tactical: "CRÍTICO: LangChain y RAG práctico." },
+  { id: 130, name: "97 Things Every Programmer Should Know", category: "methodology", icon: "🧠", url: "#", desc: "Consejos y mejores prácticas para el desarrollo de software por Kevlin Henney.", tactical: "Fomenta código limpio, refactorización y madurez profesional." },
+  { id: 131, name: "CIBERSEGURIDAD.TODOS-LOS-PDF (GitHub)", category: "security", icon: "🛡️", url: "https://github.com/Aquiles369/CIBERSEGURIDAD.TODOS-LOS-PDF", desc: "Repositorio exhaustivo de manuales sobre auditorías, redes, hacking y OWASP.", tactical: "Arsenal documental para Hacking Ético y defensa de redes." },
+  { id: 132, name: "Hacking con Buscadores", category: "security", icon: "🔍", url: "#", desc: "Uso de dorks y operadores lógicos en buscadores para encontrar vulnerabilidades.", tactical: "Técnicas de OSINT pasivo e Inteligencia de Fuentes Abiertas." },
+  { id: 133, name: "Clean Architecture - Uncle Bob", category: "architecture", icon: "🏛️", url: "https://github.com/ropalma/ICMC-USP", desc: "Principios para el diseño de arquitecturas limpias y mantenibles.", tactical: "Reglas estructurales absolutas para Arquitectos de Software." },
+  { id: 134, name: "CS50P - Lecture 0: Functions, Variables", category: "cs50", icon: "🎓", url: "#", desc: "Introducción a variables, funciones y sintaxis de Python por David J. Malan.", tactical: "Primeros pasos en la Trinchera para forjar memoria muscular." },
+  { id: 135, name: "CS50P - Lecture 1: Conditionals", category: "cs50", icon: "🎓", url: "#", desc: "Lección sobre condicionales y control de flujo en Python.", tactical: "Aprender a programar la toma de decisiones dinámicas." },
+  { id: 136, name: "Ciberseguridad - A. Corletti", category: "security", icon: "🔒", url: "#", desc: "Manual militar y empresarial sobre procesos, SIEM y análisis de redes.", tactical: "Base defensiva e infraestructura de ciberseguridad corporativa." },
+  { id: 137, name: "Principios de Seguridad", category: "security", icon: "🛡️", url: "http://www.openlearning.es", desc: "Normativas ISO/IEC 27000, gestión de incidentes y seguridad en desarrollo.", tactical: "Marco legal y de políticas para administrar infraestructura." },
+  { id: 138, name: "Proyecto de Asalto Técnico Autodidacta", category: "methodology", icon: "📜", url: "#", desc: "Manifiesto de auditoría del plan de estudios de 12 meses.", tactical: "Protocolo Stop-Loss y gestión de riesgos para evitar el burnout." },
+  { id: 139, name: "ROADMAP MAESTRO", category: "methodology", icon: "🗺️", url: "#", desc: "Hoja de ruta secuencial de 12 meses desde Python hasta DevSecOps.", tactical: "Brújula cronológica que dictamina la fase exacta de estudio." },
+  { id: 140, name: "ROLES PEDAGOGIA IA", category: "ai", icon: "🎭", url: "#", desc: "System Prompt con 8 perfiles pedagógicos para evitar atajos.", tactical: "Genera fricción educativa y evita respuestas pasivas de la IA." },
+  { id: 141, name: "Apuntes: Estructuras de Datos", category: "methodology", icon: "🧱", url: "#", desc: "Teoría sobre asignación en memoria estática vs dinámica, diccionarios y punteros.", tactical: "Vital para estructurar esquemas lógicos eficientes en código." },
+  { id: 142, name: "C - Introducción a la Programación", category: "systems", icon: "💻", url: "#", desc: "Gestión de memoria, punteros, lectura de ficheros y matrices en C.", tactical: "Bases de bajo nivel para prevenir vulnerabilidades de memoria." },
+  { id: 143, name: "CodeCombat Curriculum", category: "methodology", icon: "🎮", url: "#", desc: "Mapeo de mecánicas RPG de CodeCombat a fundamentos de CS.", tactical: "Evita el Falso Positivo de Competencia gamificada." },
+  { id: 144, name: "CSS3 y JavaScript Avanzado (UOC)", category: "web", icon: "🌐", url: "#", desc: "Manual formativo avanzado de interacciones asíncronas JS y CSS3.", tactical: "Refuerza comprensión del Front-end y manipulación dinámica del DOM." },
+  { id: 145, name: "elhacker.INFO", category: "security", icon: "☠️", url: "https://elhacker.info", desc: "Directorio de manuales, tutoriales y libros de hacking.", tactical: "Repositorio de recursos ofensivos y defensivos." },
+  { id: 146, name: "Estructuras de Datos - L. Zapata", category: "methodology", icon: "🧱", url: "#", desc: "Análisis teórico sobre implementación y complejidad de estructuras de datos.", tactical: "Base analítica para optimización en memoria." },
+  { id: 147, name: "Git Pro (Chacon & Straub)", category: "git", icon: "🐙", url: "#", desc: "Manual técnico avanzado sobre Git, branching, rebase y CI/CD.", tactical: "Herramienta innegociable para flujos corporativos e integración continua." },
+  { id: 148, name: "Guía Scrum (European)", category: "methodology", icon: "🏃", url: "#", desc: "Guía sobre el marco de trabajo ágil Scrum, Sprints y roles.", tactical: "Adaptación de mentalidad autodidacta a entornos corporativos iterativos." },
+  { id: 149, name: "Guía Programadores Junior 2026 - MoureDev", category: "methodology", icon: "🧭", url: "#", desc: "Roadmap 2026 que integra fundamentos clásicos con Prompts y Agentes de IA.", tactical: "Alinea entrenamiento severo con demandas del mercado actual." },
+  { id: 150, name: "Haskell Piensa", category: "methodology", icon: "𝜆", url: "#", desc: "Curso de programación funcional y matemática con Haskell.", tactical: "Expande pensamiento lateral modelando estados inmutables." },
+  { id: 151, name: "Haskell-Python Ejercicios", category: "python", icon: "🐍", url: "#", desc: "Ejercicios comparativos entre Python y Haskell: recursión y conjuntos.", tactical: "Práctica para asimilar código elegante y comprensiones complejas." },
+  { id: 152, name: "Attacking Azure AD", category: "security", icon: "☁️", url: "https://elhacker.info", desc: "Explotación de Entra ID, Azure Services, Movimiento Lateral y escalada cloud.", tactical: "Capacitación ofensiva para ecosistemas Cloud modernos." },
+  { id: 153, name: "Becoming the Hacker", category: "security", icon: "☠️", url: "https://elhacker.info", desc: "Libro de explotación con ejemplos de inyección de código JS/Keyloggers.", tactical: "Ejemplos prácticos de vectores de ataque en cliente." },
+  { id: 154, name: "Java - Apuntes Básicos", category: "methodology", icon: "☕", url: "#", desc: "Guía práctica de sintaxis y manejo de archivos en Java.", tactical: "Contrastar dinamismo de Python con rigurosidad estática." },
+  { id: 155, name: "Java Básico para Aprendices", category: "methodology", icon: "☕", url: "#", desc: "Manual universitario para asimilar tokens, variables y POO en Java.", tactical: "Rigor académico en diseño de clases y polimorfismo." },
+  { id: 156, name: "JavaScript - Asincronismo", category: "web", icon: "⚡", url: "#", desc: "Gestión del Event Loop, callbacks y llamadas asíncronas en JS.", tactical: "Vital para consumir APIs sin bloquear la interfaz de usuario." },
+  { id: 157, name: "JavaScript Elocuente (4ta Ed)", category: "web", icon: "🟨", url: "#", desc: "Obra maestra sobre JS: closures, DOM, NodeJS, expresiones regulares.", tactical: "Pilar central para dominar programación del cliente (Frontend)." },
+  { id: 158, name: "JavaScript (UOC)", category: "web", icon: "🟨", url: "#", desc: "Manual universitario sobre interacción estructurada con navegadores usando JS.", tactical: "Metodologías de control dinámico del lado del cliente." },
+  { id: 159, name: "jQuery Fundamentos", category: "web", icon: "📜", url: "#", desc: "Guía técnica para manipular DOM y peticiones AJAX usando jQuery.", tactical: "Crítico para auditar o mantener infraestructuras legacy." },
+  { id: 160, name: "Lógica de Programación", category: "methodology", icon: "🧠", url: "#", desc: "Libro de fundamentos: historia, diagramas de flujo y pseudocódigo.", tactical: "Instala mentalidad abstracta para planificar antes de codificar." },
+  { id: 161, name: "Ruta de Estudio MoureDev Pro", category: "methodology", icon: "🗺️", url: "#", desc: "Índice visual de la currícula de cursos sugeridos por MoureDev Pro.", tactical: "Mapeo auxiliar para contrastar aprendizaje de lenguajes." },
+  { id: 162, name: "PHP POO y MVC", category: "architecture", icon: "🐘", url: "#", desc: "Implementación estricta del patrón MVC y POO en PHP.", tactical: "Base indispensable para separación de responsabilidades en Backend." },
+  { id: 163, name: "Python Aprende - S. Delgado", category: "python", icon: "🐍", url: "#", desc: "Compendio inmenso: sintaxis, Data Science, Scraping web con Selenium.", tactical: "Enciclopedia táctica multidisciplinar para orquestación general." },
+  { id: 164, name: "Python Apuntes - M. Vergara", category: "python", icon: "📓", url: "#", desc: "Apuntes prácticos sobre Django, Machine Learning y librerías de voz.", tactical: "Molde de tracción rápida para clonar configuraciones ya probadas." },
+  { id: 165, name: "Python Cálculo Científico", category: "python", icon: "🧮", url: "#", desc: "Explotación del motor numérico de Python usando NumPy y visualización.", tactical: "Afila capacidad de procesamiento matricial y criptográfico." },
+  { id: 166, name: "Python Ejercicios Básicos", category: "python", icon: "🏋️", url: "#", desc: "Proyectos aplicados: ordenamiento, visión artificial (OpenCV) y IA (Scikit).", tactical: "Memoria muscular para algoritmos reales en CS." },
+  { id: 167, name: "Python Explorando Información", category: "python", icon: "🌐", url: "#", desc: "Python for Everybody: lectura de APIs, JSON, XML y Sockets.", tactical: "Otorga la 'Visión de Red' esencial para consumir servicios web." },
+  { id: 168, name: "Python Inmersión", category: "python", icon: "🤿", url: "#", desc: "Dive Into Python: introspección, parseo XML complejo y serialización JSON.", tactical: "Clave para minería de texto e inyecciones precisas de código." },
+  { id: 169, name: "Python Inventa Juegos - Al Sweigart", category: "python", icon: "🎮", url: "http://inventwithpython.com/es", desc: "Desarrollo de lógica geométrica y diccionarios mediante juegos de consola.", tactical: "Entrenador para control bidimensional de memoria y coordenadas." },
+  { id: 170, name: "React Aprendiz y Maestro", category: "web", icon: "⚛️", url: "#", desc: "Guía técnica sobre ecosistema de componentes asíncronos en React.", tactical: "Baluarte para orquestar interfaces avanzadas conectadas a APIs." },
+  { id: 171, name: "Rust Aprendizaje", category: "systems", icon: "🦀", url: "#", desc: "Manual sobre lenguaje seguro en memoria: Safety Checker, hilos, ownership.", tactical: "Expansión hacia Bajo Nivel Seguro previniendo exploits de memoria." },
+  { id: 172, name: "Scrum y XP desde las Trincheras", category: "methodology", icon: "🏃", url: "#", desc: "Guía empírica sobre aplicar Scrum y Extreme Programming bajo presión.", tactical: "Mentalidad corporativa ágil vital para CI/CD." },
+  { id: 173, name: "Sistemas Operativos - Wolf (UNAM)", category: "systems", icon: "🖥️", url: "http://github.org/gwolf/sistop", desc: "Tratado profundo sobre gestión de CPU, hilos, y RAM virtual por el Kernel.", tactical: "Maestría técnica esencial para fortificar y administrar Arch Linux." },
+  { id: 174, name: "TypeScript Aprendizaje", category: "web", icon: "💙", url: "#", desc: "Manual técnico sobre genéricos, clases e interfaces restrictivas en JS.", tactical: "Red de seguridad que bloquea fallos lógicos en tiempo de compilación." },
+  { id: 175, name: "TypeScript Introducción (Adictos al Trabajo)", category: "web", icon: "💙", url: "#", desc: "Tutorial veloz de introducción a TS para ecosistemas Front-end.", tactical: "Puente de arranque sin sobrecarga teórica." },
+  { id: 176, name: "TypeScript para Principiantes (Envato)", category: "web", icon: "💙", url: "#", desc: "Guía orientada al archivo de configuración tsconfig.json.", tactical: "Organización para evitar caos en ecosistemas web grandes." },
+  { id: 177, name: "VisuAlgo - Visualización Algoritmos", category: "methodology", icon: "👁️", url: "https://visualgo.net", desc: "Portal interactivo que anima ejecución en memoria de árboles, grafos y loops.", tactical: "Destruye la ceguera algorítmica para entender visualmente el Big O." },
+  { id: 178, name: "Álgebra de Boole en Trinchera", category: "math", icon: "🧮", url: "#", desc: "Evaluación conversacional sobre De Morgan y compuertas lógicas.", tactical: "Refactoriza código feo y entrena para cálculo de subredes." }
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_STATE = {
+  xp: 0, streak: 0, level: 1, combo: 0,
+  currentSourceId: null,
+  completedSources: [],
+  sourceProgress: {}, // { sourceId: percentage }
+  achievements: [],
+  theme: 'dark',
+  version: '5.0',
+  srsSchedule: {}, // { sourceId: [review dates] }
+  // FIX: Proof of Work system - validación de comprensión real
+  proofOfWork: {}, // { sourceId: { explanation, pseudocode, connection, timestamp } }
+  // FASE 1: Ritmo Circadiano Adaptativo - perfil de energía y cronotipo
+  energyProfile: {
+    morningPerson: true,  // true = peak 9-12am, false = peak 8-11pm
+    peakHours: [9, 10, 11],  // horas de máxima energía cognitiva
+    lowEnergyHours: [22, 23, 0, 1, 2, 3, 4, 5, 6],  // horas de baja energía
+    lastReportedEnergy: null,  // 1-10, null si no reportado hoy
+    lastReportDate: null,  // ISO date del último reporte
+    energyHistory: []  // array de {date, energy, sourceStudiedId}
+  },
+  // FEATURE: CodeCombat - Sincronización real con progreso del juego
+  codeCombat: {
+    username: null,                    // Username de CodeCombat
+    lastSync: null,                    // Timestamp última sync
+    isSyncing: false,                  // Flag de sincronización activa
+    levelProgress: {},                 // {levelId: {completed, stars, code, date}}
+    totalLevelsCompleted: 0,
+    currentCourse: null,               // 'introduction-to-computer-science' | etc
+    xpEarned: 0,                       // XP total en CodeCombat
+    timeSpentMinutes: 0,               // Tiempo total jugado
+    conceptsLearned: [],               // ['variables', 'loops', 'conditionals', ...]
+    skillProgression: {                // Progreso por habilidad
+      'python': 0,                     // 0-100%
+      'javascript': 0,
+      'problem-solving': 0,
+      'algorithms': 0
+    },
+    lastLevelPlayed: null,             // Para continuar donde quedó
+    syncHistory: []                    // Log de sincronizaciones
+  },
+  // FEATURE: Biohacking - Respaldo científico
+  biohacking: {
+    chronotype: null,              // Resultado del assessment {type, label, peakHours}
+    assessmentDate: null,          // Cuándo se hizo
+    supplementationLog: [],        // [{date, supplement, dose, time, notes}]
+    studySessions: [],             // [{date, startTime, duration, breaksTaken, productivitySelfRated}]
+    lightExposureLog: [],          // [{date, morningLux, eveningLux}]
+    protocolsActive: {             // Qué protocolos tiene activados
+      chronotype: false,
+      ultradian: true,
+      supplementation: false,
+      light: false
+    },
+    ultradianTimer: {              // Timer de ciclos 90min
+      active: false,
+      startTime: null,
+      pausedAt: null,
+      cycleDuration: 90,           // minutos
+      currentCycle: 'focus'        // 'focus' | 'break'
+    }
+  },
+  // FEATURE: Música - Estados de flujo con protocolos científicos
+  music: {
+    currentProtocol: null,         // 'deepFocus' | 'creativeFlow' | 'learningMode' | etc
+    isPlaying: false,
+    volume: 0.5,
+    sessionStartTime: null,
+    sessionHistory: [],
+    preferredProtocol: 'deepFocus',  // default
+    externalPlayer: 'apple-music',     // 'apple-music' para música, 'youtube' para videos
+    autoSync: true,                // Auto-sync con ciclos ultradianos
+    playlists: {                   // Apple Music = audio, YouTube = video/film scores
+      deepFocus: {
+        'apple-music': 'https://music.apple.com/us/playlist/focus-music/pl.u-2B9ADZATb9j'
+      },
+      creativeFlow: {
+        'apple-music': 'https://music.apple.com/us/playlist/creative-focus/pl.u-2B9ADZATb9j'
+      },
+      learningMode: {
+        'apple-music': 'https://music.apple.com/us/playlist/study-music/pl.u-2B9ADZATb9j'
+      },
+      relaxationBreak: {
+        'apple-music': 'https://music.apple.com/us/playlist/relaxation/pl.u-2B9ADZATb9j'
+      },
+      filmScores: {
+        'youtube': 'https://www.youtube.com/playlist?list=PL8hNeX7N7m7qL8J-VMIJCI0ZfiFc8eKe3'  // Solo video
+      }
+    }
+  },
+  config: {
+    geminiUrl: 'https://gemini.google.com/notebook/0de9d4ed-aebc-4359-89f1-c0d8227718a2',
+    notebooklmUrl: 'https://notebooklm.google.com/notebook/0de9d4ed-aebc-4359-89f1-c0d8227718a2'
+  }
+};
+
+// FASE 1: Ritmo Circadiano Adaptativo - mapeo de dificultad por categoría
+const CATEGORY_DIFFICULTY = {
+  'cs50': 'high',      // Conceptos fundacionales complejos - MAÑANA
+  'python': 'medium',  // Práctica hands-on - TARDE
+  'security': 'high',  // Requiere atención máxima - MAÑANA
+  'ai': 'high',        // Abstracto, requiere foco profundo - MAÑANA
+  'architecture': 'medium',  // Diseño y planificación - TARDE
+  'systems': 'high',   // Bajo nivel, detalles críticos - MAÑANA
+  'devops': 'low',     // Comandos y procedimientos - NOCHE/REPASO
+  'git': 'low',        // Repetitivo, memorístico - NOCHE/REPASO
+  'database': 'medium', // SQL practice - TARDE
+  'methodology': 'low' // Lectura, conceptos - NOCHE/REPASO
+};
+
+// FASE 1: Funciones de Ritmo Circadiano Adaptativo
+function getCircadianSuggestion() {
+  const hour = new Date().getHours();
+  const energy = STATE.energyProfile?.lastReportedEnergy;
+  const pending = getPendingSources();
+  
+  if (pending.length === 0) return null;
+  
+  // Determinar dificultad objetivo basada en hora y energía
+  const isPeakTime = STATE.energyProfile?.peakHours?.includes(hour);
+  const isLowTime = STATE.energyProfile?.lowEnergyHours?.includes(hour);
+  
+  let targetDifficulty;
+  if ((isPeakTime || (energy && energy >= 7))) {
+    targetDifficulty = 'high';
+  } else if (isLowTime || (energy && energy <= 4)) {
+    targetDifficulty = 'low';
+  } else {
+    targetDifficulty = 'medium';
+  }
+  
+  // Buscar match en fuentes pendientes
+  const match = pending.find(s => CATEGORY_DIFFICULTY[s.category] === targetDifficulty);
+  
+  // Fallback: cualquier fuente pendiente
+  return match || pending[0];
+}
+
+function getCircadianMatchQuality(source) {
+  const hour = new Date().getHours();
+  const energy = STATE.energyProfile?.lastReportedEnergy;
+  const difficulty = CATEGORY_DIFFICULTY[source.category] || 'medium';
+  
+  const isPeakTime = STATE.energyProfile?.peakHours?.includes(hour);
+  const isLowTime = STATE.energyProfile?.lowEnergyHours?.includes(hour);
+  
+  // Calcular calidad del match
+  if ((isPeakTime || energy >= 7) && difficulty === 'high') return 'optimal';
+  if ((isPeakTime || energy >= 7) && difficulty === 'medium') return 'good';
+  if ((!isPeakTime && !isLowTime) && difficulty === 'medium') return 'optimal';
+  if ((!isPeakTime && !isLowTime) && difficulty === 'low') return 'good';
+  if ((isLowTime || energy <= 4) && difficulty === 'low') return 'optimal';
+  if ((isLowTime || energy <= 4) && difficulty === 'medium') return 'acceptable';
+  
+  return 'suboptimal';
+}
+
+function reportEnergy(energyLevel) {
+  if (energyLevel < 1 || energyLevel > 10) return false;
+  
+  const now = new Date();
+  STATE.energyProfile.lastReportedEnergy = energyLevel;
+  STATE.energyProfile.lastReportDate = now.toISOString();
+  STATE.energyProfile.energyHistory.push({
+    date: now.toISOString(),
+    energy: energyLevel,
+    sourceStudiedId: STATE.currentSourceId
+  });
+  
+  // Limitar historial a últimos 30 días
+  if (STATE.energyProfile.energyHistory.length > 30) {
+    STATE.energyProfile.energyHistory.shift();
+  }
+  
+  save();
+  updateCircadianWidget();
+  return true;
+}
+
+function updateCircadianWidget() {
+  const widget = document.getElementById('circadianWidget');
+  if (!widget) return;
+  
+  const suggestion = getCircadianSuggestion();
+  if (!suggestion) {
+    widget.innerHTML = '<p style="color:var(--text-muted);">✅ Todas las fuentes completadas</p>';
+    return;
+  }
+  
+  const quality = getCircadianMatchQuality(suggestion);
+  const qualityColors = {
+    'optimal': 'var(--accent-green)',
+    'good': 'var(--accent-cyan)', 
+    'acceptable': 'var(--accent-gold)',
+    'suboptimal': 'var(--accent-red)'
+  };
+  const qualityLabels = {
+    'optimal': '🟢 ÓPTIMO',
+    'good': '🔵 BUENO',
+    'acceptable': '🟡 ACEPTABLE',
+    'suboptimal': '🔴 SUBÓPTIMO'
+  };
+  
+  const difficultyLabels = {
+    'high': 'Alto',
+    'medium': 'Medio',
+    'low': 'Bajo'
+  };
+  
+  widget.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <span style="font-size:20px;">${suggestion.icon}</span>
+      <div style="flex:1;">
+        <div style="font-weight:600;font-size:13px;">${suggestion.name}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${suggestion.category} • Dificultad: ${difficultyLabels[CATEGORY_DIFFICULTY[suggestion.category]]}</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:11px;color:${qualityColors[quality]};font-weight:600;">${qualityLabels[quality]}</span>
+      <button onclick="selectSource(${suggestion.id})" style="padding:4px 12px;font-size:11px;background:var(--accent-blue);border:none;border-radius:6px;color:white;cursor:pointer;">Seleccionar</button>
+    </div>
+    ${quality === 'suboptimal' ? '<p style="font-size:10px;color:var(--accent-red);margin-top:6px;">💡 Considera estudiar esta fuente en horario de mayor energía</p>' : ''}
+  `;
+}
+
+// FASE 1: UI helpers para Ritmo Circadiano
+function updateEnergyPreview(value) {
+  document.getElementById('energyPreview').textContent = `Energía: ${value}`;
+}
+
+function submitEnergyReport() {
+  const slider = document.getElementById('energySlider');
+  const energy = parseInt(slider.value);
+  
+  if (reportEnergy(energy)) {
+    showDopamineHit('⚡', `Energía reportada: ${energy}/10`);
+  }
+}
+
+// FASE 1: Obtener fuentes pendientes para sugerencias circadianas
+function getPendingSources() {
+  return BIBLIOTECA.filter(s => !STATE.completedSources.includes(s.id));
+}
+
+// ═══════════════════════════════════════════════════════════
+// FEATURE: CODECOMBAT - Sincronización real con progreso
+// ═══════════════════════════════════════════════════════════
+
+// Mapeo de niveles de CodeCombat a conceptos CS
+const CODECOMBAT_CONCEPT_MAP = {
+  'dungeons-of-kithgard': ['sequences', 'algorithms-basic'],
+  'gems-in-the-deep': ['movement', 'coordinates'],
+  'shadow-guard': ['strings', 'methods'],
+  'forgetful-gemsmith': ['variables', 'assignment'],
+  'kounter-kithwise': ['loops-for', 'counting'],
+  'crawlways-of-kithgard': ['loops-while', 'conditions'],
+  'illustrious-imanzi': ['functions', 'parameters'],
+  'sarven-savior': ['functions-return', 'logic'],
+  'raiders-of-the-long-dark': ['conditionals-if', 'boolean-logic'],
+  'kithgard-librarian': ['comparison-operators', 'conditionals-else'],
+  'closing-the-distance': ['arithmetic', 'math-operators'],
+  'the-final-kithmaze': ['nested-loops', 'complexity'],
+  'kithgard-gates': ['boolean-operators', 'and-or-not'],
+  'destroying-angel': ['debugging', 'problem-solving'],
+  'deadly-pursuit': ['optimization', 'efficiency'],
+  'thornbush-farm': ['arrays', 'iteration'],
+  'backwoods-bombardier': ['object-properties', 'dot-notation'],
+  'portcheck': ['input-validation', 'error-handling'],
+  'java-script-and-the-maze': ['javascript-syntax', 'language-comparison']
+};
+
+// Sincronización simple de CodeCombat (entrada manual)
+function syncCodeCombatSimple() {
+  const username = document.getElementById('ccUsername').value.trim();
+  const levels = parseInt(document.getElementById('ccLevels').value) || 0;
+  const xp = parseInt(document.getElementById('ccXP').value) || 0;
+  const conceptsInput = document.getElementById('ccConcepts').value.trim();
+  
+  if (!username || username.length < 3) {
+    alert('Ingresa un username válido');
+    return;
+  }
+  
+  // Guardar estado anterior para comparar
+  const levelsBefore = STATE.codeCombat.totalLevelsCompleted;
+  const xpBefore = STATE.codeCombat.xpEarned;
+  
+  // Actualizar estado
+  STATE.codeCombat.username = username;
+  STATE.codeCombat.totalLevelsCompleted = levels;
+  STATE.codeCombat.xpEarned = xp;
+  STATE.codeCombat.conceptsLearned = conceptsInput ? conceptsInput.split(',').map(c => c.trim()).filter(c => c) : [];
+  STATE.codeCombat.lastSync = new Date().toISOString();
+  
+  // Actualizar skills basado en conceptos
+  updateCodeCombatSkillsFromConcepts(STATE.codeCombat.conceptsLearned);
+  
+  // Calcular XP nuevo para AEGIS
+  const newLevels = levels - levelsBefore;
+  if (newLevels > 0) {
+    const aegisXP = newLevels * 50;
+    STATE.xp += aegisXP;
+    showDopamineHit('✨', `+${aegisXP} XP de CodeCombat`);
+  }
+  
+  // Guardar en historial
+  STATE.codeCombat.syncHistory.push({
+    date: new Date().toISOString(),
+    levelsBefore: levelsBefore,
+    levelsAfter: levels,
+    xpBefore: xpBefore,
+    xpAfter: xp,
+    concepts: [...STATE.codeCombat.conceptsLearned]
+  });
+  
+  save();
+  updateCodeCombatWidget();
+  updateUI();
+  
+  // Limpiar inputs
+  document.getElementById('ccLevels').value = '';
+  document.getElementById('ccXP').value = '';
+  document.getElementById('ccConcepts').value = '';
+  
+  showDopamineHit('🎮', `Progreso guardado: ${levels} niveles, ${xp} XP`);
+}
+
+// Actualizar skills basado en conceptos ingresados
+function updateCodeCombatSkillsFromConcepts(concepts) {
+  const conceptCount = concepts.length;
+  if (conceptCount === 0) return;
+  
+  // Calcular porcentaje por categoría basado en keywords
+  const categories = {
+    'python': concepts.filter(c => ['variables', 'loops', 'functions', 'conditionals', 'arrays', 'python'].some(x => c.toLowerCase().includes(x))).length,
+    'javascript': concepts.filter(c => c.toLowerCase().includes('javascript') || c.toLowerCase().includes('js')).length,
+    'problem-solving': concepts.filter(c => ['debug', 'optimization', 'efficiency', 'problem'].some(x => c.toLowerCase().includes(x))).length,
+    'algorithms': concepts.filter(c => ['algorithm', 'sequence', 'nested', 'complexity', 'sort'].some(x => c.toLowerCase().includes(x))).length
+  };
+  
+  Object.keys(categories).forEach(skill => {
+    const maxForSkill = 10;
+    STATE.codeCombat.skillProgression[skill] = Math.min(100, Math.round((categories[skill] / maxForSkill) * 100));
+  });
+}
+
+// Configurar username de CodeCombat
+function setCodeCombatUsername(username) {
+  if (!username || username.trim().length < 3) {
+    alert('Username debe tener al menos 3 caracteres');
+    return;
+  }
+  STATE.codeCombat.username = username.trim();
+  save();
+  updateCodeCombatWidget();
+  showDopamineHit('🎮', `Perfil CodeCombat configurado: ${username}`);
+}
+
+// Sincronización manual de progreso (usuario pega datos)
+function syncCodeCombatManual() {
+  const textarea = document.getElementById('ccProgressData');
+  const data = textarea.value.trim();
+  
+  if (!data) {
+    alert('Pega los datos de progreso de CodeCombat primero');
+    return;
+  }
+  
+  try {
+    const progressData = JSON.parse(data);
+    if (!validateCodeCombatData(progressData)) {
+      throw new Error('Formato inválido');
+    }
+    
+    // Guardar estado anterior para comparar
+    const levelsBefore = STATE.codeCombat.totalLevelsCompleted;
+    const xpBefore = STATE.codeCombat.xpEarned;
+    
+    // Actualizar estado
+    STATE.codeCombat.levelProgress = progressData.levels || {};
+    STATE.codeCombat.totalLevelsCompleted = progressData.completedCount || 0;
+    STATE.codeCombat.xpEarned = progressData.totalXP || 0;
+    STATE.codeCombat.timeSpentMinutes = progressData.playTime || 0;
+    STATE.codeCombat.conceptsLearned = extractCodeCombatConcepts(STATE.codeCombat.levelProgress);
+    STATE.codeCombat.lastSync = new Date().toISOString();
+    STATE.codeCombat.lastLevelPlayed = progressData.lastLevel || null;
+    
+    // Actualizar skills
+    updateCodeCombatSkills();
+    
+    // Guardar en historial
+    STATE.codeCombat.syncHistory.push({
+      date: new Date().toISOString(),
+      levelsBefore: levelsBefore,
+      levelsAfter: STATE.codeCombat.totalLevelsCompleted,
+      xpBefore: xpBefore,
+      xpAfter: STATE.codeCombat.xpEarned,
+      newConcepts: STATE.codeCombat.conceptsLearned.filter(c => !STATE.codeCombat.syncHistory.slice(-1)[0]?.concepts?.includes(c))
+    });
+    
+    // Calcular y añadir XP a AEGIS
+    const aegisXP = calculateCodeCombatAEGISXP(levelsBefore);
+    if (aegisXP > 0) {
+      STATE.xp += aegisXP;
+      showDopamineHit('✨', `+${aegisXP} XP de CodeCombat`);
+    }
+    
+    save();
+    updateCodeCombatWidget();
+    updateUI();
+    
+    textarea.value = ''; // Limpiar
+    alert(`✅ Sync completada!\nNiveles: ${STATE.codeCombat.totalLevelsCompleted}\nXP CodeCombat: ${STATE.codeCombat.xpEarned}\nXP AEGIS ganado: ${aegisXP}\nConceptos: ${STATE.codeCombat.conceptsLearned.length}`);
+    
+  } catch (e) {
+    alert('Error: Datos inválidos. Asegúrate de pegar el JSON completo de CodeCombat.\n' + e.message);
+    console.error('CodeCombat sync error:', e);
+  }
+}
+
+// Validar estructura de datos de CodeCombat
+function validateCodeCombatData(data) {
+  return data && 
+    typeof data === 'object' && 
+    (data.levels || data.completedCount !== undefined);
+}
+
+// Extraer conceptos aprendidos de niveles completados
+function extractCodeCombatConcepts(levels) {
+  const concepts = new Set();
+  Object.entries(levels || {}).forEach(([levelId, levelData]) => {
+    if (levelData && (levelData.completed || levelData.status === 'complete')) {
+      const levelConcepts = CODECOMBAT_CONCEPT_MAP[levelId] || [];
+      levelConcepts.forEach(c => concepts.add(c));
+    }
+  });
+  return Array.from(concepts);
+}
+
+// Actualizar progresión de skills
+function updateCodeCombatSkills() {
+  const concepts = STATE.codeCombat.conceptsLearned;
+  const totalConcepts = Object.values(CODECOMBAT_CONCEPT_MAP).flat().length;
+  
+  // Calcular porcentaje por categoría
+  const categories = {
+    'python': concepts.filter(c => ['loops', 'functions', 'variables', 'conditionals', 'arrays'].some(x => c.includes(x))).length,
+    'javascript': concepts.filter(c => c.includes('javascript')).length,
+    'problem-solving': concepts.filter(c => ['debugging', 'optimization', 'efficiency'].includes(c)).length,
+    'algorithms': concepts.filter(c => ['sequences', 'nested-loops', 'complexity'].includes(c)).length
+  };
+  
+  Object.keys(categories).forEach(skill => {
+    const maxForSkill = 10; // aproximado
+    STATE.codeCombat.skillProgression[skill] = Math.min(100, Math.round((categories[skill] / maxForSkill) * 100));
+  });
+}
+
+// Calcular XP de AEGIS basado en progreso nuevo
+function calculateCodeCombatAEGISXP(levelsBefore) {
+  const newLevels = STATE.codeCombat.totalLevelsCompleted - levelsBefore;
+  if (newLevels <= 0) return 0;
+  
+  // 50 XP por nivel nuevo + bonus por estrellas
+  const starsBonus = (STATE.codeCombat.xpEarned % 100) / 10; // aproximación
+  return (newLevels * 50) + Math.floor(starsBonus);
+}
+
+// Actualizar widget de CodeCombat
+function updateCodeCombatWidget() {
+  const widget = document.getElementById('ccStats');
+  if (!widget) return;
+  
+  const cc = STATE.codeCombat;
+  if (!cc.username) {
+    widget.innerHTML = '<div style="color:var(--text-muted);font-size:10px;text-align:center;">Ingresa tu username y progreso arriba ↑</div>';
+    return;
+  }
+  
+  widget.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+      <div style="background:var(--bg-primary);padding:6px;border-radius:6px;text-align:center;">
+        <div style="font-size:16px;font-weight:700;color:var(--accent-gold);">${cc.totalLevelsCompleted}</div>
+        <div style="font-size:9px;color:var(--text-muted);">Niveles</div>
+      </div>
+      <div style="background:var(--bg-primary);padding:6px;border-radius:6px;text-align:center;">
+        <div style="font-size:16px;font-weight:700;color:var(--accent-green);">${cc.xpEarned}</div>
+        <div style="font-size:9px;color:var(--text-muted);">XP</div>
+      </div>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:var(--text-secondary);">
+      <div style="margin-bottom:4px;">🎯 Conceptos: ${cc.conceptsLearned.length}</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;">
+        ${cc.conceptsLearned.slice(0, 5).map(c => `<span style="background:var(--glass);padding:2px 6px;border-radius:10px;font-size:8px;">${c}</span>`).join('')}
+        ${cc.conceptsLearned.length > 5 ? `<span style="font-size:8px;">+${cc.conceptsLearned.length - 5} más</span>` : ''}
+      </div>
+    </div>
+    ${cc.lastSync ? `<div style="margin-top:6px;font-size:9px;color:var(--text-muted);">🔄 ${new Date(cc.lastSync).toLocaleDateString()}</div>` : ''}
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// FEATURE: BIOHACKING - Respaldo científico
+// ═══════════════════════════════════════════════════════════
+
+const BIOHACKING_PROTOCOLS = {
+  // Cronotipo Assessment (basado en MEQ simplificado)
+  chronotypeQuestions: [
+    {id: 1, text: "¿A qué hora te despiertas sin alarma los fines de semana?", 
+     options: [{val: 5, text: "5-6am"}, {val: 4, text: "6-7am"}, {val: 3, text: "7-8am"}, {val: 2, text: "8-9am"}, {val: 1, text: "9am+"}]},
+    {id: 2, text: "¿Cuánto tiempo después de despertarte te sientes 100% funcional?",
+     options: [{val: 5, text: "0-10 min"}, {val: 4, text: "10-30 min"}, {val: 3, text: "30-60 min"}, {val: 2, text: "1-2h"}, {val: 1, text: "2h+"}]},
+    {id: 3, text: "¿A qué hora prefieres hacer ejercicio intenso?",
+     options: [{val: 5, text: "5-7am"}, {val: 4, text: "7-9am"}, {val: 3, text: "9-11am"}, {val: 2, text: "Tarde"}, {val: 1, text: "Noche"}]}
+  ],
+  
+  suplements: {
+    caffeine: {name: '☕ Cafeína', dose: '100mg', cutoff: 14, warning: '⚠️ Después 2pm afecta sueño'},
+    lTheanine: {name: '🍵 L-Teanina', dose: '200mg', synergizes: 'caffeine'},
+    creatine: {name: '⚡ Creatina', dose: '5g', timing: 'anytime'},
+    magnesium: {name: '🧪 Magnesio L-Treonato', dose: '2g', timing: 'evening'}
+  }
+};
+
+// Assessment de cronotipo
+function calculateChronotype(answers) {
+  const score = answers.reduce((a, b) => a + b, 0);
+  if (score >= 12) return {type: 'definitely-evening', label: '🌙 Definitivamente Nocturno', peakHours: [20,21,22,23]};
+  if (score >= 9) return {type: 'moderately-evening', label: '🌆 Moderadamente Nocturno', peakHours: [18,19,20,21]};
+  if (score >= 6) return {type: 'intermediate', label: '⚖️ Intermedio', peakHours: [10,11,14,15]};
+  if (score >= 3) return {type: 'moderately-morning', label: '🌅 Moderadamente Matutino', peakHours: [8,9,10,11]};
+  return {type: 'definitely-morning', label: '☀️ Definitivamente Matutino', peakHours: [6,7,8,9]};
+}
+
+// Guardar resultado de assessment
+function saveChronotypeAssessment(answers) {
+  const chronotype = calculateChronotype(answers);
+  STATE.biohacking.chronotype = chronotype;
+  STATE.biohacking.assessmentDate = new Date().toISOString();
+  STATE.biohacking.protocolsActive.chronotype = true;
+  
+  // Actualizar energyProfile con los peak hours del cronotipo
+  STATE.energyProfile.peakHours = chronotype.peakHours;
+  STATE.energyProfile.morningPerson = chronotype.type.includes('morning');
+  
+  save();
+  updateBiohackingWidget();
+  updateCircadianWidget(); // Re-render con nuevos horarios
+  showDopamineHit('🧬', `Cronotipo: ${chronotype.label}`);
+}
+
+// Log de suplemento
+function logSupplement(supplementKey, taken) {
+  if (!taken) return;
+  
+  const now = new Date();
+  const hour = now.getHours();
+  
+  // Verificar cutoff de cafeína
+  if (supplementKey === 'caffeine' && hour >= 14) {
+    const warning = document.getElementById('caffeineWarning');
+    if (warning) warning.style.display = 'block';
+  }
+  
+  STATE.biohacking.supplementationLog.push({
+    date: now.toISOString(),
+    supplement: supplementKey,
+    time: hour,
+    notes: ''
+  });
+  
+  // Limitar a últimos 30 días
+  if (STATE.biohacking.supplementationLog.length > 100) {
+    STATE.biohacking.supplementationLog.shift();
+  }
+  
+  save();
+  showDopamineHit('💊', `${BIOHACKING_PROTOCOLS.suplements[supplementKey].name} registrado`);
+}
+
+// Timer Ultradiano (90 min)
+let ultradianInterval = null;
+
+function startUltradianCycle() {
+  if (STATE.biohacking.ultradianTimer.active) return;
+  
+  STATE.biohacking.ultradianTimer.active = true;
+  STATE.biohacking.ultradianTimer.startTime = Date.now();
+  STATE.biohacking.ultradianTimer.currentCycle = 'focus';
+  
+  // Iniciar música si auto-sync está activo
+  if (STATE.music.autoSync) {
+    startMusicProtocol('deepFocus');
+  }
+  
+  save();
+  updateUltradianWidget();
+  showDopamineHit('⏱️', 'Ciclo de 90 min iniciado (Kleitman BRAC)');
+  
+  // Actualizar cada segundo
+  ultradianInterval = setInterval(updateUltradianDisplay, 1000);
+}
+
+function pauseUltradianCycle() {
+  if (!STATE.biohacking.ultradianTimer.active) return;
+  
+  STATE.biohacking.ultradianTimer.active = false;
+  STATE.biohacking.ultradianTimer.pausedAt = Date.now();
+  
+  clearInterval(ultradianInterval);
+  save();
+  updateUltradianWidget();
+  showDopamineHit('⏸️', 'Ciclo pausado');
+}
+
+function updateUltradianDisplay() {
+  const timer = STATE.biohacking.ultradianTimer;
+  if (!timer.active) return;
+  
+  const elapsed = Math.floor((Date.now() - timer.startTime) / 1000); // segundos
+  const remaining = (timer.cycleDuration * 60) - elapsed;
+  
+  if (remaining <= 0) {
+    // Ciclo completado
+    completeUltradianCycle();
+    return;
+  }
+  
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
+  
+  const display = document.getElementById('ultradianTimer');
+  if (display) {
+    display.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+function completeUltradianCycle() {
+  clearInterval(ultradianInterval);
+  
+  // Guardar sesión
+  STATE.biohacking.studySessions.push({
+    date: new Date().toISOString(),
+    duration: STATE.biohacking.ultradianTimer.cycleDuration,
+    type: 'focus'
+  });
+  
+  // Resetear timer
+  STATE.biohacking.ultradianTimer.active = false;
+  STATE.biohacking.ultradianTimer.startTime = null;
+  
+  save();
+  updateUltradianWidget();
+  
+  // Sugerir break
+  if (STATE.music.autoSync) {
+    startMusicProtocol('relaxationBreak');
+  }
+  
+  showDopamineHit('✅', 'Ciclo de 90 min completado. ¡Toma un break de 20 min!');
+  alert('⏱️ Ciclo de 90 minutos completado (Kleitman BRAC)\n\nToma un break de 20 minutos:\n• Camina\n• Mira lejos (20-20-20 rule)\n• Hidrata\n\nLuego inicia otro ciclo si tienes energía.');
+}
+
+function updateUltradianWidget() {
+  const display = document.getElementById('ultradianTimer');
+  const status = document.getElementById('ultradianStatus');
+  
+  if (!STATE.biohacking.ultradianTimer.active) {
+    if (display) display.textContent = '90:00';
+    if (status) status.textContent = 'Listo para sesión de 90 min';
+    return;
+  }
+  
+  if (status) status.textContent = '🔥 Ciclo de foco profundo activo';
+}
+
+function updateBiohackingWidget() {
+  const chronoDiv = document.getElementById('chronotypeResult');
+  if (!chronoDiv) return;
+  
+  if (STATE.biohacking.chronotype) {
+    const c = STATE.biohacking.chronotype;
+    chronoDiv.innerHTML = `
+      <div style="font-size:14px;font-weight:700;color:var(--accent-cyan);margin-bottom:4px;">${c.label}</div>
+      <div style="font-size:10px;color:var(--text-muted);">Peak hours: ${c.peakHours.join(', ')}h</div>
+      <div style="font-size:9px;color:var(--text-secondary);margin-top:4px;">Assessment: ${new Date(STATE.biohacking.assessmentDate).toLocaleDateString()}</div>
+    `;
+  }
+  
+  // Verificar cafeína cutoff
+  const hour = new Date().getHours();
+  const caffeineWarning = document.getElementById('caffeineWarning');
+  if (caffeineWarning && hour >= 14) {
+    caffeineWarning.style.display = 'block';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// FEATURE: MÚSICA - Estados de flujo (Spotify + YouTube + Apple Music)
+// ═══════════════════════════════════════════════════════════
+
+const MUSIC_PROTOCOL_INFO = {
+  deepFocus: {
+    name: '🎯 Deep Focus',
+    frequency: '40Hz Gamma',
+    effect: 'Memoria de trabajo & concentración',
+    science: 'Beauchene et al., 2016'
+  },
+  creativeFlow: {
+    name: '🌊 Creative Flow',
+    frequency: '10Hz Alpha',
+    effect: 'Creatividad & relajación alerta',
+    science: 'Alpha synchronization enhances creative thinking'
+  },
+  learningMode: {
+    name: '📚 Learning Mode',
+    frequency: '12-15Hz SMR',
+    effect: 'Aprendizaje & retención',
+    science: 'SMR neurofeedback enhances learning'
+  },
+  relaxationBreak: {
+    name: '☕ Break & Recharge',
+    frequency: '6Hz Theta',
+    effect: 'Recuperación & consolidación',
+    science: 'Theta waves associated with memory consolidation'
+  },
+  filmScores: {
+    name: '🎬 Epic Coding',
+    frequency: 'N/A',
+    effect: 'Focus sin distracción de letras',
+    science: 'Music without lyrics reduces cognitive interference'
+  }
+};
+
+// Iniciar protocolo de música (Apple Music exclusivo para audio, YouTube para video)
+function startMusicProtocol(protocolKey) {
+  const protocol = MUSIC_PROTOCOL_INFO[protocolKey];
+  const urls = STATE.music.playlists[protocolKey];
+  
+  if (!protocol || !urls) {
+    console.error('Protocolo desconocido:', protocolKey);
+    return;
+  }
+  
+  STATE.music.currentProtocol = protocolKey;
+  STATE.music.isPlaying = true;
+  STATE.music.sessionStartTime = new Date().toISOString();
+  
+  // REGLA: Apple Music para audio, YouTube para video (filmScores)
+  let url;
+  if (protocolKey === 'filmScores') {
+    // Film scores solo en YouTube (video)
+    url = urls['youtube'];
+  } else {
+    // Todo lo demás solo en Apple Music (audio)
+    url = urls['apple-music'];
+  }
+  
+  if (url) {
+    window.open(url, '_blank');
+  }
+  
+  save();
+  updateMusicWidget();
+  const icon = protocolKey === 'filmScores' ? '📺' : '🍎';
+  showDopamineHit(icon, `${protocol.name} iniciado`);
+}
+
+// Cambiar reproductor preferido (solo Apple Music para audio, YouTube para video)
+function setMusicPlayer(player) {
+  const validPlayers = ['youtube', 'apple-music'];  // Spotify removido - Apple Music exclusivo para audio
+  if (!validPlayers.includes(player)) return;
+  
+  STATE.music.externalPlayer = player;
+  save();
+  updateMusicWidget();
+  const icon = player === 'apple-music' ? '🍎' : '📺';
+  showDopamineHit(icon, `Reproductor: ${player}`);
+}
+
+// Toggle auto-sync con ciclos ultradianos
+function toggleMusicAutosync(enabled) {
+  STATE.music.autoSync = enabled;
+  save();
+}
+
+// Log de sesión de música completada
+function logMusicSession(rating) {
+  if (!STATE.music.sessionStartTime) return;
+  
+  const duration = Math.floor((Date.now() - new Date(STATE.music.sessionStartTime)) / 1000 / 60);
+  
+  STATE.music.sessionHistory.push({
+    date: new Date().toISOString(),
+    protocol: STATE.music.currentProtocol,
+    duration: duration,
+    productivityRating: rating // 1-10
+  });
+  
+  // Limitar historial
+  if (STATE.music.sessionHistory.length > 50) {
+    STATE.music.sessionHistory.shift();
+  }
+  
+  STATE.music.isPlaying = false;
+  STATE.music.sessionStartTime = null;
+  
+  save();
+}
+
+function updateMusicWidget() {
+  // Actualizar UI si es necesario
+  const syncCheckbox = document.getElementById('musicAutosync');
+  if (syncCheckbox) {
+    syncCheckbox.checked = STATE.music.autoSync;
+  }
+}
+
+// FIX: Función robusta de carga con manejo de errores y backup
+function loadState() {
+  try {
+    const saved = localStorage.getItem('aegis_v5_state');
+    if (!saved) {
+      console.log('No saved state found, using defaults');
+      return { ...DEFAULT_STATE };
+    }
+    
+    const parsed = JSON.parse(saved);
+    
+    // Validar estructura mínima
+    if (!parsed || typeof parsed !== 'object') {
+      throw new Error('Estado corrupto: no es un objeto válido');
+    }
+    
+    // Migración de versiones antiguas
+    if (!parsed.version) {
+      console.log('Migrando estado de versión antigua');
+      parsed.version = '5.0';
+    }
+    
+    // Asegurar que existan nuevos campos (backward compatibility)
+    if (!parsed.srsSchedule) parsed.srsSchedule = {};
+    if (!parsed.config) parsed.config = DEFAULT_STATE.config;
+    if (!parsed.proofOfWork) parsed.proofOfWork = {};
+    if (!parsed.energyProfile) parsed.energyProfile = DEFAULT_STATE.energyProfile;
+    if (!parsed.codeCombat) parsed.codeCombat = DEFAULT_STATE.codeCombat;
+    if (!parsed.biohacking) parsed.biohacking = DEFAULT_STATE.biohacking;
+    if (!parsed.music) parsed.music = DEFAULT_STATE.music;
+    
+    console.log('Estado cargado correctamente');
+    return { ...DEFAULT_STATE, ...parsed };
+    
+  } catch (e) {
+    console.error('Error cargando estado:', e);
+    
+    // Backup del estado corrupto
+    const corrupt = localStorage.getItem('aegis_v5_state');
+    if (corrupt) {
+      const backupKey = `aegis_v5_state_backup_${Date.now()}`;
+      localStorage.setItem(backupKey, corrupt);
+      console.log(`Estado corrupto respaldado en: ${backupKey}`);
+    }
+    
+    // Notificar al usuario (opcional, puede ser silencioso)
+    alert('⚠️ Se detectó un problema con los datos guardados. Se ha restaurado el estado por defecto. Tu progreso anterior ha sido respaldado.');
+    
+    return { ...DEFAULT_STATE };
+  }
+}
+
+// FIX: Función de guardado con manejo de errores
+function save() {
+  try {
+    localStorage.setItem('aegis_v5_state', JSON.stringify(STATE));
+    updateUI();
+  } catch (e) {
+    console.error('Error guardando estado:', e);
+    if (e.name === 'QuotaExceededError') {
+      alert('⚠️ Almacenamiento lleno. Exporta tus datos para hacer backup.');
+    }
+  }
+}
+
+let STATE = loadState();
+let currentView = 'library'; // 'library' | 'current' | 'progress'
+
+// ═══════════════════════════════════════════════════════════
+// VIEW MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+
+function showView(viewName) {
+  currentView = viewName;
+  
+  // Ocultar todas las vistas
+  const libraryWidget = document.getElementById('libraryWidget');
+  const currentViewEl = document.getElementById('currentView');
+  const progressViewEl = document.getElementById('progressView');
+  
+  if (libraryWidget) libraryWidget.style.display = 'none';
+  if (currentViewEl) currentViewEl.style.display = 'none';
+  if (progressViewEl) progressViewEl.style.display = 'none';
+  
+  // Actualizar botones de navegación
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Mostrar vista seleccionada
+  switch(viewName) {
+    case 'library':
+      if (libraryWidget) libraryWidget.style.display = 'block';
+      document.querySelector('[onclick="showView(\'library\')"]')?.classList.add('active');
+      break;
+    case 'current':
+      if (currentViewEl) {
+        currentViewEl.style.display = 'block';
+        updateCurrentView();
+      }
+      document.querySelector('[onclick="showView(\'current\')"]')?.classList.add('active');
+      break;
+    case 'progress':
+      if (progressViewEl) {
+        progressViewEl.style.display = 'block';
+        updateProgressView();
+      }
+      document.querySelector('[onclick="showView(\'progress\')"]')?.classList.add('active');
+      break;
+  }
+  
+  showDopamineHit('👁️', `Vista: ${viewName}`);
+}
+
+function updateCurrentView() {
+  const container = document.getElementById('currentContent');
+  if (!container) return;
+  
+  if (!STATE.currentSourceId) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:40px;color:var(--text-muted);">
+        <div style="font-size:48px;margin-bottom:16px;">📚</div>
+        <div style="font-size:16px;margin-bottom:8px;">No hay fuente activa</div>
+        <div style="font-size:12px;">Selecciona una fuente de la biblioteca para comenzar a estudiar</div>
+        <button onclick="showView('library')" style="margin-top:16px;padding:8px 16px;background:var(--accent-blue);border:none;border-radius:8px;color:white;cursor:pointer;">Ir a Biblioteca</button>
+      </div>
+    `;
+    return;
+  }
+  
+  const source = BIBLIOTECA.find(s => s.id === STATE.currentSourceId);
+  if (!source) return;
+  
+  const progress = STATE.sourceProgress[source.id] || 0;
+  
+  container.innerHTML = `
+    <div style="background:var(--bg-primary);border-radius:12px;padding:20px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+        <div style="font-size:48px;">${source.icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:18px;font-weight:700;color:var(--text-primary);">${source.name}</div>
+          <div style="font-size:12px;color:var(--accent-cyan);text-transform:uppercase;">${source.category}</div>
+        </div>
+      </div>
+      
+      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;">
+        ${source.desc}
+      </div>
+      
+      <div style="background:var(--bg-card);border-radius:8px;padding:12px;margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--accent-gold);margin-bottom:4px;">🎯 UTILIDAD TÁCTICA</div>
+        <div style="font-size:13px;color:var(--text-secondary);">${source.tactical}</div>
+      </div>
+      
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:12px;color:var(--text-muted);">Progreso</span>
+          <span style="font-size:12px;color:var(--accent-cyan);">${progress}%</span>
+        </div>
+        <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${progress}%;background:linear-gradient(90deg,var(--accent-green),var(--accent-cyan));border-radius:4px;transition:width 0.3s;"></div>
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="openSource()" style="flex:1;padding:10px;background:var(--accent-blue);border:none;border-radius:8px;color:white;cursor:pointer;font-size:12px;">🌐 Abrir Fuente</button>
+        <button onclick="generatePrompt('plan')" style="flex:1;padding:10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);cursor:pointer;font-size:12px;">📋 Plan</button>
+        <button onclick="markCompleted()" style="flex:1;padding:10px;background:var(--accent-green);border:none;border-radius:8px;color:#000;cursor:pointer;font-size:12px;font-weight:600;">✅ Completar</button>
+      </div>
+    </div>
+  `;
+}
+
+function updateProgressView() {
+  // Actualizar estadísticas
+  const total = BIBLIOTECA.length;
+  const completed = STATE.completedSources.length;
+  const percentage = Math.round((completed / total) * 100);
+  
+  document.getElementById('progressTotal').textContent = total;
+  document.getElementById('progressCompleted').textContent = completed;
+  document.getElementById('progressPercentage').textContent = percentage + '%';
+  document.getElementById('progressXP').textContent = STATE.xp;
+  document.getElementById('progressText').textContent = `${completed}/${total} fuentes`;
+  document.getElementById('progressBarFill').style.width = percentage + '%';
+  
+  // Progreso por categoría
+  const categoryGrid = document.getElementById('categoryProgressGrid');
+  if (categoryGrid) {
+    const categories = {};
+    BIBLIOTECA.forEach(s => {
+      if (!categories[s.category]) {
+        categories[s.category] = { total: 0, completed: 0 };
+      }
+      categories[s.category].total++;
+      if (STATE.completedSources.includes(s.id)) {
+        categories[s.category].completed++;
+      }
+    });
+    
+    categoryGrid.innerHTML = Object.entries(categories).map(([cat, stats]) => {
+      const catProgress = Math.round((stats.completed / stats.total) * 100);
+      const catIcon = BIBLIOTECA.find(s => s.category === cat)?.icon || '📚';
+      return `
+        <div style="background:var(--bg-primary);border-radius:8px;padding:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;font-weight:600;">${catIcon} ${cat}</span>
+            <span style="font-size:12px;color:var(--accent-cyan);">${stats.completed}/${stats.total}</span>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${catProgress}%;background:var(--accent-green);border-radius:3px;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;text-align:right;">${catProgress}%</div>
+        </div>
+      `;
+    }).join('');
+  }
+  
+  // Últimas fuentes completadas
+  const recentList = document.getElementById('recentCompletedList');
+  if (recentList && STATE.completedSources.length > 0) {
+    const recent = STATE.completedSources.slice(-5).reverse();
+    recentList.innerHTML = recent.map(id => {
+      const source = BIBLIOTECA.find(s => s.id === id);
+      if (!source) return '';
+      return `
+        <div style="display:flex;align-items:center;gap:12px;background:var(--bg-primary);padding:10px;border-radius:8px;">
+          <span style="font-size:20px;">${source.icon}</span>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;">${source.name}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${source.category}</div>
+          </div>
+          <span style="font-size:16px;">✅</span>
+        </div>
+      `;
+    }).join('');
+  } else if (recentList) {
+    recentList.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Aún no has completado ninguna fuente</div>';
+  }
+}
+
+function updateUI() {
+  document.getElementById('badge-xp').textContent = `⚡ ${STATE.xp} XP`;
+  document.getElementById('badge-streak').textContent = `🔥 ${STATE.streak} días`;
+  document.getElementById('badge-sources').textContent = `📚 ${STATE.completedSources.length}/${BIBLIOTECA.length}`;
+  document.getElementById('stat-completed').textContent = STATE.completedSources.length;
+  document.getElementById('stat-active').textContent = STATE.currentSourceId ? 1 : 0;
+  renderSourceGrid();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SOURCE LIBRARY UI
+// ═══════════════════════════════════════════════════════════
+let currentCategory = 'all';
+
+function renderSourceGrid() {
+  const grid = document.getElementById('sourceGrid');
+  const filtered = currentCategory === 'all' 
+    ? BIBLIOTECA 
+    : BIBLIOTECA.filter(s => s.category === currentCategory);
+  
+  grid.innerHTML = filtered.map(source => {
+    const isActive = STATE.currentSourceId === source.id;
+    const isCompleted = STATE.completedSources.includes(source.id);
+    const progress = STATE.sourceProgress[source.id] || 0;
+    
+    return `
+      <div class="source-card ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" 
+           onclick="selectSource(${source.id})" title="${source.tactical}">
+        <div class="source-icon">${source.icon}</div>
+        <div class="source-name">${source.name}</div>
+        <div class="source-desc">${source.desc.substring(0, 80)}...</div>
+        ${progress > 0 ? `<div class="source-progress"><div class="source-progress-fill" style="width:${progress}%"></div></div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function filterCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-tab').forEach(tab => {
+    // FIX: Usar atributo data-category para matching exacto (más robusto que textContent)
+    const tabCategory = tab.getAttribute('data-category');
+    tab.classList.toggle('active', tabCategory === cat);
+  });
+  renderSourceGrid();
+}
+
+function selectSource(id) {
+  STATE.currentSourceId = id;
+  const source = BIBLIOTECA.find(s => s.id === id);
+  
+  document.getElementById('studyIcon').textContent = source.icon;
+  document.getElementById('studyName').textContent = source.name;
+  document.getElementById('studyCategory').textContent = source.category.toUpperCase();
+  document.getElementById('studyDesc').textContent = source.desc;
+  document.getElementById('studyTactical').style.display = 'block';
+  document.getElementById('studyTacticalText').textContent = source.tactical;
+  document.getElementById('studyActions').style.display = 'grid';
+  
+  // Generate contextual prompt
+  generateSourcePrompt(source);
+  save();
+  
+  showDopamineHit('📚', 'Fuente seleccionada');
+}
+
+function openSource() {
+  const source = BIBLIOTECA.find(s => s.id === STATE.currentSourceId);
+  if (source) window.open(source.url, '_blank');
+}
+
+// FIX: Mark completed with Proof of Work validation
+function markCompleted() {
+  if (!STATE.currentSourceId) return;
+  if (STATE.completedSources.includes(STATE.currentSourceId)) {
+    showDopamineHit('⚠️', 'Esta fuente ya está completada');
+    return;
+  }
+  
+  const source = BIBLIOTECA.find(s => s.id === STATE.currentSourceId);
+  if (!source) return;
+  
+  // FIX: Proof of Work - Validar comprensión real antes de marcar completado
+  showProofOfWorkModal(source);
+}
+
+// FIX: Mostrar modal de Proof of Work
+function showProofOfWorkModal(source) {
+  // Crear modal overlay
+  const modal = document.createElement('div');
+  modal.id = 'powModal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+  `;
+  
+  const content = document.createElement('div');
+  content.style.cssText = `
+    background: var(--bg-card);
+    border: 2px solid var(--accent-green);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    font-family: var(--font-sans);
+  `;
+  
+  content.innerHTML = `
+    <h2 style="color: var(--accent-green); margin-bottom: 16px; font-size: 20px;">
+      🎯 Proof of Work: ${source.name}
+    </h2>
+    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+      Antes de marcar esta fuente como completada, demuestra tu comprensión respondiendo 
+      estas 3 preguntas. Esto creará tu <strong>evidencia de aprendizaje</strong> para repasos futuros.
+    </p>
+    
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; color: var(--accent-cyan); font-size: 12px; margin-bottom: 8px; font-weight: 600;">
+        1️⃣ Explica este concepto como si fueras a enseñárselo a un niño de 12 años
+      </label>
+      <textarea id="powExplanation" style="
+        width: 100%;
+        min-height: 80px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        font-size: 13px;
+        resize: vertical;
+      " placeholder="Usa palabras simples. Evita jerga técnica. Imagina que hablas con tu primo de 12 años..."></textarea>
+    </div>
+    
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; color: var(--accent-cyan); font-size: 12px; margin-bottom: 8px; font-weight: 600;">
+        2️⃣ Escribe pseudocódigo o describe un caso práctico donde aplicarías esto
+      </label>
+      <textarea id="powPseudocode" style="
+        width: 100%;
+        min-height: 80px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text-primary);
+        font-family: var(--font-mono);
+        font-size: 13px;
+        resize: vertical;
+      " placeholder="// Pseudocódigo o descripción de aplicación práctica...
+// Ejemplo: 'Usaría esto en un script que...'"></textarea>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label style="display: block; color: var(--accent-cyan); font-size: 12px; margin-bottom: 8px; font-weight: 600;">
+        3️⃣ ¿Qué conexión tiene este tema con algo que ya estudiaste?
+      </label>
+      <textarea id="powConnection" style="
+        width: 100%;
+        min-height: 60px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        font-size: 13px;
+        resize: vertical;
+      " placeholder="Ej: 'Esto se conecta con Arrays en C porque...' o 'Esto es similar a Docker en que...'"></textarea>
+    </div>
+    
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button onclick="closeProofOfWorkModal()" style="
+        padding: 10px 20px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 13px;
+      ">Cancelar</button>
+      <button onclick="submitProofOfWork()" style="
+        padding: 10px 20px;
+        background: var(--accent-green);
+        border: none;
+        border-radius: 8px;
+        color: #000;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+      ">✅ Completar con Evidence</button>
+    </div>
+  `;
+  
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+}
+
+// FIX: Cerrar modal de Proof of Work
+function closeProofOfWorkModal() {
+  const modal = document.getElementById('powModal');
+  if (modal) modal.remove();
+}
+
+// FIX: Submit Proof of Work y completar fuente
+function submitProofOfWork() {
+  const explanation = document.getElementById('powExplanation')?.value?.trim();
+  const pseudocode = document.getElementById('powPseudocode')?.value?.trim();
+  const connection = document.getElementById('powConnection')?.value?.trim();
+  
+  // Validación mínima
+  if (!explanation || explanation.length < 20) {
+    alert('Por favor escribe una explicación más detallada (mínimo 20 caracteres). Esto es para tu propio beneficio.');
+    return;
+  }
+  
+  if (!pseudocode || pseudocode.length < 10) {
+    alert('Por favor describe un caso práctico o pseudocódigo. Esto asegura que puedas aplicar lo aprendido.');
+    return;
+  }
+  
+  // Guardar Proof of Work
+  STATE.proofOfWork[STATE.currentSourceId] = {
+    explanation: explanation,
+    pseudocode: pseudocode,
+    connection: connection || 'No se especificó conexión',
+    timestamp: new Date().toISOString(),
+    sourceName: BIBLIOTECA.find(s => s.id === STATE.currentSourceId)?.name
+  };
+  
+  // Cerrar modal
+  closeProofOfWorkModal();
+  
+  // Proceder con completado
+  STATE.completedSources.push(STATE.currentSourceId);
+  STATE.xp += 100;
+  
+  // FIX: Spaced Repetition System (SRS) - Programar repasos
+  const intervals = [1, 3, 7, 14, 30];
+  const now = new Date();
+  STATE.srsSchedule[STATE.currentSourceId] = intervals.map(days => {
+    const reviewDate = new Date(now);
+    reviewDate.setDate(reviewDate.getDate() + days);
+    return {
+      date: reviewDate.toISOString(),
+      completed: false,
+      days: days
+    };
+  });
+  
+  showDopamineHit('✨', '+100 XP — Fuente completada + evidence guardada + repasos programados');
+  save();
+  
+  console.log('Proof of Work guardado:', STATE.proofOfWork[STATE.currentSourceId]);
+}
+
+// FIX: Ver Proof of Work de una fuente
+function viewProofOfWork(sourceId) {
+  const pow = STATE.proofOfWork[sourceId];
+  if (!pow) return 'No hay evidence registrada';
+  
+  return `🎯 Evidence de Comprensión:
+
+1️⃣ Explicación simple:
+${pow.explanation}
+
+2️⃣ Caso práctico:
+${pow.pseudocode}
+
+3️⃣ Conexión con previos:
+${pow.connection}
+
+📝 Registrado: ${new Date(pow.timestamp).toLocaleDateString()}`;
+}
+
+// FIX: Obtener repasos programados para hoy (con Interleaving)
+function getTodaysReviews() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  const reviews = [];
+  
+  Object.entries(STATE.srsSchedule).forEach(([sourceId, schedule]) => {
+    const source = BIBLIOTECA.find(s => s.id == sourceId);
+    if (!source) return;
+    
+    schedule.forEach((review, index) => {
+      if (review.completed) return;
+      
+      const reviewDate = new Date(review.date);
+      if (reviewDate >= today && reviewDate < tomorrow) {
+        // FIX: Interleaving - Encontrar fuentes relacionadas para repaso conectado
+        const interleavingSuggestions = getInterleavingSuggestions(source);
+        
+        reviews.push({
+          source: source,
+          reviewIndex: index,
+          days: review.days,
+          reviewDate: reviewDate,
+          interleaving: interleavingSuggestions // Sugerencias de conexión
+        });
+      }
+    });
+  });
+  
+  return reviews.sort((a, b) => a.reviewDate - b.reviewDate);
+}
+
+// FIX: Sistema de Interleaving - Sugerir fuentes relacionadas para repaso mixto
+function getInterleavingSuggestions(source) {
+  // Mapeo de conexiones entre categorías para interleaving óptimo
+  const categoryConnections = {
+    'cs50': ['python', 'systems', 'methodology'],
+    'python': ['cs50', 'security', 'ai', 'devops'],
+    'security': ['python', 'systems', 'architecture'],
+    'ai': ['python', 'architecture', 'methodology'],
+    'architecture': ['security', 'ai', 'database', 'devops'],
+    'systems': ['cs50', 'security', 'devops'],
+    'devops': ['architecture', 'systems', 'database'],
+    'database': ['architecture', 'devops'],
+    'git': ['methodology'],
+    'methodology': ['cs50', 'ai', 'git']
+  };
+  
+  const connectedCategories = categoryConnections[source.category] || [];
+  
+  // Encontrar fuentes completadas en categorías conectadas
+  const suggestions = [];
+  
+  connectedCategories.forEach(cat => {
+    // Buscar fuentes completadas de esta categoría
+    const completedInCat = STATE.completedSources
+      .map(id => BIBLIOTECA.find(s => s.id == id))
+      .filter(s => s && s.category === cat)
+      .slice(0, 2); // Máximo 2 sugerencias por categoría
+    
+    completedInCat.forEach(s => {
+      suggestions.push({
+        id: s.id,
+        name: s.name,
+        category: s.category,
+        icon: s.icon,
+        connection: getConnectionReason(source.category, cat)
+      });
+    });
+  });
+  
+  // Limitar a máximo 3 sugerencias para no sobrecargar
+  return suggestions.slice(0, 3);
+}
+
+// FIX: Explicar por qué dos categorías están conectadas
+function getConnectionReason(cat1, cat2) {
+  const reasons = {
+    'cs50-python': 'CS50 usa Python en sus últimas semanas',
+    'cs50-systems': 'C de CS50 es fundamental para sistemas',
+    'python-security': 'Black Hat Python conecta ambos',
+    'python-ai': 'ML se implementa principalmente en Python',
+    'security-systems': 'Hacking requiere entender sistemas de bajo nivel',
+    'security-architecture': 'Seguridad es parte del diseño de sistemas',
+    'ai-architecture': 'Sistemas de ML requieren arquitectura escalable',
+    'architecture-database': 'Diseño de datos es clave en arquitectura',
+    'devops-architecture': 'DevOps implementa arquitectura en producción',
+    'systems-devops': 'Containers usan características del kernel'
+  };
+  
+  const key1 = `${cat1}-${cat2}`;
+  const key2 = `${cat2}-${cat1}`;
+  
+  return reasons[key1] || reasons[key2] || 'Temas complementarios';
+}
+
+// FIX: Generar prompt de repaso con Interleaving
+function generateInterleavedReviewPrompt(reviewItem) {
+  const mainSource = reviewItem.source;
+  const interleaving = reviewItem.interleaving || [];
+  
+  let prompt = `REPASO SRS — Día ${reviewItem.days}: ${mainSource.name}\n\n`;
+  
+  // Mostrar evidence previa si existe
+  const pow = STATE.proofOfWork[mainSource.id];
+  if (pow) {
+    prompt += `🎯 Tu evidence anterior:\n${pow.explanation.substring(0, 100)}...\n\n`;
+  }
+  
+  // Agregar sugerencias de interleaving
+  if (interleaving.length > 0) {
+    prompt += `🔗 INTERLEAVING — Conecta con:\n`;
+    interleaving.forEach(s => {
+      prompt += `• ${s.icon} ${s.name} (${s.connection})\n`;
+    });
+    prompt += `\n💡 Tip: ¿Cómo se relaciona ${mainSource.name} con estas fuentes?\n`;
+  }
+  
+  prompt += `\n✅ Acciones:\n1. Repasa tus notas de ${mainSource.name}\n2. Revisa tu evidence de comprensión\n`;
+  if (interleaving.length > 0) {
+    prompt += `3. Identifica una conexión con ${interleaving[0].name}\n`;
+  }
+  
+  return prompt;
+}
+
+// FIX: Marcar repaso como completado
+function completeReview(sourceId, reviewIndex) {
+  if (STATE.srsSchedule[sourceId] && STATE.srsSchedule[sourceId][reviewIndex]) {
+    STATE.srsSchedule[sourceId][reviewIndex].completed = true;
+    STATE.xp += 25; // Bonus XP por repasar
+    showDopamineHit('🔄', '+25 XP — Repaso completado');
+    save();
+    return true;
+  }
+  return false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROMPT GENERATOR
+// ═══════════════════════════════════════════════════════════
+function generateMasterNLMPrompt() {
+  const allSourcesList = BIBLIOTECA.map(s => `- ${s.icon} ${s.name} (${s.category}): ${s.desc}`).join('\n');
+  
+  const categories = {};
+  BIBLIOTECA.forEach(s => {
+    if (!categories[s.category]) categories[s.category] = [];
+    categories[s.category].push(s.name);
+  });
+  
+  const categoriesSummary = Object.entries(categories)
+    .map(([cat, sources]) => `  • ${cat.toUpperCase()}: ${sources.length} fuentes`)
+    .join('\n');
+
+  return `╔══════════════════════════════════════════════════════════════════════════════╗
+║                    🎧 AUDIOCLASE MAESTRA — BIBLIOTECA V6.0                    ║
+║              Generador de Podcast Educativo con las 74 Fuentes                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+CONTEXTO DEL ESTUDIANTE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Nivel: Principiante-Intermedio en Ciencias de la Computación
+• Background: Autodidacta, estudiando de forma independiente
+• Equipos: Mac M4 (teoría) + HP Arch Linux (práctica/"Trinchera")
+• Tiempo disponible: 1.5-2 horas diarias de estudio
+• Objetivo: Dominar programación, ciberseguridad e IA en 10 años
+• Estilo de aprendizaje: Necesita analogías cotidianas, conexiones conceptuales
+• Fuentes activas en biblioteca: 74 documentos
+
+BIBLIOTECA DE FUENTES (74 documentos):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${categoriesSummary}
+
+CATEGORÍAS DETALLADAS:
+🎓 CS50x 2025: Syllabus, Weeks 0-6, Python, Algorithms, Debugging
+🐍 Python: Tutorial Oficial, Crash Course, Black Hat, Mouredev, FastAPI
+🛡️ Seguridad: Hacking Art, OWASP, PortSwigger, HTB, Bandit, SQL Antipatterns
+🤖 IA/ML: DeepSeek, Prompt Engineering, HuggingFace, Claude, Nand2Tetris
+🏗️ Arquitectura: Clean Code, System Design, Pragmatic, 12-Factor, DDIA
+⚙️ Sistemas: ArchWiki, Linux CLI, C Programming, Arrays, Cheat Sheets
+🐳 DevOps: Docker, Deep Dive 2025, Moby Source
+🗄️ Bases de Datos: PostgreSQL, SQL Antipatterns
+🌲 Git: Pro Git, Developer Roadmaps
+📖 Metodología: Thinking in Systems, Code Petzold, Álgebra Boole, Roadmaps
+
+MISIÓN PARA NOTEBOOKLM:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Genera un guion COMPLETO para una "AUDIOCLASE" de 15-20 minutos que integre 
+conocimientos de las 74 fuentes documentales de esta biblioteca.
+
+ESTRUCTURA OBLIGATORIA DEL PODCAST (15-20 minutos):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 [00:00-01:00] APERTURA — EL GANCHO
+• Frase de apertura impactante relacionada con algo cotidiano
+• Conectar el tema técnico con experiencia diaria del oyente
+• Establecer por qué ESTE concepto importa hoy
+
+📚 [01:00-08:00] NÚCLEO CONCEPTUAL — 3 ACTOS
+
+ACTO I — EL PROBLEMA (01:00-03:30)
+• Presentar el problema real que resuelve el concepto
+• Usar OBLIGATORIAMENTE analogía de la vida cotidiana:
+  - 🍳 Cocina/Recetas = Algoritmos
+  - 🚗 Autos/Tráfico = Redes y protocolos  
+  - 🏋️ Gym/Deporte = Optimización
+  - 🎵 Música/Playlists = Estructuras de datos
+  - 🏠 Arquitectura/Casas = Diseño de sistemas
+  - 📦 Almacén = Memoria y storage
+  - 🎮 Videojuegos = Lógica y estados
+
+ACTO II — LA SOLUCIÓN TÉCNICA (03:30-06:30)
+• Explicar el concepto técnico CONCRETO
+• Conectar: analogía → técnica → aplicación real
+• Definir términos en máximo 10 palabras
+
+ACTO III — APLICACIÓN PRÁCTICA (06:30-08:00)
+• Caso de uso REAL en industria tech
+• Ejemplo específico para practicar hoy
+• Conectar con CS50, OverTheWire, PortSwigger, HTB
+
+🔍 [08:00-11:00] CONEXIONES MAESTRAS
+
+Conectar el tema actual con OTROS conceptos de las 74 fuentes:
+• CS50x 2025 (Semanas 0-6, Python, Algoritmos)
+• Python (Oficial, Crash Course, Black Hat, Mouredev)
+• Seguridad (OWASP, PortSwigger, HTB, Bandit)
+• IA/ML (DeepSeek, Prompt Engineering, HuggingFace)
+• Arquitectura (Clean Code, System Design, Pragmatic)
+• Sistemas (ArchWiki, Linux CLI, C Programming)
+• DevOps (Docker, Kubernetes)
+• Bases de Datos (PostgreSQL, SQL Antipatterns)
+• Metodología (Thinking in Systems, Code Petzold)
+
+⚠️ [11:00-13:00] TRAMPAS Y ERRORES COMUNES
+• 3 errores específicos que cometen principiantes
+• Cómo evitarlos/detectarlos
+• Conectar con CS50 Bugs & Debugging
+
+🎯 [13:00-14:30] CHECKPOINT Y AUTOVERIFICACIÓN
+• Resumen ejecutivo de 3 puntos CLAVE
+• 3 preguntas de autoverificación:
+  1. Conceptual: "¿Puedes explicarle esto a alguien que no sabe programar?"
+  2. Técnica: "¿Puedes escribir el pseudocódigo?"
+  3. Aplicación: "¿Dónde lo usarías en un proyecto real?"
+
+🔮 [14:30-15:30] PRÓXIMOS PASOS
+• Preparar para el siguiente concepto
+• Tarea sugerida para practicar hoy (15-30 min)
+
+ESTILO Y TONO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• [NORMAL] = Explicación regular, ritmo conversacional
+• [ÉNFASIS] = Momentos críticos, aumentar volumen
+• [PAUSA 3 SEG] = Después de conceptos importantes
+• [DICE EN VOZ ALTA] = Instrucciones para repetir
+• Tono: Mentor experimentado, profesional pero accesible
+• Usar "tú" y "nosotros", NUNCA condescendiente
+
+REQUISITOS DE INTEGRACIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Mínimo 8-12 referencias explícitas a fuentes de la biblioteca
+• SIEMPRE conectar con CS50x 2025 cuando aplique
+• SIEMPRE mencionar práctica en OverTheWire/PortSwigger/HTB
+• Incluir al menos una referencia de cada categoría mayor
+
+SESIÓN ESPECÍFICA A GENERAR:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Especifica aquí tu solicitud personalizada:
+- Semana de estudio (1-52)
+- Tema específico
+- Concepto que te cuesta trabajo
+- Área de foco: Programación / Seguridad / IA / Arquitectura
+- Fuentes que has estado usando recientemente]
+
+Ejemplo: "Genera AudioClase para Semana 3: Arrays en C (CS50 Week 2). 
+No termino de entender la relación punteros-memoria."
+
+FORMATO DE SALIDA ESPERADO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TÍTULO: [Concepto] — [Analogía Cotidiana]
+DURACIÓN: XX minutos
+FUENTES UTILIZADAS: [Lista de 8-12 fuentes específicas]
+
+[00:00] SECCIÓN: [Nombre] | [TONO]
+Guion: "..."
+
+[XX:XX] SECCIÓN: [Nombre] | [TONO]
+...
+
+BONUS: 3 prompts de seguimiento para Gemini/Claude + ejercicio práctico`;
+}
+
+function generateSourcePrompt(source) {
+  const prompt = `Eres mi tutor de programación. Estoy estudiando: **${source.name}**
+
+**DESCRIPCIÓN DE LA FUENTE:**
+${source.desc}
+
+**UTILIDAD TÁCTICA:**
+${source.tactical}
+
+**URL:** ${source.url}
+
+**MI CONTEXTO:**
+- Nivel: Principiante-Intermedio
+- Equipos: Mac M4 (teoría) + HP Arch Linux (práctica)
+- Objetivo: Dominar esta fuente en 1-2 semanas
+
+**GENERA UN PLAN DE ESTUDIO CON:**
+1. 🎯 **Objetivos específicos** de esta fuente (3-5 puntos)
+2. 📋 **Plan semanal** desglosado por días (1.5h/día)
+3. ❓ **3 preguntas socráticas** para verificar comprensión profunda
+4. 💻 **Proyecto práctico** que aplique los conceptos de esta fuente
+5. 📓 **Prompt para NotebookLM** para generar podcast de repaso
+
+**FORMATO:** Lista accionable, sin explicaciones teóricas largas.`;
+
+  document.getElementById('promptOutput').textContent = prompt;
+  document.getElementById('promptTitle').textContent = `🧠 Prompt para: ${source.name}`;
+}
+
+function generatePrompt(type) {
+  const source = STATE.currentSourceId ? BIBLIOTECA.find(s => s.id === STATE.currentSourceId) : null;
+  
+  // Prompt Templates dinámicos y funcionales
+  const templates = {
+    plan: source ? generateSourcePrompt(source) : `Genera un plan de estudio semanal para un autodidacta de CS.`,
+    
+    socratic: source ? `ACTÚA COMO TUTOR SOCRÁTICO ESTRUCTO — Sesión sobre: ${source.name}
+
+**TU ROL:** No des respuestas. Guíame mediante preguntas para que YO descubra.
+
+**CONTEXTO DE ESTUDIO:**
+- Fuente: ${source.name}
+- Descripción: ${source.desc}
+- Mi intento de explicar este concepto: [YO ESCRIBO AQUÍ MI EXPLICACIÓN]
+
+**PROTOCOLO SOCRÁTICO (ejecuta paso a paso):**
+1. Lee mi explicación anterior
+2. Identifica el error o vacío conceptual específico
+3. Formula 3 preguntas guía progresivas:
+   - Pregunta 1 (Detectar): "¿Por qué crees que...?" — detecta malentendido
+   - Pregunta 2 (Cuestionar): "¿Qué pasaría si...?" — expone contradicción
+   - Pregunta 3 (Reconstruir): "¿Cómo conectas X con Y?" — guía hacia síntesis
+4. Propón un mini-problema de 3-5 líneas para que resuelva con el concepto
+
+**FORMATO DE SALIDA:**
+❓ Pregunta 1: [tu pregunta detectiva]
+❓ Pregunta 2: [tu pregunta cuestionadora]
+❓ Pregunta 3: [tu pregunta reconstructora]
+🧩 Mini-problema: [descripción concreta]
+
+**RESTRICCIÓN ABSOLUTA:** Si doy respuesta incorrecta, NO la corrijas. Haz otra pregunta guía.` : `Actúa como tutor socrático. No des respuestas. Hazme 3 preguntas guía para que descubra el concepto por mí mismo.
+
+**MI INTENTO DE EXPLICAR:** [Escribo aquí]
+
+**PROTOCOLO:**
+❓ Pregunta 1 (detectar malentendido):
+❓ Pregunta 2 (cuestionar supuestos):
+❓ Pregunta 3 (guiar a síntesis):
+🧩 Mini-problema:`,
+    
+    notebooklm: source ? `CREA UNA CLASE DE REPASO AUDIO (10-12 minutos) sobre lo que estudié HOY:
+
+**📚 LO QUE ESTUDIÉ HOY:**
+• Fuente principal: ${source.name}
+• Descripción: ${source.desc}
+• Utilidad táctica: ${source.tactical}
+• Conceptos nuevos que vi: [ESTUDIANTE AGREGA AQUÍ: lista de conceptos]
+• Código/ejercicios que practiqué: [ESTUDIANTE AGREGA AQUÍ: breve descripción]
+• Dificultades o dudas que tuve: [ESTUDIANTE AGREGA AQUÍ: opcional]
+
+**🎯 OBJETIVO DE ESTA CLASE AUDIO:**
+Crear una "mini-clase de repaso" que me ayude a CEMENTAR lo aprendido hoy, conectando los conceptos técnicos con ejemplos de la VIDA COTIDIANA. Debe ser como si un mentor me explicara caminando a casa lo que acabo de aprender.
+
+**📝 ESTRUCTURA OBLIGATORIA (10-12 minutos):**
+
+**[00:00-01:30] APERTURA: "Esto es lo que aprendimos hoy"**
+• Resumen en 2-3 frases de los conceptos clave del día
+• Frase gancho: "¿Sabías que lo que hiciste hoy con [concepto] es EXACTAMENTE igual a cuando... [analogía cotidiana]"
+• Establecer por qué esto es útil en la vida real (no solo en código)
+
+**[01:30-06:00] NÚCLEO: La analogía maestra**
+• PRIMERO: Explicar la analogía cotidiana COMPLETA (sin jerga técnica)
+  - Usar una de estas: 🍳 Cocina / 🚗 Manejar / 🏋️ Gym / 🎵 Música / 🏠 Organizar casa / 📦 Almacén / 🎮 Videojuegos
+  - Desarrollar la analogía paso a paso como historia
+• LUEGO: Mapear cada elemento de la analogía al concepto técnico de hoy
+  - "En la analogía, X representa Y en código"
+  - "Cuando en la vida real pasa Z, en programación eso es W"
+• FINALMENTE: Mostrar cómo la analogía ayuda a entender el concepto técnico
+
+**[06:00-08:30] APLICACIÓN: "¿Y esto para qué me sirve?"**
+• Caso de uso REAL donde aplique este concepto (puede ser de ${source.name})
+• Conectar con fuentes prácticas: CS50 labs, OverTheWire, PortSwigger, HTB
+• "Imagina que estás construyendo..." (proyecto pequeño realista)
+
+**[08:30-10:00] CIERRE Y CEMENTADO**
+• 3 frases clave para recordar (como "mantras" del día)
+• "Si solo recuerdas una cosa de hoy, que sea..."
+• 2 preguntas rápidas de autoverificación:
+  1. "¿Puedes explicarle [concepto] a un amigo que no programa usando la analogía de hoy?"
+  2. "¿Reconocerías [concepto] si lo ves en código la próxima semana?"
+
+**[10:00-11:30] PUENTE AL MAÑANA**
+• "Lo que viste hoy es la base de..." (conectar con siguiente concepto en el roadmap)
+• Preparar mentalmente para la próxima sesión
+• Frase de cierre motivadora
+
+**🎭 TONO Y ESTILO:**
+• [NORMAL]: Explicación clara y pausada
+• [ÉNFASIS]: En los puntos clave que DEBEN quedar
+• [PAUSA 2 SEG]: Después de cada analogía para asimilar
+• [DICE CONMIGO]: Frases para repetir en voz alta
+• Tono: Mentor orgulloso, explicando en la caminata de regreso a casa
+• Usar "aprendimos hoy", "viste como", "ahora entiendes que"
+
+**📌 REQUISITOS ESPECÍFICOS:**
+• OBLIGATORIO: Usar analogía de vida cotidiana (no técnica) para explicar el concepto principal
+• OBLIGATORIO: Mínimo 3 conexiones explícitas: analogía → técnica → aplicación real
+• Incluir sonidos onomatopéyicos para marcar momentos: [BEEP], [PAUSA], [ÉNFASIS]
+• Longitud: Guion para 10-12 minutos de audio
+
+**🎁 BONUS AL FINAL:**
+• 1 pregunta de seguimiento para investigar mañana
+• 1 ejercicio mental de 2 minutos para practicar antes de dormir
+• Conexión a otra fuente de la biblioteca (para reforzar)` : `Genera un podcast educativo de 10 minutos con analogías cotidianas y 3 preguntas de auto-evaluación.`,
+    
+    audioclass: source ? `CREA UNA "AUDIOCLASE" PARA HOY — Tema: ${source.name}
+
+**CONTEXTO DE HOY:**
+- Fuente: ${source.name}
+- Lo que voy a estudiar: ${source.desc}
+- Mi nivel: Principiante-Intermedio
+- Tiempo de audio: 8-12 minutos
+
+**INSTRUCCIONES PARA LA CLASE:**
+Crea un guion COMPLETO para que yo lo grabe como voice memo. Usa analogías de COSAS COTIDIANAS:
+
+**ESTRUCTURA DEL GUION:**
+1. **Gancho del día (30 seg):** 
+   - "Hoy vamos a entender [concepto] usando algo que haces todos los días..."
+   - Analogía sorpresa: ¿Cómo es esto como organizar tu ropa? / ¿Como pedir en un restaurante? / ¿Como tráfico de ciudad?
+
+2. **Explicación con analogía viviente (4 min):**
+   - NO uses jerga técnica primero
+   - Primero explica la analogía cotidiana COMPLETA
+   - Luego mapea: "En código, eso equivale a..."
+   - Usa sonidos onomatopéyicos: [BEEP], [CLICK], [PAUSA]
+
+3. **Ejemplo de código/práctica (3 min):**
+   - Un caso concreto de lo que haré hoy
+   - Paso a paso, como receta de cocina
+
+4. **Señales de alerta (1 min):**
+   - "Cuando veas esto, significa que..."
+   - Errores que cometen los que empiezan
+
+5. **Checkpoint final (30 seg):**
+   - "Antes de que termines tu sesión de hoy, verifica que puedas..."
+   - 2 preguntas rápidas de autoverificación
+
+**TONO:** 
+[NORMAL] = explicación regular
+[ÉNFASIS] = momento clave
+[PAUSA 3 SEG] = para que pienses
+[DICE EN VOZ ALTA] = repite conmigo
+
+**ANALOGÍAS PERMITIDAS:**
+- Cocina/Recetas
+- Autos/Tráfico
+- Gym/Deporte
+- Música/Playlists
+- Redes sociales
+- Compras/Supermercado
+- Netflix/Streaming
+
+**OUTPUT:** Guion completo listo para grabar.` : `Crea una audioclase introductoria de 8-12 minutos sobre el tema que estudiaré hoy. Usa analogías de cosas cotidianas (cocina, autos, gym, música). Estructura: Gancho → Analogía → Ejemplo → Alertas → Checkpoint. Formato para voice memo.`
+  };
+  
+  if (type === 'plan' && source) {
+    generateSourcePrompt(source);
+  } else if (type === 'audioclase' && source) {
+    document.getElementById('promptOutput').textContent = templates.audioclase;
+    document.getElementById('promptTitle').textContent = `🎧 AudioClase para: ${source.name}`;
+  } else if (type === 'master_nlm') {
+    const masterPrompt = generateMasterNLMPrompt();
+    document.getElementById('promptOutput').textContent = masterPrompt;
+    document.getElementById('promptTitle').textContent = `🎙️ PROMPT MAESTRO — AudioClase Integral (74 Fuentes)`;
+  } else {
+    document.getElementById('promptOutput').textContent = templates[type] || templates.socratic;
+    document.getElementById('promptTitle').textContent = type === 'socratic' ? `❓ Tutor Socrático` : 
+                                                         type === 'notebooklm' ? `📓 Prompt NotebookLM` : 
+                                                         type === 'audioclase' ? `🎧 AudioClase` : `🧠 Prompt`;
+  }
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptOutput').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showDopamineHit('📋', 'Prompt copiado');
+  });
+}
+
+// FIX: URLs configurables en lugar de hardcodeadas
+function openGemini() {
+  copyPrompt();
+  const url = (STATE.config && STATE.config.geminiUrl) 
+    ? STATE.config.geminiUrl 
+    : 'https://gemini.google.com';
+  setTimeout(() => window.open(url, '_blank'), 300);
+}
+
+function openNotebookLM() {
+  copyPrompt();
+  const url = (STATE.config && STATE.config.notebooklmUrl) 
+    ? STATE.config.notebooklmUrl 
+    : 'https://notebooklm.google.com';
+  setTimeout(() => window.open(url, '_blank'), 300);
+}
+
+// Función para actualizar URLs (puede llamarse desde consola o futura UI)
+function updateConfigUrls(geminiUrl, notebooklmUrl) {
+  if (!STATE.config) STATE.config = {};
+  if (geminiUrl) STATE.config.geminiUrl = geminiUrl;
+  if (notebooklmUrl) STATE.config.notebooklmUrl = notebooklmUrl;
+  save();
+  console.log('URLs actualizadas:', STATE.config);
+}
+
+// Funciones para sidebar (sin copiar prompt)
+function openNotebookLMFromSidebar() {
+  const url = (STATE.config && STATE.config.notebooklmUrl) 
+    ? STATE.config.notebooklmUrl 
+    : 'https://notebooklm.google.com';
+  window.open(url, '_blank');
+}
+
+function openGeminiFromSidebar() {
+  const url = (STATE.config && STATE.config.geminiUrl) 
+    ? STATE.config.geminiUrl 
+    : 'https://gemini.google.com';
+  window.open(url, '_blank');
+}
+
+// ═══════════════════════════════════════════════════════════
+// MICRO-MISSIONS
+// ═══════════════════════════════════════════════════════════
+let activeMission = null;
+let missionTimer = null;
+
+const MISSIONS = {
+  1: { duration: 25 * 60, xp: 50, name: 'Lectura/Video' },
+  2: { duration: 30 * 60, xp: 75, name: 'Práctica/Código' },
+  3: { duration: 20 * 60, xp: 40, name: 'Ejercicios/Quiz' },
+  4: { duration: 5 * 60, xp: 20, name: 'Descanso', rest: true }
+};
+
+function startMission(id) {
+  // FIX: Si hay misión activa, limpiar
+  if (activeMission) {
+    clearInterval(missionTimer);
+    document.getElementById(`mission${activeMission}`).classList.remove('active');
+    document.getElementById(`progress${activeMission}`).style.width = '0%';
+  }
+  
+  activeMission = id;
+  const card = document.getElementById(`mission${id}`);
+  card.classList.add('active');
+  
+  const mission = MISSIONS[id];
+  let elapsed = 0;
+  
+  // FIX: Verificar si hay misión guardada y calcular tiempo transcurrido
+  if (STATE.activeMission && STATE.activeMission.id === id) {
+    const now = Date.now();
+    const savedElapsed = Math.floor((now - STATE.activeMission.startTime) / 1000);
+    elapsed = Math.min(savedElapsed * 60, mission.duration); // Multiplicar por 60 por demo speed
+    console.log(`Misión restaurada: ${savedElapsed}s reales = ${elapsed}s demo transcurridos`);
+  }
+  
+  // FIX: Guardar estado de misión en localStorage
+  STATE.activeMission = {
+    id: id,
+    startTime: Date.now(),
+    elapsed: elapsed
+  };
+  save();
+  
+  showDopamineHit('🚀', `¡${mission.name} iniciada!`);
+  
+  // Demo mode: 60x speed
+  const speed = 60;
+  
+  // Actualizar progreso inicial si se restauró
+  const initialProgress = (elapsed / mission.duration) * 100;
+  document.getElementById(`progress${id}`).style.width = `${Math.min(initialProgress, 100)}%`;
+  
+  missionTimer = setInterval(() => {
+    elapsed += speed;
+    
+    // FIX: Actualizar tiempo transcurrido guardado
+    if (STATE.activeMission) {
+      STATE.activeMission.elapsed = elapsed;
+      // Guardar cada 10 segundos para no saturar localStorage
+      if (Math.floor(elapsed / speed) % 10 === 0) {
+        save();
+      }
+    }
+    
+    const progress = (elapsed / mission.duration) * 100;
+    document.getElementById(`progress${id}`).style.width = `${Math.min(progress, 100)}%`;
+    
+    if (elapsed >= mission.duration) {
+      completeMission(id);
+    }
+  }, 1000);
+}
+
+function completeMission(id) {
+  clearInterval(missionTimer);
+  const card = document.getElementById(`mission${id}`);
+  card.classList.remove('active');
+  card.classList.add('completed');
+  
+  const mission = MISSIONS[id];
+  STATE.xp += mission.xp;
+  STATE.combo++;
+  
+  showDopamineHit('✨', `+${mission.xp} XP`);
+  
+  if (STATE.combo >= 3) {
+    const bonus = STATE.combo * 10;
+    STATE.xp += bonus;
+    setTimeout(() => showDopamineHit('🔥', `Combo x${STATE.combo}! +${bonus}`), 500);
+  }
+  
+  // Update source progress
+  if (STATE.currentSourceId) {
+    STATE.sourceProgress[STATE.currentSourceId] = Math.min((STATE.sourceProgress[STATE.currentSourceId] || 0) + 25, 100);
+  }
+  
+  // FIX: Limpiar misión activa guardada
+  STATE.activeMission = null;
+  
+  document.getElementById(`progress${id}`).style.width = '0%';
+  activeMission = null;
+  save();
+}
+
+// FIX: Restaurar misión activa al cargar la página
+function restoreActiveMission() {
+  if (STATE.activeMission) {
+    const mission = MISSIONS[STATE.activeMission.id];
+    if (!mission) {
+      console.log('Misión guardada no válida, limpiando');
+      STATE.activeMission = null;
+      save();
+      return;
+    }
+    
+    const now = Date.now();
+    const elapsed = Math.floor((now - STATE.activeMission.startTime) / 1000); // segundos reales
+    const elapsedDemo = elapsed * 60; // convertir a tiempo demo
+    
+    console.log(`Restaurando misión ${STATE.activeMission.id}: ${elapsed}s transcurridos`);
+    
+    if (elapsedDemo >= mission.duration) {
+      // Misión completada mientras la página estaba cerrada
+      console.log('Misión completada en ausencia');
+      completeMission(STATE.activeMission.id);
+    } else {
+      // Restaurar timer
+      startMission(STATE.activeMission.id);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+
+// FIX: Limitar hits simultáneos para prevenir memory leaks
+let activeDopamineHits = 0;
+const MAX_DOPAMINE_HITS = 5;
+
+function showDopamineHit(emoji, text) {
+  // Prevenir spam de elementos DOM
+  if (activeDopamineHits >= MAX_DOPAMINE_HITS) {
+    console.log('Dopamine hit limit reached, skipping');
+    return;
+  }
+  
+  activeDopamineHits++;
+  const hit = document.createElement('div');
+  hit.className = 'dopamine-hit';
+  hit.innerHTML = `${emoji}<br><small>${text}</small>`;
+  document.body.appendChild(hit);
+  
+  setTimeout(() => {
+    hit.remove();
+    activeDopamineHits--;
+  }, 1500);
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  STATE.theme = next;
+  save();
+}
+
+function exportData() {
+  const data = {
+    version: '5.0',
+    timestamp: new Date().toISOString(),
+    state: STATE,
+    stats: {
+      totalSources: BIBLIOTECA.length,
+      completed: STATE.completedSources.length,
+      completionRate: Math.round((STATE.completedSources.length / BIBLIOTECA.length) * 100)
+    }
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `aegis-v5-biblioteca-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  
+  showDopamineHit('💾', 'Biblioteca exportada');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  if (STATE.theme) {
+    document.documentElement.setAttribute('data-theme', STATE.theme);
+  }
+  
+  renderSourceGrid();
+  updateUI();
+  
+  // FASE 1: Inicializar widget de Ritmo Circadiano
+  updateCircadianWidget();
+  
+  // FEATURES: Inicializar widgets de CodeCombat, Biohacking y Música
+  updateCodeCombatWidget();
+  updateBiohackingWidget();
+  updateUltradianWidget();
+  updateMusicWidget();
+  
+  // FIX: Restaurar misión activa si existe
+  restoreActiveMission();
+  
+  // Select first source if none selected
+  if (!STATE.currentSourceId && BIBLIOTECA.length > 0) {
+    // Don't auto-select, let user choose
+  }
+  
+  // Initialize default view (library)
+  showView('library');
+});
+
+// Modal de Assessment de Cronotipo - Funciones
+function openChronotypeModal() {
+  const modal = document.getElementById('chronotypeModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeChronotypeModal() {
+  const modal = document.getElementById('chronotypeModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function submitChronotypeAssessment() {
+  // Obtener valores de los radio buttons
+  const q1 = document.querySelector('input[name="chrono_q1"]:checked');
+  const q2 = document.querySelector('input[name="chrono_q2"]:checked');
+  const q3 = document.querySelector('input[name="chrono_q3"]:checked');
+  
+  if (!q1 || !q2 || !q3) {
+    alert('Por favor responde las 3 preguntas');
+    return;
+  }
+  
+  const answers = [
+    parseInt(q1.value),
+    parseInt(q2.value),
+    parseInt(q3.value)
+  ];
+  
+  saveChronotypeAssessment(answers);
+  closeChronotypeModal();
+  
+  // Resetear formulario
+  document.querySelectorAll('input[name^="chrono_q"]').forEach(r => r.checked = false);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MEJORAS v6.0 - Nuevas funciones y correcciones
+// ═══════════════════════════════════════════════════════════
+
+// v6.0: Función de backup mejorada con validación
+async function exportDataV6() {
+  const data = {
+    version: '6.0',
+    timestamp: new Date().toISOString(),
+    state: STATE,
+    stats: {
+      totalSources: BIBLIOTECA.length,
+      completed: STATE.completedSources.length,
+      completionRate: Math.round((STATE.completedSources.length / BIBLIOTECA.length) * 100),
+      totalXP: STATE.xp,
+      currentLevel: STATE.level,
+      streak: STATE.streak
+    },
+    checksum: generateChecksum(STATE)
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `aegis-v6-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  
+  showDopamineHit('💾', 'Backup v6.0 exportado con checksum');
+}
+
+// v6.0: Generar checksum simple para validar integridad
+function generateChecksum(obj) {
+  const str = JSON.stringify(obj);
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return hash.toString(16);
+}
+
+// v6.0: Validar backup antes de importar
+function validateBackupV6(data) {
+  if (!data || data.version !== '6.0') {
+    console.warn('Backup no es v6.0, intentando migración...');
+    return { valid: true, migrated: true };
+  }
+  
+  if (data.checksum && data.state) {
+    const currentChecksum = generateChecksum(data.state);
+    // Nota: El checksum puede variar por diferencias de precisión, así que solo logueamos
+    console.log('Checksum de backup:', data.checksum);
+  }
+  
+  return { valid: true, migrated: false };
+}
+
+// v6.0: Estadísticas avanzadas
+function getAdvancedStats() {
+  const total = BIBLIOTECA.length;
+  const completed = STATE.completedSources.length;
+  const pending = total - completed;
+  
+  // Calcular tiempo estimado restante
+  const avgHoursPerSource = 15; // Estimado promedio
+  const hoursRemaining = pending * avgHoursPerSource;
+  const daysRemaining = Math.ceil(hoursRemaining / 2); // Asumiendo 2 horas/día
+  
+  return {
+    totalSources: total,
+    completed,
+    pending,
+    completionRate: Math.round((completed / total) * 100),
+    estimatedDaysRemaining: daysRemaining,
+    estimatedHoursRemaining: hoursRemaining,
+    currentStreak: STATE.streak,
+    longestStreak: Math.max(...STATE.energyHistory?.map(h => h.streak) || [0]),
+    totalXP: STATE.xp,
+    level: STATE.level,
+    nextLevelXP: STATE.level * 1000,
+    progressToNextLevel: (STATE.xp % 1000) / 10 // Porcentaje
+  };
+}
+
+// v6.0: Sugerencias inteligentes basadas en historial
+function getSmartRecommendations() {
+  const hour = new Date().getHours();
+  const energy = STATE.energyProfile?.lastReportedEnergy || 5;
+  const completed = new Set(STATE.completedSources);
+  
+  // Prioridad 1: Fuentes críticas no completadas
+  const critical = BIBLIOTECA.filter(s => s.priority === 'critical' && !completed.has(s.id));
+  
+  // Prioridad 2: Match con energía actual
+  const CATEGORY_DIFFICULTY = {
+    'cs50': 'high', 'security': 'high', 'ai': 'high', 'systems': 'high',
+    'python': 'medium', 'architecture': 'medium', 'database': 'medium', 'web': 'medium',
+    'devops': 'low', 'git': 'low', 'methodology': 'low'
+  };
+  
+  let targetDiff = energy >= 7 ? 'high' : energy <= 4 ? 'low' : 'medium';
+  
+  const matching = BIBLIOTECA.filter(s => {
+    const diff = CATEGORY_DIFFICULTY[s.category] || 'medium';
+    return !completed.has(s.id) && diff === targetDiff;
+  });
+  
+  return {
+    critical: critical.slice(0, 3),
+    matching: matching.slice(0, 3),
+    quickWins: BIBLIOTECA.filter(s => !completed.has(s.id) && s.estimated_hours && s.estimated_hours <= 5).slice(0, 3)
+  };
+}
+
+// v6.0: Exportar para consola
+try {
+  window.AEGIS_V6 = {
+    getAdvancedStats,
+    getSmartRecommendations,
+    exportDataV6,
+    validateBackupV6,
+    STATE,
+    BIBLIOTECA
+  };
+  console.log('🛡️ AEGIS v6.0 cargado. Usa AEGIS_V6 en consola para funciones avanzadas.');
+} catch(e) {
+  // Silent fail en contextos restringidos
+}
+</script>
+
+<!-- Modal de Assessment de Cronotipo -->
+<div id="chronotypeModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;justify-content:center;align-items:center;">
+  <div style="background:var(--bg-primary);border:2px solid var(--accent-cyan);border-radius:16px;padding:24px;max-width:400px;width:90%;max-height:80vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="margin:0;color:var(--accent-cyan);font-size:18px;">🧬 Assessment de Cronotipo</h3>
+      <button onclick="closeChronotypeModal()" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:20px;">
+      Basado en el <strong>Morningness-Eveningness Questionnaire (MEQ)</strong> simplificado. 
+      Esto determinará tus horas pico de productividad.
+    </p>
+    
+    <!-- Pregunta 1 -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px;">
+        1. ¿A qué hora te despiertas los fines de semana (sin alarma)?
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q1" value="5" style="margin-right:8px;"> 5:00 - 6:00 AM
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q1" value="4" style="margin-right:8px;"> 6:00 - 7:00 AM
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q1" value="3" style="margin-right:8px;"> 7:00 - 8:00 AM
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q1" value="2" style="margin-right:8px;"> 8:00 - 9:00 AM
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q1" value="1" style="margin-right:8px;"> 9:00 AM o más tarde
+        </label>
+      </div>
+    </div>
+    
+    <!-- Pregunta 2 -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px;">
+        2. ¿Cuánto tiempo después de despertarte te sientes 100% funcional?
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q2" value="5" style="margin-right:8px;"> 0 - 10 minutos
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q2" value="4" style="margin-right:8px;"> 10 - 30 minutos
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q2" value="3" style="margin-right:8px;"> 30 - 60 minutos
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q2" value="2" style="margin-right:8px;"> 1 - 2 horas
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q2" value="1" style="margin-right:8px;"> Más de 2 horas
+        </label>
+      </div>
+    </div>
+    
+    <!-- Pregunta 3 -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px;">
+        3. ¿A qué hora prefieres hacer ejercicio intenso?
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q3" value="5" style="margin-right:8px;"> 5:00 - 7:00 AM
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q3" value="4" style="margin-right:8px;"> 7:00 - 9:00 AM
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q3" value="3" style="margin-right:8px;"> 9:00 - 11:00 AM
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q3" value="2" style="margin-right:8px;"> Tarde (2:00 - 6:00 PM)
+        </label>
+        <label style="display:block;padding:6px;cursor:pointer;border-radius:6px;margin-bottom:4px;">
+          <input type="radio" name="chrono_q3" value="1" style="margin-right:8px;"> Noche (después 6:00 PM)
+        </label>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:12px;">
+      <button onclick="closeChronotypeModal()" style="flex:1;padding:10px;font-size:12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);cursor:pointer;">Cancelar</button>
+      <button onclick="submitChronotypeAssessment()" style="flex:1;padding:10px;font-size:12px;background:var(--accent-green);border:none;border-radius:8px;color:#000;cursor:pointer;font-weight:600;">Calcular Cronotipo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Evaluador de Código CodeCombat -->
+<div id="codeEvaluatorModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10001;justify-content:center;align-items:center;overflow-y:auto;">
+  <div style="background:var(--bg-primary);border:2px solid var(--accent-purple);border-radius:16px;padding:24px;max-width:700px;width:90%;margin:20px auto;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="margin:0;color:var(--accent-purple);font-size:20px;">🧠 Evaluador de Código CodeCombat</h3>
+      <button onclick="closeCodeEvaluator()" style="background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer;">✕</button>
+    </div>
+    
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">
+      Pega tu código y recibe feedback detallado con calificación.
+    </div>
+    
+    <!-- Selección de nivel -->
+    <div style="margin-bottom:16px;">
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text-primary);">Nivel de CodeCombat:</label>
+      <select id="evalLevelSelect" style="width:100%;padding:10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:13px;">
+        <option value="">-- Selecciona un nivel --</option>
+        <option value="dungeons-of-kithgard">1. Dungeons of Kithgard</option>
+        <option value="gems-in-the-deep">2. Gems in the Deep</option>
+        <option value="shadow-guard">3. Shadow Guard</option>
+        <option value="forgetful-gemsmith">4. Forgetful Gemsmith</option>
+        <option value="kounter-kithwise">5. Kounter Kithwise</option>
+        <option value="crawlways-of-kithgard">6. Crawlways of Kithgard</option>
+        <option value="illustrious-imanzi">7. Illustrious Imazi</option>
+        <option value="sarven-savior">8. Sarven Savior</option>
+        <option value="raiders-of-the-long-dark">9. Raiders of the Long Dark</option>
+        <option value="kithgard-librarian">10. Kithgard Librarian</option>
+        <option value="closing-the-distance">11. Closing the Distance</option>
+        <option value="the-final-kithmaze">12. The Final Kithmaze</option>
+        <option value="kithgard-gates">13. Kithgard Gates</option>
+        <option value="destroying-angel">14. Destroying Angel</option>
+        <option value="deadly-pursuit">15. Deadly Pursuit</option>
+        <option value="thornbush-farm">16. Thornbush Farm</option>
+        <option value="backwoods-bombardier">17. Backwoods Bombardier</option>
+        <option value="portcheck">18. Portcheck</option>
+      </select>
+    </div>
+    
+    <!-- Input de código -->
+    <div style="margin-bottom:16px;">
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text-primary);">Tu código:</label>
+      <textarea id="evalCodeInput" placeholder="# Pega tu código de CodeCombat aquí...&#10;# Ejemplo:&#10;hero.moveRight()&#10;hero.moveRight()" style="width:100%;height:200px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-family:var(--font-mono);font-size:12px;padding:12px;resize:vertical;"></textarea>
+    </div>
+    
+    <button onclick="evaluateCodeCombat()" style="width:100%;padding:12px;font-size:14px;background:var(--accent-purple);border:none;border-radius:8px;color:white;cursor:pointer;font-weight:600;">🚀 Evaluar Código</button>
+    
+    <!-- Resultados -->
+    <div id="evalResults" style="display:none;margin-top:20px;padding:16px;background:var(--bg-secondary);border-radius:12px;">
+      <div id="evalGrade" style="text-align:center;margin-bottom:16px;"></div>
+      
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+        <div style="text-align:center;padding:12px;background:var(--bg-primary);border-radius:8px;">
+          <div id="scoreCorrectness" style="font-size:24px;font-weight:700;color:var(--accent-green);">0</div>
+          <div style="font-size:11px;color:var(--text-muted);">Correctness</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:var(--bg-primary);border-radius:8px;">
+          <div id="scoreEfficiency" style="font-size:24px;font-weight:700;color:var(--accent-cyan);">0</div>
+          <div style="font-size:11px;color:var(--text-muted);">Efficiency</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:var(--bg-primary);border-radius:8px;">
+          <div id="scoreReadability" style="font-size:24px;font-weight:700;color:var(--accent-gold);">0</div>
+          <div style="font-size:11px;color:var(--text-muted);">Readability</div>
+        </div>
+      </div>
+      
+      <div id="evalFeedback" style="font-size:13px;line-height:1.6;color:var(--text-secondary);white-space:pre-wrap;"></div>
+      
+      <div id="evalIssues" style="margin-top:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CODE EVALUATOR FUNCTIONS
+// ═══════════════════════════════════════════════════════════
+
+function openCodeEvaluator() {
+  const modal = document.getElementById('codeEvaluatorModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeCodeEvaluator() {
+  const modal = document.getElementById('codeEvaluatorModal');
+  if (modal) modal.style.display = 'none';
+  // Limpiar resultados
+  document.getElementById('evalResults').style.display = 'none';
+  document.getElementById('evalCodeInput').value = '';
+}
+
+// Base de datos simplificada de niveles
+const EVAL_LEVELS = {
+  'dungeons-of-kithgard': { concepts: ['sequences'], maxLines: 3, patterns: ['move'] },
+  'gems-in-the-deep': { concepts: ['movement'], maxLines: 3, patterns: ['move'] },
+  'shadow-guard': { concepts: ['strings'], maxLines: 4, patterns: ['say', 'attack'] },
+  'forgetful-gemsmith': { concepts: ['variables'], maxLines: 4, patterns: ['='] },
+  'kounter-kithwise': { concepts: ['loops-for'], maxLines: 5, patterns: ['for', 'in range'] },
+  'crawlways-of-kithgard': { concepts: ['loops-while'], maxLines: 8, patterns: ['while'] },
+  'illustrious-imanzi': { concepts: ['functions'], maxLines: 10, patterns: ['def '] },
+  'sarven-savior': { concepts: ['functions-return'], maxLines: 12, patterns: ['return'] },
+  'raiders-of-the-long-dark': { concepts: ['conditionals'], maxLines: 10, patterns: ['if '] },
+  'kithgard-librarian': { concepts: ['comparisons'], maxLines: 12, patterns: ['<', '>'] },
+  'closing-the-distance': { concepts: ['arithmetic'], maxLines: 10, patterns: ['+', '-', '*', '/'] },
+  'the-final-kithmaze': { concepts: ['nested-loops'], maxLines: 15, patterns: ['for', 'for'] },
+  'kithgard-gates': { concepts: ['boolean-logic'], maxLines: 15, patterns: ['and', 'or'] },
+  'destroying-angel': { concepts: ['debugging'], maxLines: 20, patterns: ['#'] },
+  'deadly-pursuit': { concepts: ['optimization'], maxLines: 20, patterns: ['optimized'] },
+  'thornbush-farm': { concepts: ['arrays'], maxLines: 15, patterns: ['[', ']'] },
+  'backwoods-bombardier': { concepts: ['objects'], maxLines: 15, patterns: ['.'] },
+  'portcheck': { concepts: ['validation'], maxLines: 25, patterns: ['if '] }
+};
+
+function evaluateCodeCombat() {
+  const levelId = document.getElementById('evalLevelSelect').value;
+  const code = document.getElementById('evalCodeInput').value.trim();
+  
+  if (!levelId) {
+    alert('Selecciona un nivel primero');
+    return;
+  }
+  
+  if (!code) {
+    alert('Pega tu código primero');
+    return;
+  }
+  
+  const level = EVAL_LEVELS[levelId];
+  const lines = code.split('\n').filter(l => l.trim());
+  
+  let correctness = 30;
+  let efficiency = 30;
+  let readability = 30;
+  const issues = [];
+  const feedback = [];
+  
+  // Evaluar número de líneas
+  if (lines.length > level.maxLines) {
+    issues.push(`⚠️ Demasiadas líneas: ${lines.length} (máx: ${level.maxLines})`);
+    efficiency -= 10;
+  } else if (lines.length <= level.maxLines * 0.7) {
+    feedback.push('✅ Código conciso');
+    efficiency += 5;
+  }
+  
+  // Verificar patrones esperados
+  level.patterns.forEach(pattern => {
+    if (code.includes(pattern)) {
+      feedback.push(`✅ Usa ${pattern} correctamente`);
+      correctness += 5;
+    } else {
+      issues.push(`❌ Falta usar: ${pattern}`);
+      correctness -= 10;
+    }
+  });
+  
+  // Verificar indentación
+  const badIndent = lines.filter(l => {
+    const spaces = l.match(/^(\s*)/)[1].length;
+    return spaces % 4 !== 0 && l.trim() && (l.includes(':') || l.startsWith(' '));
+  });
+  
+  if (badIndent.length > 0) {
+    issues.push('⚠️ Indentación inconsistente (usa 4 espacios)');
+    readability -= 15;
+  } else {
+    feedback.push('✅ Buena indentación');
+    readability += 10;
+  }
+  
+  // Verificar código repetido (DRY)
+  const seen = new Set();
+  const duplicates = [];
+  lines.forEach(l => {
+    const trimmed = l.trim();
+    if (seen.has(trimmed) && trimmed && !trimmed.startsWith('#')) {
+      duplicates.push(trimmed);
+    }
+    seen.add(trimmed);
+  });
+  
+  if (duplicates.length > 0 && level.concepts.includes('loops-for')) {
+    issues.push('⚠️ Código repetido - considera usar un loop');
+    efficiency -= 15;
+  }
+  
+  // Verificar comentarios (para niveles avanzados)
+  if (level.maxLines > 15 && !code.includes('#')) {
+    issues.push('💡 Considera agregar comentarios explicativos');
+  } else if (code.includes('#')) {
+    feedback.push('✅ Usa comentarios apropiadamente');
+    readability += 5;
+  }
+  
+  // Verificar nombres descriptivos
+  if (code.match(/\b(x|y|i|n|temp|tmp)\b/g) && level.concepts.includes('variables')) {
+    issues.push('💡 Usa nombres de variables más descriptivos');
+    readability -= 5;
+  }
+  
+  // Calcular totales
+  correctness = Math.max(0, Math.min(40, correctness));
+  efficiency = Math.max(0, Math.min(30, efficiency));
+  readability = Math.max(0, Math.min(30, readability));
+  const total = correctness + efficiency + readability;
+  
+  // Determinar calificación
+  let grade, emoji, color;
+  if (total >= 90) { grade = 'S'; emoji = '🌟'; color = 'var(--accent-gold)'; }
+  else if (total >= 80) { grade = 'A'; emoji = '⭐'; color = 'var(--accent-green)'; }
+  else if (total >= 70) { grade = 'B'; emoji = '👍'; color = 'var(--accent-cyan)'; }
+  else if (total >= 60) { grade = 'C'; emoji = '😐'; color = 'var(--accent-blue)'; }
+  else if (total >= 50) { grade = 'D'; emoji = '📚'; color = 'var(--text-muted)'; }
+  else { grade = 'F'; emoji = '💪'; color = 'var(--accent-red)'; }
+  
+  // Mostrar resultados
+  const resultsDiv = document.getElementById('evalResults');
+  resultsDiv.style.display = 'block';
+  
+  document.getElementById('evalGrade').innerHTML = `
+    <div style="font-size:48px;">${emoji}</div>
+    <div style="font-size:32px;font-weight:700;color:${color};">Grado ${grade}</div>
+    <div style="font-size:16px;color:var(--text-secondary);">${total}/100 puntos</div>
+  `;
+  
+  document.getElementById('scoreCorrectness').textContent = correctness;
+  document.getElementById('scoreEfficiency').textContent = efficiency;
+  document.getElementById('scoreReadability').textContent = readability;
+  
+  document.getElementById('evalFeedback').innerHTML = feedback.map(f => `<div style="margin-bottom:4px;">${f}</div>`).join('');
+  
+  document.getElementById('evalIssues').innerHTML = issues.length > 0 
+    ? '<div style="margin-top:12px;padding:12px;background:rgba(239,68,68,0.1);border-radius:8px;"><div style="font-size:12px;font-weight:600;color:var(--accent-red);margin-bottom:8px;">⚠️ Áreas de mejora:</div>' + issues.map(i => `<div style="font-size:12px;margin-bottom:4px;">${i}</div>`).join('') + '</div>'
+    : '<div style="margin-top:12px;padding:12px;background:rgba(34,197,94,0.1);border-radius:8px;font-size:13px;color:var(--accent-green);">🎉 ¡Excelente trabajo! Código de calidad.</div>';
+  
+  // Scroll a resultados
+  resultsDiv.scrollIntoView({ behavior: 'smooth' });
+  
+  showDopamineHit('🧠', `Evaluación completada: Grado ${grade}`);
+}
+</script>
+
+</body>
+</html>

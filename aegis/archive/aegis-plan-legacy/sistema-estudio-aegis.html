@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEGIS — Sistema de Estudio Élite</title>
+<meta name="description" content="Sistema autodidacta de élite con IA, gamificación y plan de 10 años.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f1629;
+  --bg-card: #141b2d;
+  --bg-card-hover: #1a2240;
+  --accent-blue: #00d4ff;
+  --accent-purple: #7c3aed;
+  --accent-green: #00ff88;
+  --accent-gold: #ffd700;
+  --accent-red: #ff4757;
+  --accent-orange: #ff6348;
+  --text-primary: #e8eaf6;
+  --text-secondary: #8892b0;
+  --text-muted: #4a5568;
+  --border: rgba(0,212,255,0.15);
+  --glass: rgba(255,255,255,0.04);
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  --font-main: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+[data-theme="light"] {
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7fafc;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #a0aec0;
+  --border: rgba(124,58,237,0.2);
+  --glass: rgba(0,0,0,0.03);
+  --shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-main);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:var(--transition);overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-secondary)}
+::-webkit-scrollbar-thumb{background:var(--accent-purple);border-radius:3px}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px}
+[data-theme="light"] .header{background:rgba(240,244,248,0.95)}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;animation:logo-pulse 3s ease-in-out infinite}
+@keyframes logo-pulse{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0.4)}50%{box-shadow:0 0 0 8px rgba(124,58,237,0)}}
+.logo-text{font-size:20px;font-weight:900;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-controls{display:flex;align-items:center;gap:12px}
+.btn-icon{background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;color:var(--text-secondary);transition:var(--transition);font-size:16px}
+.btn-icon:hover{background:var(--accent-purple);color:#fff;border-color:var(--accent-purple)}
+.xp-badge{background:linear-gradient(135deg,var(--accent-gold),#ff8c00);color:#000;font-weight:700;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-mono)}
+.streak-badge{background:linear-gradient(135deg,var(--accent-red),var(--accent-orange));color:#fff;font-weight:700;font-size:12px;padding:4px 10px;border-radius:20px}
+
+/* NAVIGATION TABS */
+.nav-tabs{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;color:var(--text-secondary);padding:14px 16px;cursor:pointer;font-size:13px;font-weight:500;font-family:var(--font-main);white-space:nowrap;position:relative;transition:var(--transition);display:flex;align-items:center;gap:6px}
+.tab-btn::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent-blue);transform:scaleX(0);transition:var(--transition)}
+.tab-btn:hover{color:var(--text-primary)}
+.tab-btn.active{color:var(--accent-blue);font-weight:600}
+.tab-btn.active::after{transform:scaleX(1)}
+.tab-icon{font-size:15px}
+
+/* MAIN CONTENT */
+.main{padding:24px;max-width:1400px;margin:0 auto}
+.tab-panel{display:none;animation:fadeIn 0.4s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:var(--transition)}
+.card:hover{border-color:rgba(0,212,255,0.3);box-shadow:var(--shadow)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em}
+.card-value{font-size:28px;font-weight:800;color:var(--text-primary);font-family:var(--font-mono)}
+
+/* GRID LAYOUTS */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+@media(max-width:1024px){.grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}}
+
+/* PROGRESS BARS */
+.progress-wrap{margin:8px 0}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px}
+.progress-bar{height:6px;background:var(--bg-secondary);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1)}
+.fill-blue{background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple))}
+.fill-green{background:linear-gradient(90deg,#00ff88,#00b4d8)}
+.fill-gold{background:linear-gradient(90deg,var(--accent-gold),var(--accent-orange))}
+.fill-red{background:linear-gradient(90deg,var(--accent-red),var(--accent-orange))}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;border:none;font-family:var(--font-main);font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition)}
+.btn-primary{background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,0.4)}
+.btn-secondary{background:var(--glass);border:1px solid var(--border);color:var(--text-primary)}
+.btn-secondary:hover{background:var(--bg-card-hover);border-color:var(--accent-blue)}
+.btn-danger{background:linear-gradient(135deg,var(--accent-red),var(--accent-orange));color:#fff}
+.btn-success{background:linear-gradient(135deg,var(--accent-green),#00b4d8);color:#000;font-weight:700}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-lg{padding:14px 28px;font-size:16px}
+
+/* POMODORO */
+.pomodoro-ring{width:180px;height:180px;position:relative;margin:0 auto}
+.pomodoro-svg{width:100%;height:100%;transform:rotate(-90deg)}
+.pomodoro-bg{fill:none;stroke:var(--bg-secondary);stroke-width:8}
+.pomodoro-progress{fill:none;stroke:var(--accent-blue);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.pomodoro-time{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.pomodoro-display{font-size:36px;font-weight:900;font-family:var(--font-mono);color:var(--text-primary);line-height:1}
+.pomodoro-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.1em}
+
+/* TAGS & BADGES */
+.tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:var(--font-mono)}
+.tag-blue{background:rgba(0,212,255,0.15);color:var(--accent-blue)}
+.tag-purple{background:rgba(124,58,237,0.15);color:#a78bfa}
+.tag-green{background:rgba(0,255,136,0.15);color:var(--accent-green)}
+.tag-red{background:rgba(255,71,87,0.15);color:var(--accent-red)}
+.tag-gold{background:rgba(255,215,0,0.15);color:var(--accent-gold)}
+
+/* ACHIEVEMENT CARD */
+.achievement{display:flex;align-items:center;gap:12px;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;transition:var(--transition)}
+.achievement.unlocked{border-color:var(--accent-gold);background:rgba(255,215,0,0.05)}
+.achievement.locked{opacity:0.5;filter:grayscale(1)}
+.achievement-icon{font-size:28px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);border-radius:50%}
+.achievement-info h4{font-size:13px;font-weight:600}
+.achievement-info p{font-size:11px;color:var(--text-secondary)}
+.achievement-xp{margin-left:auto;font-family:var(--font-mono);font-size:12px;color:var(--accent-gold);font-weight:700}
+
+/* NOTIFICATION / TOAST */
+.toast{position:fixed;top:80px;right:24px;background:var(--bg-card);border:1px solid var(--accent-green);border-radius:var(--radius);padding:16px 20px;z-index:1000;animation:slideIn 0.4s ease;max-width:320px;box-shadow:var(--shadow)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.hide{animation:slideOut 0.4s ease forwards}
+@keyframes slideOut{to{transform:translateX(120%);opacity:0}}
+
+/* SECTION HEADERS */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-title{font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px}
+.section-subtitle{font-size:14px;color:var(--text-secondary);margin-top:4px}
+
+/* CODE EDITOR AREA */
+.code-area{background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-family:var(--font-mono);font-size:13px;color:#e6edf3;min-height:120px;resize:vertical;width:100%;outline:none;line-height:1.6}
+.code-area:focus{border-color:var(--accent-blue)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* MASTER COUNCIL CARD */
+.master-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}
+.master-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-purple),var(--accent-blue));transform:scaleX(0);transition:var(--transition);transform-origin:left}
+.master-card:hover::before{transform:scaleX(1)}
+.master-card:hover{border-color:rgba(124,58,237,0.4);transform:translateY(-2px)}
+.master-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px}
+.master-name{font-size:15px;font-weight:700}
+.master-role{font-size:11px;color:var(--text-secondary);margin-bottom:8px}
+.master-wisdom{font-size:12px;font-style:italic;color:var(--text-secondary);line-height:1.5;border-left:2px solid var(--accent-purple);padding-left:10px}
+
+/* AUDIO PLAYER */
+.playlist-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:var(--transition)}
+.playlist-card:hover,.playlist-card.active{border-color:var(--accent-blue);box-shadow:0 0 20px rgba(0,212,255,0.15)}
+.playlist-mode{font-size:16px;font-weight:700;margin-bottom:4px}
+.playlist-science{font-size:11px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5}
+.playlist-for{display:flex;gap:6px;flex-wrap:wrap}
+
+/* MISSION BRIEF */
+.mission-brief{background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(0,212,255,0.05));border:1px solid rgba(124,58,237,0.3);border-radius:var(--radius);padding:20px}
+.mission-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent-purple);margin-bottom:8px}
+.mission-text{font-size:15px;font-weight:600;line-height:1.6;color:var(--text-primary)}
+
+/* ELITES GOALS */
+.elite-goal{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:8px;border:1px solid var(--border);background:var(--glass);transition:var(--transition)}
+.elite-goal.completed{border-color:var(--accent-gold);background:rgba(255,215,0,0.05)}
+.elite-goal.active{border-color:var(--accent-blue);background:rgba(0,212,255,0.05)}
+.goal-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;font-family:var(--font-mono);flex-shrink:0}
+.goal-num.done{background:var(--accent-gold);color:#000}
+.goal-num.current{background:var(--accent-blue);color:#000}
+.goal-num.future{background:var(--bg-secondary);color:var(--text-muted)}
+
+/* CC SYNC */
+.cc-world{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+.cc-world-bg{position:absolute;top:0;right:0;font-size:60px;opacity:0.05;line-height:1}
+
+/* FORM ELEMENTS */
+.input{background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text-primary);font-family:var(--font-main);font-size:14px;width:100%;outline:none;transition:var(--transition)}
+.input:focus{border-color:var(--accent-blue);box-shadow:0 0 0 3px rgba(0,212,255,0.1)}
+.label{font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:0.05em}
+.select{appearance:none;background:var(--bg-secondary) url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' fill=\'%238892b0\'%3E%3Cpath d=\'M6 8L1 3h10z\'/%3E%3C/svg%3E") no-repeat right 12px center;border:1px solid var(--border);border-radius:8px;padding:10px 32px 10px 14px;color:var(--text-primary);font-family:var(--font-main);font-size:14px;width:100%;outline:none;cursor:pointer}
+.select:focus{border-color:var(--accent-blue)}
+textarea.input{min-height:80px;resize:vertical;line-height:1.5}
+
+/* ANIMATIONS */
+@keyframes pulse-gold{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)}50%{box-shadow:0 0 0 12px rgba(255,215,0,0)}}
+@keyframes glow-green{0%,100%{text-shadow:0 0 10px rgba(0,255,136,0.5)}50%{text-shadow:0 0 20px rgba(0,255,136,0.9)}}
+.pulse-gold{animation:pulse-gold 2s infinite}
+.glow-green{animation:glow-green 2s infinite}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .main{padding:12px}
+  .header{padding:0 12px}
+  .nav-tabs{padding:0 12px}
+  .tab-btn{padding:12px 10px;font-size:12px}
+  .card-value{font-size:22px}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- HEADER -->
+<header class="header">
+  <a class="logo" href="#">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">AEGIS</span>
+  </a>
+  <div class="header-controls">
+    <span class="xp-badge" id="xp-display">⭐ 0 XP</span>
+    <span class="streak-badge" id="streak-display">🔥 0 días</span>
+    <button class="btn-icon" id="theme-toggle" title="Cambiar tema" onclick="toggleTheme()">🌙</button>
+    <button class="btn-icon" title="Guardar sesión" onclick="saveSession()">💾</button>
+    <button class="btn-icon" title="Exportar datos" onclick="exportData()">📤</button>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs" role="tablist">
+  <button class="tab-btn active" onclick="showTab('hoy')" id="tab-hoy" role="tab"><span class="tab-icon">📅</span>Hoy</button>
+  <button class="tab-btn" onclick="showTab('panel')" id="tab-panel" role="tab"><span class="tab-icon">📊</span>Panel</button>
+  <button class="tab-btn" onclick="showTab('plan')" id="tab-plan" role="tab"><span class="tab-icon">🗺️</span>Plan</button>
+  <button class="tab-btn" onclick="showTab('pomodoro')" id="tab-pomodoro" role="tab"><span class="tab-icon">⏱️</span>Pomodoro</button>
+  <button class="tab-btn" onclick="showTab('codecombat')" id="tab-codecombat" role="tab"><span class="tab-icon">⚔️</span>Code Combat</button>
+  <button class="tab-btn" onclick="showTab('elite')" id="tab-elite" role="tab"><span class="tab-icon">🏆</span>Élite</button>
+  <button class="tab-btn" onclick="showTab('ai-academy')" id="tab-ai-academy" role="tab"><span class="tab-icon">🤖</span>AI Academy</button>
+  <button class="tab-btn" onclick="showTab('consejo')" id="tab-consejo" role="tab"><span class="tab-icon">🧙</span>Consejo</button>
+  <button class="tab-btn" onclick="showTab('audio')" id="tab-audio" role="tab"><span class="tab-icon">🎵</span>Audio</button>
+  <button class="tab-btn" onclick="showTab('cc-sync')" id="tab-cc-sync" role="tab"><span class="tab-icon">🔄</span>CC Sync</button>
+  <button class="tab-btn" onclick="showTab('notebooklm')" id="tab-notebooklm" role="tab"><span class="tab-icon">📚</span>NotebookLM</button>
+  <button class="tab-btn" onclick="showTab('mision')" id="tab-mision" role="tab"><span class="tab-icon">🎯</span>Misión</button>
+</nav>
+
+<main class="main">
+
+<!-- TAB: HOY -->
+<div class="tab-panel active" id="panel-hoy">
+  <div class="section-header">
+    <div>
+      <h1 class="section-title">📅 Misión de Hoy</h1>
+      <p class="section-subtitle" id="today-date-display">Cargando...</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary btn-sm" onclick="generateMission()">🎯 Generar Misión</button>
+      <button class="btn btn-primary btn-sm" onclick="completeSession()">✅ Completar Sesión</button>
+    </div>
+  </div>
+
+  <div class="mission-brief" id="mission-brief-today" style="margin-bottom:20px">
+    <div class="mission-title">📋 MISSION BRIEF — DÍA <span id="current-day-num">1</span></div>
+    <div class="mission-text" id="mission-brief-text">Cargando tu misión del día...</div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Fase Actual</span></div>
+      <div class="card-value" id="current-phase-name" style="font-size:16px">Fase 0</div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-top:4px" id="current-phase-desc">Fundamentos Absolutos</p>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Semana</span></div>
+      <div class="card-value" id="current-week-display">1</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-blue" id="week-progress-fill" style="width:0%"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Estado Cognitivo</span></div>
+      <div class="card-value" id="cognitive-state" style="font-size:16px;color:var(--accent-green)">Óptimo</div>
+      <p style="font-size:11px;color:var(--text-secondary);margin-top:4px" id="cognitive-rec">Condición ideal para aprender.</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">📚 Tareas de Hoy</span><span class="tag tag-blue" id="tasks-count">0 pendientes</span></div>
+      <div id="today-tasks-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">🧠 Registro de Sesión</span></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><label class="label">Puntuación de comprensión (0-100)</label><input class="input" type="number" id="session-score" min="0" max="100" placeholder="85" value="75"></div>
+        <div><label class="label">Tiempo estudiado (minutos)</label><input class="input" type="number" id="session-time" placeholder="50" value="50"></div>
+        <div><label class="label">Notas de la sesión</label><textarea class="input" id="session-notes" placeholder="¿Qué aprendiste hoy? ¿Qué fue difícil?"></textarea></div>
+        <div><label class="label">Estado de ánimo</label>
+          <select class="select" id="session-mood">
+            <option value="5">🚀 Excelente — En la zona</option>
+            <option value="4">😊 Bien — Productivo</option>
+            <option value="3" selected>😐 Normal — Estable</option>
+            <option value="2">😴 Cansado — Con esfuerzo</option>
+            <option value="1">😤 Difícil — Al límite</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="logSession()">📝 Registrar Sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px" id="feedback-card">
+    <div class="card-header"><span class="card-title">💬 Feedback Emocional</span></div>
+    <div id="emotional-feedback" style="font-size:16px;font-weight:600;padding:12px;border-radius:8px;background:var(--glass)">Registra tu primera sesión para recibir feedback personalizado.</div>
+  </div>
+</div>
+
+<!-- TAB: PANEL -->
+<div class="tab-panel" id="panel-panel">
+  <div class="section-header">
+    <div><h2 class="section-title">📊 Panel de Control</h2><p class="section-subtitle">Tu progreso general del sistema AEGIS</p></div>
+    <button class="btn btn-secondary btn-sm" onclick="resetConfirm()">🗑️ Reset</button>
+  </div>
+  <div class="grid-4" style="margin-bottom:20px">
+    <div class="card"><div class="card-header"><span class="card-title">XP Total</span></div><div class="card-value" id="stat-xp">0</div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Racha</span></div><div class="card-value" id="stat-streak">0 🔥</div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Días Totales</span></div><div class="card-value" id="stat-days">0</div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Horas Estudiadas</span></div><div class="card-value" id="stat-hours">0h</div></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Progreso por Fase</span></div>
+      <div id="phase-progress-list" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Logros Recientes</span></div>
+      <div id="recent-achievements" style="display:flex;flex-direction:column;gap:8px">
+        <p style="color:var(--text-muted);font-size:13px">Completa sesiones para desbloquear logros.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">📈 Histórico de Sesiones (últimas 10)</span></div>
+    <div id="session-history" style="display:flex;flex-direction:column;gap:6px">
+      <p style="color:var(--text-muted);font-size:13px">No hay sesiones registradas aún.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: PLAN -->
+<div class="tab-panel" id="panel-plan">
+  <div class="section-header">
+    <div><h2 class="section-title">🗺️ Plan de Estudios 10 Años</h2><p class="section-subtitle">Roadmap completo Fase 0 → Fase 7</p></div>
+    <select class="select" style="width:auto" id="plan-filter" onchange="renderPlan()">
+      <option value="all">Todas las fases</option>
+      <option value="0">Fase 0 — Fundamentos</option>
+      <option value="1">Fase 1 — Programación</option>
+      <option value="2">Fase 2 — Sistemas</option>
+      <option value="3">Fase 3 — Ciberseguridad Básica</option>
+      <option value="4">Fase 4 — Ciberseguridad Intermedia</option>
+      <option value="5">Fase 5 — IA & ML</option>
+      <option value="6">Fase 6 — Especialización</option>
+      <option value="7">Fase 7 — Maestría</option>
+    </select>
+  </div>
+  <div id="plan-container" style="display:flex;flex-direction:column;gap:16px"></div>
+</div>
+
+<!-- TAB: POMODORO -->
+<div class="tab-panel" id="panel-pomodoro">
+  <div class="section-header">
+    <div><h2 class="section-title">⏱️ Timer Pomodoro</h2><p class="section-subtitle">Técnica de gestión del tiempo para máxima productividad</p></div>
+  </div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
+    <div class="card" style="min-width:280px;text-align:center">
+      <div style="margin-bottom:16px">
+        <span class="tag tag-blue" id="pomo-mode-label">🍅 Trabajo</span>
+      </div>
+      <div class="pomodoro-ring">
+        <svg class="pomodoro-svg" viewBox="0 0 120 120">
+          <circle class="pomodoro-bg" cx="60" cy="60" r="52"/>
+          <circle class="pomodoro-progress" id="pomo-circle" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="0"/>
+        </svg>
+        <div class="pomodoro-time">
+          <div class="pomodoro-display" id="pomo-display">25:00</div>
+          <div class="pomodoro-label" id="pomo-session-label">Sesión 1/4</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:20px">
+        <button class="btn btn-primary btn-lg" id="pomo-start-btn" onclick="pomodoroToggle()">▶ Iniciar</button>
+        <button class="btn btn-secondary" onclick="pomodoroReset()">↺ Reset</button>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="setPomoDuration(25)">25 min</button>
+        <button class="btn btn-secondary btn-sm" onclick="setPomoDuration(35)">35 min</button>
+        <button class="btn btn-secondary btn-sm" onclick="setPomoDuration(50)">50 min</button>
+        <button class="btn btn-secondary btn-sm" onclick="setPomoDuration(15,'break')">🧘 Descanso</button>
+      </div>
+    </div>
+    <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Estadísticas del Día</span></div>
+        <div class="grid-2" style="gap:10px">
+          <div><p style="font-size:11px;color:var(--text-secondary)">Pomodoros hoy</p><p class="card-value" id="pomo-count-today" style="font-size:24px">0</p></div>
+          <div><p style="font-size:11px;color:var(--text-secondary)">Minutos totales</p><p class="card-value" id="pomo-mins-today" style="font-size:24px">0</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Playlist Sugerida</span></div>
+        <div id="pomo-playlist-suggestion" style="font-size:13px;color:var(--text-secondary)">Inicia un pomodoro para sugerencia musical.</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Historial de Hoy</span></div>
+        <div id="pomo-history" style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-secondary)">Sin sesiones aún.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: CODE COMBAT -->
+<div class="tab-panel" id="panel-codecombat">
+  <div class="section-header">
+    <div><h2 class="section-title">⚔️ Code Combat</h2><p class="section-subtitle">60 ejercicios de algoritmos y ciberseguridad</p></div>
+    <div style="display:flex;gap:8px">
+      <select class="select" style="width:auto" id="cc-filter" onchange="renderCodeCombat()">
+        <option value="all">Todos</option>
+        <option value="algorithms">Algoritmos (orig.)</option>
+        <option value="Algoritmos">Algoritmos</option>
+        <option value="Logica">Lógica 🟢</option>
+        <option value="Ciberseguridad">Ciberseguridad 🟠</option>
+        <option value="Sistemas">Sistemas 🔴</option>
+        <option value="cybersecurity">Ciberseg. (orig.)</option>
+        <option value="data_structures">Estructuras (orig.)</option>
+        <option value="ai">IA (orig.)</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid-3" id="cc-exercise-grid" style="margin-bottom:20px"></div>
+  <div class="card" id="cc-exercise-panel" style="display:none">
+    <div class="card-header">
+      <span class="card-title" id="cc-exercise-title">Ejercicio</span>
+      <button class="btn-icon" onclick="document.getElementById('cc-exercise-panel').style.display='none'">✕</button>
+    </div>
+    <p style="color:var(--text-secondary);margin-bottom:12px" id="cc-exercise-desc"></p>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap" id="cc-test-cases"></div>
+    <div class="card" style="background:var(--glass);margin-bottom:12px;padding:12px">
+      <p style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">💡 Pista</p>
+      <p style="font-size:13px;font-style:italic" id="cc-hint"></p>
+    </div>
+    <label class="label">Tu solución (Python)</label>
+    <textarea class="code-area" id="cc-code-input" placeholder="def solution():
+    pass"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-primary" onclick="runCCTest()">▶ Ejecutar Tests</button>
+      <button class="btn btn-secondary" onclick="markCCComplete()">✅ Marcar Completo</button>
+    </div>
+    <div id="cc-test-result" style="margin-top:12px;font-family:var(--font-mono);font-size:12px;padding:10px;background:var(--bg-secondary);border-radius:6px;display:none"></div>
+  </div>
+</div>
+
+<!-- TAB: ÉLITE -->
+<div class="tab-panel" id="panel-elite">
+  <div class="section-header">
+    <div><h2 class="section-title">🏆 Hitos de Élite</h2><p class="section-subtitle">10 hitos para 10 años de dominio</p></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px" id="elite-goals-list"></div>
+</div>
+
+<!-- TAB: AI ACADEMY -->
+<div class="tab-panel" id="panel-ai-academy">
+  <div class="section-header">
+    <div><h2 class="section-title">🤖 AI Academy</h2><p class="section-subtitle">7 niveles desde cero hasta crear tus propios modelos</p></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px" id="ai-academy-list"></div>
+</div>
+
+<!-- TAB: CONSEJO DE MAESTROS -->
+<div class="tab-panel" id="panel-consejo">
+  <div class="section-header">
+    <div><h2 class="section-title">🧙 Consejo de los 10 Maestros</h2><p class="section-subtitle">La sabiduría de los grandes te guía</p></div>
+    <button class="btn btn-primary btn-sm" onclick="consultRandomMaster()">🎲 Consultar al Azar</button>
+  </div>
+  <div class="mission-brief" id="master-consultation" style="margin-bottom:20px;display:none">
+    <div class="mission-title" id="master-consult-title">MAESTRO</div>
+    <div class="mission-text" id="master-consult-wisdom"></div>
+  </div>
+  <div class="grid-2" id="council-grid"></div>
+</div>
+
+<!-- TAB: AUDIO -->
+<div class="tab-panel" id="panel-audio">
+  <div class="section-header">
+    <div><h2 class="section-title">🎵 Motor de Música</h2><p class="section-subtitle">Playlists científicas para cada modo de trabajo</p></div>
+  </div>
+  <div class="grid-2" id="playlist-grid"></div>
+  <div class="card" style="margin-top:16px" id="playlist-detail" style="display:none">
+    <div class="card-header"><span class="card-title" id="playlist-detail-name">Playlist</span></div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px" id="playlist-detail-science"></p>
+    <div id="playlist-tracks" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+</div>
+
+<!-- TAB: CC SYNC -->
+<div class="tab-panel" id="panel-cc-sync">
+  <div class="section-header">
+    <div><h2 class="section-title">🔄 Sincronización CodeCombat</h2><p class="section-subtitle">5 mundos, 150 niveles de programación</p></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Progreso Global CC</span></div>
+      <div class="card-value" id="cc-global-progress">0 / 150</div>
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill fill-green" id="cc-global-bar" style="width:0%"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Mundo Actual</span></div>
+      <div class="card-value" id="cc-current-world" style="font-size:16px">Dungeon of Basics</div>
+      <p style="font-size:12px;color:var(--text-secondary)" id="cc-world-progress-text">Nivel 0 / 40</p>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px" id="cc-worlds-grid"></div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">✅ Checklist de Sincronización</span></div>
+    <div id="cc-checklist" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+</div>
+
+<!-- TAB: NOTEBOOKLM -->
+<div class="tab-panel" id="panel-notebooklm">
+  <div class="section-header">
+    <div><h2 class="section-title">📚 Libro NotebookLM</h2><p class="section-subtitle">Fuentes y prompt para tu libro de estudio con IA</p></div>
+    <button class="btn btn-primary btn-sm" onclick="copyNotebookPrompt()">📋 Copiar Prompt</button>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Fuentes por Categoría</span></div>
+      <div id="sources-list" style="display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Prompt para NotebookLM</span></div>
+      <textarea class="code-area" id="notebooklm-prompt" readonly style="min-height:300px;font-size:11px"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: MISIÓN DIARIA -->
+<div class="tab-panel" id="panel-mision">
+  <div class="section-header">
+    <div><h2 class="section-title">🎯 Generador de Misiones</h2><p class="section-subtitle">Prompts para Gemini y misiones diarias con IA</p></div>
+    <button class="btn btn-primary" onclick="generateFullMission()">⚡ Generar Misión Completa</button>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">📋 Mission Brief del Día</span><button class="btn-icon btn-sm" onclick="copyEl('mission-output')">📋</button></div>
+      <div id="mission-output" style="font-size:13px;line-height:1.7;color:var(--text-secondary)">Genera tu misión para ver el brief completo.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">🤖 Prompt para Gemini</span><button class="btn-icon btn-sm" onclick="copyEl('gemini-prompt-output')">📋</button></div>
+      <textarea class="code-area" id="gemini-prompt-output" readonly style="min-height:200px;font-size:11px">Genera tu misión para ver el prompt de Gemini.</textarea>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-header"><span class="card-title">🔗 Integración con Ollama Local</span></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <input class="input" id="ollama-model" placeholder="llama3.2" style="flex:1;min-width:150px">
+      <textarea class="input" id="ollama-question" placeholder="¿Puedes explicarme el concepto de hoy?" style="flex:3;min-height:60px;min-width:200px"></textarea>
+      <button class="btn btn-primary" onclick="queryOllama()">⚡ Consultar Ollama</button>
+    </div>
+    <div id="ollama-response" style="margin-top:12px;font-size:13px;color:var(--text-secondary);display:none"></div>
+  </div>
+</div>
+
+</main>
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<script>
+// ============================================================
+// PROYECTO AEGIS v1.0 — JAVASCRIPT CORE
+// Agentes: Ingeniero + Psicólogo + Músico + Notificador
+// ============================================================
+
+// ── STATE ──────────────────────────────────────────────────
+const DEFAULT_STATE = {
+  xp:0, streak:0, max_streak:0, total_days:0, total_minutes:0,
+  current_phase:0, current_week:1, current_day:1,
+  sessions:[], achievements_unlocked:[], last_study_date:null,
+  pomodoros_today:0, pomodoro_minutes_today:0,
+  cc_levels_completed:{}, cc_exercises_completed:[],
+  elite_goals_completed:[], ai_levels_unlocked:[0],
+  late_night_count:0, perfect_streak:0, comeback_streak:0,
+  consistent_weeks:0, otw_level:0, skills:{}
+};
+let STATE = JSON.parse(localStorage.getItem('aegis_state') || 'null') || {...DEFAULT_STATE};
+
+function save(){localStorage.setItem('aegis_state',JSON.stringify(STATE));}
+function saveSession(){save();showToast('💾 Sesión guardada','success');}
+
+// ── THEME ──────────────────────────────────────────────────
+function toggleTheme(){
+  const t=document.body.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme',t);
+  document.getElementById('theme-toggle').textContent=t==='dark'?'🌙':'☀️';
+  localStorage.setItem('aegis_theme',t);
+}
+(function(){const t=localStorage.getItem('aegis_theme')||'dark';document.body.setAttribute('data-theme',t);document.getElementById('theme-toggle').textContent=t==='dark'?'🌙':'☀️';})();
+
+// ── TABS ───────────────────────────────────────────────────
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  localStorage.setItem('aegis_tab',id);
+  if(id==='panel') renderPanel();
+  if(id==='plan') renderPlan();
+  if(id==='codecombat') renderCodeCombat();
+  if(id==='elite') renderEliteGoals();
+  if(id==='ai-academy') renderAIAcademy();
+  if(id==='consejo') renderCouncil();
+  if(id==='audio') renderAudio();
+  if(id==='cc-sync') renderCCSync();
+  if(id==='notebooklm') renderNotebookLM();
+}
+(function(){const t=localStorage.getItem('aegis_tab');if(t)showTab(t);})();
+
+// ── TOAST ──────────────────────────────────────────────────
+function showToast(msg,type='info',duration=3500){
+  const d=document.createElement('div');
+  d.className='toast';
+  d.style.borderColor=type==='success'?'var(--accent-green)':type==='error'?'var(--accent-red)':type==='gold'?'var(--accent-gold)':'var(--accent-blue)';
+  d.innerHTML=`<strong>${msg}</strong>`;
+  document.getElementById('toast-container').appendChild(d);
+  setTimeout(()=>{d.classList.add('hide');setTimeout(()=>d.remove(),400);},duration);
+}
+
+// ── CURRICULUM DATA ────────────────────────────────────────
+const PHASES=[
+  {id:0,name:"Fase 0 — Fundamentos Absolutos",weeks:16,color:"#00d4ff",
+   courses:["CS50x Weeks 0-4","Khan Academy Álgebra","Linux Journey Básico","Duolingo English Tech"],
+   projects:["Proyecto Scratch","Calculadora en C","Cifrado César","Filtro de fotos"],
+   resources:["https://cs50.harvard.edu/x/","https://es.khanacademy.org/math/algebra","https://linuxjourney.com/"]},
+  {id:1,name:"Fase 1 — Programación & Algoritmos",weeks:24,color:"#7c3aed",
+   courses:["CS50x Weeks 5-10","CS50P completo","MIT 6.001 SICP","Algorithms Part I"],
+   projects:["Spell checker en C","Finance web app","Scripts Python","Librería de estructuras"],
+   resources:["https://cs50.harvard.edu/python/","https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/"]},
+  {id:2,name:"Fase 2 — Sistemas & Arquitectura",weeks:28,color:"#00ff88",
+   courses:["Nand2Tetris I & II","CS50W Web","Linux Admin","Computer Networks"],
+   projects:["Construir una ALU","App full-stack","Shell personalizada","Analizador TCP/IP"],
+   resources:["https://www.nand2tetris.org/","https://cs50.harvard.edu/web/"]},
+  {id:3,name:"Fase 3 — Ciberseguridad Básica",weeks:28,color:"#ff4757",
+   courses:["CS50 Cybersecurity","OverTheWire Bandit 0-20","TryHackMe Pre-Security","OWASP Top 10"],
+   projects:["CTF Bandit completo","Lab Burp Suite","Scanner Python","Reporte de vulnerabilidades"],
+   resources:["https://overthewire.org/wargames/bandit/","https://tryhackme.com/","https://owasp.org/"]},
+  {id:4,name:"Fase 4 — Ciberseguridad Intermedia",weeks:32,color:"#ffd700",
+   courses:["TryHackMe SOC Level 1","Hack The Box Starting Point","Metasploit Framework","Wireshark Analysis"],
+   projects:["Home lab setup","OWASP Juice Shop completo","Script exploit propio","Dashboard SIEM"],
+   resources:["https://www.hackthebox.com/","https://www.metasploit.com/"]},
+  {id:5,name:"Fase 5 — IA & Machine Learning",weeks:32,color:"#a78bfa",
+   courses:["fast.ai Practical DL","Stanford CS229 ML","Hugging Face Course","LangChain Fundamentals"],
+   projects:["Clasificador de imágenes","NLP sentiment analyzer","Sistema RAG","Agente Ollama local"],
+   resources:["https://www.fast.ai/","https://cs229.stanford.edu/","https://huggingface.co/learn"]},
+  {id:6,name:"Fase 6 — Especialización",weeks:40,color:"#ff6348",
+   courses:["Advanced Pentesting","Cloud Security AWS/GCP","Reverse Engineering","AI Security"],
+   projects:["Primer bug bounty","Cloud CTF","Lab análisis malware","Herramienta AI red team"],
+   resources:["https://portswigger.net/web-security","https://cloud.google.com/training"]},
+  {id:7,name:"Fase 7 — Maestría & Contribución",weeks:56,color:"#00ff88",
+   courses:["Lectura papers research","Contribuciones open source","Enseñar a otros","Publicar herramientas"],
+   projects:["Intento CVE discovery","Tool open source seguridad","Blog técnico","Charla conferencia"],
+   resources:["https://arxiv.org/list/cs/recent","https://github.com/"]}
+];
+
+const ACHIEVEMENTS=[
+  {id:"phoenix",title:"Fénix",desc:"Estudia después de fallar 3 días",icon:"🔥",xp:500},
+  {id:"steel_mind",title:"Mente de Acero",desc:"25 días de racha",icon:"🧠",xp:1000},
+  {id:"marathon",title:"Maratonista",desc:"4 pomodoros en un día",icon:"🏃",xp:300},
+  {id:"centurion",title:"Centurión",desc:"100 días totales de estudio",icon:"⚔️",xp:2000},
+  {id:"algorithm",title:"Algorithm God",desc:"Completa todos los ejercicios CC",icon:"💻",xp:1500},
+  {id:"hacker",title:"Iniciado Hacker",desc:"Completa OTW Bandit nivel 10",icon:"🕵️",xp:800},
+  {id:"consistent",title:"Consistencia",desc:"7 semanas seguidas con 5+ días",icon:"📅",xp:600},
+  {id:"speedrun",title:"Speedrunner",desc:"Puntaje perfecto en 3 sesiones",icon:"⚡",xp:400},
+  {id:"aegis_master",title:"Maestro AEGIS",desc:"Completa el plan de 10 años",icon:"👑",xp:10000}
+];
+
+const CC_EXERCISES=[
+{id:1,title:"FizzBuzz Elite",difficulty:"basic",category:"algorithms",
+   desc:"Imprime 1-100. Múltiplos de 3: Fizz, de 5: Buzz, de ambos: FizzBuzz.",
+   tests:[{i:"15",e:"FizzBuzz"},{i:"9",e:"Fizz"},{i:"25",e:"Buzz"}],
+   hint:"Usa el operador módulo % en Python"},
+  {id:2,title:"Cifrado César",difficulty:"basic",category:"cybersecurity",
+   desc:"Implementa cifrado César: encripta texto con shift variable.",
+   tests:[{i:"hello,3",e:"khoor"},{i:"abc,1",e:"bcd"}],
+   hint:"ord() y chr() son tus aliados. Considera mayúsculas/minúsculas"},
+  {id:3,title:"Búsqueda Binaria",difficulty:"intermediate",category:"algorithms",
+   desc:"Busca un elemento en lista ordenada en O(log n).",
+   tests:[{i:"[1,3,5,7,9],7",e:"index:3"},{i:"[2,4,6,8],5",e:"-1"}],
+   hint:"left=0, right=len-1, mid=(left+right)//2"},
+  {id:4,title:"Validador de Paréntesis",difficulty:"intermediate",category:"data_structures",
+   desc:"Valida si (), [], {} están balanceados.",
+   tests:[{i:"({[]})",e:"True"},{i:"({[})",e:"False"}],
+   hint:"Stack (lista): push abre, pop y verifica cierra"},
+  {id:5,title:"XOR Decrypt",difficulty:"intermediate",category:"cybersecurity",
+   desc:"Descifra mensaje encriptado con XOR dada la clave.",
+   tests:[{i:"bytes XOR key",e:"decrypted text"}],
+   hint:"XOR es su propio inverso: m^k^k = m"},
+  {id:6,title:"Merge Sort",difficulty:"advanced",category:"algorithms",
+   desc:"Implementa merge sort recursivo O(n log n).",
+   tests:[{i:"[5,2,8,1,9]",e:"[1,2,5,8,9]"}],
+   hint:"Divide a la mitad, ordena cada parte, merge"},
+  {id:7,title:"Hash Table",difficulty:"advanced",category:"data_structures",
+   desc:"Implementa tabla hash con chaining para colisiones.",
+   tests:[{i:"set('a',1),get('a')",e:"1"}],
+   hint:"hash(key)%size da el índice. Bucket = lista"},
+  {id:8,title:"Port Scanner",difficulty:"advanced",category:"cybersecurity",
+   desc:"Escanea puertos TCP 1-1024 en un host dado.",
+   tests:[{i:"localhost",e:"list open ports"}],
+   hint:"socket.connect_ex() retorna 0 si el puerto está abierto"},
+  {id:9,title:"SQL Injection Detector",difficulty:"expert",category:"cybersecurity",
+   desc:"Detecta patrones SQLi en strings de input.",
+   tests:[{i:"' OR 1=1--",e:"DETECTED"},{i:"hello world",e:"SAFE"}],
+   hint:"Regex para OR, UNION, SELECT, DROP, --, #"},
+  {id:10,title:"Red Neuronal XOR",difficulty:"expert",category:"ai",
+   desc:"Implementa red neuronal simple con numpy para resolver XOR.",
+   tests:[{i:"XOR dataset",e:"accuracy>0.95"}],
+   hint:"sigmoid, cross-entropy, gradient descent manual"},
+// IDs 11-25: LÓGICA Y FUNDAMENTOS (🟢)
+
+// ── LÓGICA 🟢 ──────────────────────────────────────────
+{id:11,title:"Invertir String",diff:"🟢",categoria:"Logica",desc:"Invierte un string sin usar [::-1].",func:"invertir",args:"'hola'",expected:"'aloh'",tests:[["'hola'","'aloh'"],["'Python'","'nohtyP'"]],hint:"Usa un bucle for o reduce()"},
+{id:12,title:"Palíndromo",diff:"🟢",categoria:"Logica",desc:"Detecta si un string es palíndromo (ignora mayúsculas y espacios).",func:"es_palindromo",args:"'Anita lava la tina'",expected:"True",tests:[["'Anita lava la tina'","True"],["'hello'","False"]],hint:"lower() + replace(' ','') luego compara con el reverso"},
+{id:13,title:"Contar Vocales",diff:"🟢",categoria:"Logica",desc:"Cuenta cuántas vocales (a,e,i,o,u) tiene un string.",func:"contar_vocales",args:"'programacion'",expected:"5",tests:[["'programacion'","5"],["'python'","1"]],hint:"lower() y suma con in 'aeiou'"},
+{id:14,title:"Número Armstrong",diff:"🟢",categoria:"Logica",desc:"Un número es Armstrong si la suma de sus dígitos elevados a n = el número. Ej: 153=1³+5³+3³.",func:"es_armstrong",args:"153",expected:"True",tests:[["153","True"],["370","True"],["100","False"]],hint:"len(str(n)) para el exponente"},
+{id:15,title:"Anagramas",diff:"🟢",categoria:"Logica",desc:"Determina si dos strings son anagramas entre sí.",func:"son_anagramas",args:"'listen','silent'",expected:"True",tests:[["'listen','silent'","True"],["'hello','world'","False"]],hint:"sorted() en ambos strings después de lower()"},
+{id:16,title:"Número Primo",diff:"🟢",categoria:"Logica",desc:"Verifica si un número es primo.",func:"es_primo",args:"17",expected:"True",tests:[["17","True"],["4","False"],["2","True"]],hint:"Solo divide hasta sqrt(n)"},
+{id:17,title:"Fibonacci Iterativo",diff:"🟢",categoria:"Logica",desc:"Retorna el n-ésimo Fibonacci (fib(0)=0, fib(1)=1).",func:"fibonacci",args:"10",expected:"55",tests:[["10","55"],["0","0"],["7","13"]],hint:"Usa dos variables a,b y un bucle"},
+{id:18,title:"Suma Dígitos",diff:"🟢",categoria:"Logica",desc:"Suma todos los dígitos de un número entero positivo.",func:"suma_digitos",args:"12345",expected:"15",tests:[["12345","15"],["9999","36"]],hint:"str(n) luego int() de cada char"},
+{id:19,title:"Aplanar Lista",diff:"🟢",categoria:"Logica",desc:"Aplana una lista de listas (un nivel).",func:"aplanar",args:"[[1,2],[3,4],[5]]",expected:"[1,2,3,4,5]",tests:[["[[1,2],[3,4],[5]]","[1,2,3,4,5]"]],hint:"[x for sub in lista for x in sub]"},
+{id:20,title:"Máximo sin max()",diff:"🟢",categoria:"Logica",desc:"Encuentra el máximo de una lista sin max() ni sort().",func:"mi_max",args:"[3,1,4,1,5,9,2,6]",expected:"9",tests:[["[3,1,4,1,5,9,2,6]","9"],[" [-5,-1,-3]","-1"]],hint:"Inicia maximo=lista[0] y recorre comparando"},
+{id:21,title:"Tabla de Multiplicar",diff:"🟢",categoria:"Logica",desc:"Retorna lista con la tabla del 1 al 10 de un número.",func:"tabla",args:"7",expected:"[7,14,21,28,35,42,49,56,63,70]",tests:[["7","[7,14,21,28,35,42,49,56,63,70]"]],hint:"[n * i for i in range(1, 11)]"},
+{id:22,title:"Intercalar Listas",diff:"🟢",categoria:"Logica",desc:"Intercala dos listas elemento a elemento. [1,2]+[a,b]=[1,a,2,b].",func:"intercalar",args:"[1,2],['a','b']",expected:"[1,'a',2,'b']",tests:[["[1,2],['a','b']","[1,'a',2,'b']"]],hint:"zip() + list comprehension"},
+{id:23,title:"Convertir a Binario",diff:"🟢",categoria:"Logica",desc:"Convierte decimal a binario sin bin().",func:"a_binario",args:"42",expected:"'101010'",tests:[["42","'101010'"],["255","'11111111'"]],hint:"Divide entre 2, guarda restos, léelos al revés"},
+{id:24,title:"Rotar Lista",diff:"🟢",categoria:"Logica",desc:"Rota una lista k posiciones a la derecha.",func:"rotar",args:"[1,2,3,4,5],2",expected:"[4,5,1,2,3]",tests:[["[1,2,3,4,5],2","[4,5,1,2,3]"]],hint:"lista[-k:] + lista[:-k] con k = k % len(lista)"},
+{id:25,title:"Números Romanos",diff:"🟢",categoria:"Logica",desc:"Convierte un entero (1-3999) a romano.",func:"a_romano",args:"2024",expected:"'MMXXIV'",tests:[["2024","'MMXXIV'"],["9","'IX'"],["1994","'MCMXCIV'"]],hint:"Lista de pares (valor,símbolo) en orden descendente"},
+// ── ALGORITMOS 🟡 ──────────────────────────────────────
+{id:26,title:"Quick Sort",diff:"🟡",categoria:"Algoritmos",desc:"Implementa quicksort recursivo con pivote en el medio.",func:"quicksort",args:"[3,6,8,10,1,2,1]",expected:"[1,1,2,3,6,8,10]",tests:[["[3,6,8,10,1,2,1]","[1,1,2,3,6,8,10]"],["[5,4,3,2,1]","[1,2,3,4,5]"]],hint:"menor, igual, mayor = divide y vencerás"},
+{id:27,title:"BST Inserción",diff:"🟡",categoria:"Algoritmos",desc:"Inserta en árbol binario de búsqueda. Retorna dict {val,left,right}.",func:"bst_insert",args:"None,5",expected:"{val:5,left:None,right:None}",tests:[["None,5","{val:5,left:None,right:None}"]],hint:"Si nodo es None, crea nodo. Compara val para ir izq/der"},
+{id:28,title:"Detectar Ciclo (Floyd)",diff:"🟡",categoria:"Algoritmos",desc:"Usa tortuga y liebre para detectar ciclo en lista enlazada.",func:"tiene_ciclo",args:"linked_list_node",expected:"True/False",tests:[["lista_con_ciclo","True"],["lista_sin_ciclo","False"]],hint:"slow×1, fast×2. Si se encuentran, hay ciclo"},
+{id:29,title:"BFS en Grafo",diff:"🟡",categoria:"Algoritmos",desc:"BFS desde nodo inicial. Retorna orden de visita.",func:"bfs",args:"grafo,'A'",expected:"['A','B','C','D']",tests:[["{'A':['B','C'],'B':['D'],'C':[],'D':[]},'A'","['A','B','C','D']"]],hint:"collections.deque como cola, set de visitados"},
+{id:30,title:"DFS en Grafo",diff:"🟡",categoria:"Algoritmos",desc:"DFS recursivo. Retorna orden de visita.",func:"dfs",args:"grafo,'A'",expected:"['A','B','D','C']",tests:[["{'A':['B','C'],'B':['D'],'C':[],'D':[]},'A'","['A','B','D','C']"]],hint:"Visita nodo, llama recursivamente a vecinos no visitados"},
+{id:31,title:"Encontrar Duplicados",diff:"🟡",categoria:"Algoritmos",desc:"Retorna lista de duplicados en O(n).",func:"duplicados",args:"[1,2,3,2,4,3,5]",expected:"[2,3]",tests:[["[1,2,3,2,4,3,5]","[2,3]"],["[1,2,3]","[]"]],hint:"Counter() o dict de frecuencias"},
+{id:32,title:"Two Sum",diff:"🟡",categoria:"Algoritmos",desc:"Retorna índices de dos números que sumen el target.",func:"two_sum",args:"[2,7,11,15],9",expected:"[0,1]",tests:[["[2,7,11,15],9","[0,1]"],["[3,2,4],6","[1,2]"]],hint:"Dict {complemento: índice}. target-num en el dict"},
+{id:33,title:"Cola con Dos Stacks",diff:"🟡",categoria:"Algoritmos",desc:"Implementa cola FIFO usando solo dos stacks.",func:"MyQueue",args:"",expected:"FIFO order",tests:[["enqueue(1),enqueue(2),dequeue()","1"]],hint:"Stack1=enqueue, Stack2=dequeue. Si stack2 vacío, vuelca stack1"},
+{id:34,title:"Subcadena sin Repetir",diff:"🟡",categoria:"Algoritmos",desc:"Longitud de la subcadena más larga sin chars repetidos.",func:"sin_repetir",args:"'abcabcbb'",expected:"3",tests:[["'abcabcbb'","3"],["'bbbbb'","1"],["'pwwkew'","3"]],hint:"Ventana deslizante con dict del último índice de cada char"},
+{id:35,title:"Número de Islas",diff:"🟡",categoria:"Algoritmos",desc:"Cuenta islas (grupos de 1s conectados) en un grid 2D.",func:"num_islas",args:"grid_2d",expected:"número entero",tests:[["[['1','1','0'],['0','1','0'],['0','0','1']]","2"],["[['1','1','1'],['0','1','0'],['1','1','1']]","1"]],hint:"DFS desde cada 1 no visitado, marca visitados como 0"},
+{id:36,title:"Ordenar por Frecuencia",diff:"🟡",categoria:"Algoritmos",desc:"Ordena lista por frecuencia (mayor primero). Igual frecuencia: orden ascendente.",func:"por_frecuencia",args:"[1,1,2,2,2,3]",expected:"[2,2,2,1,1,3]",tests:[["[1,1,2,2,2,3]","[2,2,2,1,1,3]"]],hint:"Counter() + sorted con key=(-count, valor)"},
+{id:37,title:"Validar Sudoku",diff:"🟡",categoria:"Algoritmos",desc:"Valida tablero 9x9 de Sudoku (filas, columnas, cajas).",func:"validar_sudoku",args:"board_9x9",expected:"True/False",tests:[["tablero_valido","True"],["tablero_invalido","False"]],hint:"Tres sets para filas, columnas y cajas 3x3"},
+{id:38,title:"Caché LRU",diff:"🟡",categoria:"Algoritmos",desc:"Caché LRU con operaciones get y put.",func:"LRUCache",args:"capacity=2",expected:"LRU behavior",tests:[["put(1,1),put(2,2),get(1),put(3,3),get(2)","-1 (evicted)"]],hint:"OrderedDict + move_to_end()"},
+{id:39,title:"Distancia de Edición",diff:"🟡",categoria:"Algoritmos",desc:"Distancia Levenshtein: mín operaciones para transformar word1 en word2.",func:"edit_distance",args:"'kitten','sitting'",expected:"3",tests:[["'kitten','sitting'","3"],["'abc','abc'","0"]],hint:"DP 2D: dp[i][j] = min ediciones para word1[:i] a word2[:j]"},
+{id:40,title:"Máxima Ganancia Acciones",diff:"🟡",categoria:"Algoritmos",desc:"Máxima ganancia comprando y vendiendo una vez.",func:"max_ganancia",args:"[7,1,5,3,6,4]",expected:"5",tests:[["[7,1,5,3,6,4]","5"],["[7,6,4,3,1]","0"]],hint:"Rastrea precio mínimo, ganancia = precio - min_precio"},
+// ── CIBERSEGURIDAD 🟠 ──────────────────────────────────
+{id:41,title:"Detector SQLi",diff:"🟠",categoria:"Ciberseguridad",desc:"Detecta patrones SQL Injection: OR bypass, UNION SELECT, comentarios doble guión, stacked queries.",func:"detectar_sqli",args:"input_string",expected:"True/False",tests:[["input con OR 1=1","True"],["texto normal","False"]],hint:"re.search() con: OR\\s+\\d+=\\d+, UNION\\s+SELECT, --\\s*$, SLEEP"},
+{id:42,title:"Sanitizador XSS",diff:"🟠",categoria:"Ciberseguridad",desc:"Escapa payloads XSS: <, >, &, comillas. Retorna string sanitizado.",func:"sanitizar_xss",args:"payload_xss",expected:"string_escapado",tests:[["script_alert_payload","html_entities_escaped"],["texto normal","texto normal"]],hint:"Reemplaza en orden: &→&amp;, <→&lt;, >→&gt;"},
+{id:43,title:"Hash MD5",diff:"🟠",categoria:"Ciberseguridad",desc:"Calcula MD5 de un string usando hashlib.",func:"calcular_md5",args:"'password123'",expected:"'482c811da5d5b4bc6d497ffa98491e38'",tests:[["'password123'","'482c811da5d5b4bc6d497ffa98491e38'"],["''","'d41d8cd98f00b204e9800998ecf8427e'"]],hint:"hashlib.md5(s.encode()).hexdigest()"},
+{id:44,title:"Cracker de Hash",diff:"🟠",categoria:"Ciberseguridad",desc:"Encuentra qué palabra del diccionario genera un hash MD5.",func:"crack_hash",args:"hash_md5,wordlist",expected:"palabra_encontrada",tests:[["hash de 'password',['secret','password','admin']","'password'"],["hash_inexistente,lista","None"]],hint:"md5(word.encode()).hexdigest() y compara con target"},
+{id:45,title:"Cifrado Vigenère",diff:"🟠",categoria:"Ciberseguridad",desc:"Cifrado Vigenère: encripta texto con clave (solo letras mayúsculas).",func:"vigenere_encrypt",args:"'ATTACKATDAWN','LEMON'",expected:"'LXFOPVEFRNHR'",tests:[["'ATTACKATDAWN','LEMON'","'LXFOPVEFRNHR'"],["'HELLO','KEY'","'RIJVS'"]],hint:"(ord(m)-65 + ord(k)-65) % 26 + 65 para cada char"},
+{id:46,title:"Analizar Headers HTTP",diff:"🟠",categoria:"Ciberseguridad",desc:"Detecta headers de seguridad faltantes en una respuesta HTTP.",func:"analizar_headers",args:"dict_headers",expected:"lista_faltantes",tests:[["solo Content-Type","[X-Frame-Options, HSTS, CSP, X-XSS-Protection]"],["todos presentes","[]"]],hint:"Lista de headers requeridos, filtra los ausentes del dict"},
+{id:47,title:"Decodificador Base64",diff:"🟠",categoria:"Ciberseguridad",desc:"Decodifica Base64 con manejo de padding incorrecto.",func:"decodificar_b64",args:"'SGVsbG8gV29ybGQ='",expected:"'Hello World'",tests:[["'SGVsbG8gV29ybGQ='","'Hello World'"],["'QUVHSVM='","'AEGIS'"]],hint:"base64.b64decode(s + '=='*(len(s)%4!=0)).decode()"},
+{id:48,title:"Generador Password Seguro",diff:"🟠",categoria:"Ciberseguridad",desc:"Genera contraseña de longitud n con upper, lower, dígito y símbolo.",func:"generar_password",args:"16",expected:"password_valido_16_chars",tests:[["16","len==16 con los 4 tipos de chars"],["8","len==8 con los 4 tipos"]],hint:"secrets.choice() con conjuntos, asegura 1 de cada tipo"},
+{id:49,title:"Parser Log Apache",diff:"🟠",categoria:"Ciberseguridad",desc:"Parsea línea de log Apache Combined Format: IP, método, ruta, código, bytes.",func:"parsear_log",args:"linea_log_apache",expected:"dict con ip,metodo,ruta,codigo,bytes",tests:[["127.0.0.1 - - [fecha] GET /index 200 1234","dict correcto"]],hint:"re.match() con grupos nombrados (?P<ip>...)"},
+{id:50,title:"Detector Brute Force SSH",diff:"🟠",categoria:"Ciberseguridad",desc:"Detecta IPs con más de 5 intentos SSH en menos de 60 segundos.",func:"detectar_bruteforce",args:"lista_intentos",expected:"lista_ips_sospechosas",tests:[["6 intentos en 30s desde una IP","[esa IP]"],["3 intentos espaciados","[]"]],hint:"Agrupa por IP. Si count>5 y max_t - min_t < 60: sospechosa"},
+// ── SISTEMAS 🔴 ────────────────────────────────────────
+{id:51,title:"Simulador de Punteros",diff:"🔴",categoria:"Sistemas",desc:"Simula punteros C con un dict como memoria. Operaciones: write(addr,val), read(addr).",func:"simulador_memoria",args:"",expected:"memoria_funcional",tests:[["write(0x100,42); read(0x100)","42"],["write(0x200,'A'); read(0x200)","'A'"]],hint:"MEMORIA={} global. write: MEMORIA[addr]=val, read: return MEMORIA[addr]"},
+{id:52,title:"malloc/free Simulado",diff:"🔴",categoria:"Sistemas",desc:"Allocator simple: malloc(size) retorna dirección, free(addr) libera bloque. First-fit.",func:"MemoryAllocator",args:"total_size=1024",expected:"allocator_funcional",tests:[["malloc(100),malloc(200),free(dir1),malloc(50)","usa bloque liberado"],["malloc(2000) con 1024 total","None"]],hint:"Lista de bloques {addr,size,free}. First-fit: primer bloque libre suficiente"},
+{id:53,title:"Desensamblador Bytecode",diff:"🔴",categoria:"Sistemas",desc:"Obtén las instrucciones bytecode de una función con el módulo dis.",func:"desensamblar",args:"lambda x: x+1",expected:"lista de opnames",tests:[["lambda x: x+1","lista con RESUME,LOAD_FAST,etc."]],hint:"import dis; [i.opname for i in dis.get_instructions(func)]"},
+{id:54,title:"Syscall getpid",diff:"🔴",categoria:"Sistemas",desc:"Llama a getpid() del SO via ctypes. Compara con os.getpid().",func:"syscall_getpid",args:"",expected:"PID_actual",tests:[["syscall_getpid()==os.getpid()","True"]],hint:"ctypes.CDLL(None).getpid.restype=c_int; libc.getpid()"},
+{id:55,title:"Pipe entre Procesos",diff:"🔴",categoria:"Sistemas",desc:"Crea pipe con os.pipe(), fork: hijo escribe 'AEGIS', padre lo lee.",func:"comunicar_pipe",args:"",expected:"'AEGIS'",tests:[["fork + pipe","'AEGIS' recibido del hijo"]],hint:"r,w=os.pipe(); pid=os.fork(); if pid==0: os.write(w,b'AEGIS')"},
+{id:56,title:"Manejador de Señales",diff:"🔴",categoria:"Sistemas",desc:"Registra handler para SIGUSR1 que incrementa contador. Envía señal 3 veces.",func:"manejar_senales",args:"",expected:"contador==3",tests:[["SIGUSR1 x3","contador==3"]],hint:"signal.signal(SIGUSR1, handler); os.kill(os.getpid(), SIGUSR1)"},
+{id:57,title:"Shell Parser",diff:"🔴",categoria:"Sistemas",desc:"Parsea comando shell manteniendo strings entre comillas como token único.",func:"parsear_shell",args:"\"ls -la 'mi directorio'\"",expected:"['ls','-la','mi directorio']",tests:[["ls -la con comillas","tokens correctos"]],hint:"shlex.split(cmd) o implementa estado dentro/fuera de comillas"},
+{id:58,title:"Implementar strtol",diff:"🔴",categoria:"Sistemas",desc:"Reimplementa strtol de C: convierte string a entero en base 2-16 sin int(s,base).",func:"mi_strtol",args:"'FF',16",expected:"255",tests:[["'FF',16","255"],["'1010',2","10"],["'42',10","42"]],hint:"digit_val para 0-9 y A-F. Acumula: resultado = resultado*base + digit"},
+{id:59,title:"Checksums y Paridad",diff:"🔴",categoria:"Sistemas",desc:"Implementa (a) checksum 8-bit (suma % 256) y (b) paridad par de un byte.",func:"checksums",args:"bytes_data",expected:"{'checksum8':N,'paridad_par':bool}",tests:[["b'\\x01\\x02\\x03\\x04'","{'checksum8':10,'paridad_par':True/False}"]],hint:"checksum: sum(bytes)%256. paridad: bin(byte).count('1')%2==0"},
+{id:60,title:"Buffer Overflow Detector",diff:"🔴",categoria:"Sistemas",desc:"Buffer fijo: lanza BufferOverflowError si se escribe más de la capacidad.",func:"SecureBuffer",args:"capacity=8",expected:"BufferOverflowError on overflow",tests:[["write dentro del límite","ok"],["write fuera del límite","BufferOverflowError"]]
+,hint:"class con self.data=bytearray(capacity). write() verifica len<=capacity"}
+
+];
+
+const ELITE_GOALS=[
+  {id:1,year:1,title:"Primera Línea de Código",desc:"Completar CS50x Week 0 y Scratch project",reward:"🎯 Rookie Activated"},
+  {id:2,year:1,title:"Dominio de C",desc:"Completar CS50x completo con todos los psets",reward:"⚔️ C Warrior"},
+  {id:3,year:2,title:"Pythonista",desc:"Completar CS50P y 5 proyectos Python",reward:"🐍 Snake Master"},
+  {id:4,year:2,title:"Arquitecto de Sistemas",desc:"Completar Nand2Tetris completo",reward:"🖥️ Systems Architect"},
+  {id:5,year:3,title:"First Blood CTF",desc:"Completar OTW Bandit 0-33",reward:"🔴 CTF Hunter"},
+  {id:6,year:4,title:"Infiltrado",desc:"TryHackMe SOC Level 1 + HTB Starting Point",reward:"🕵️ Infiltrator"},
+  {id:7,year:5,title:"IA Awakening",desc:"Desplegar primer modelo ML propio",reward:"🤖 AI Pioneer"},
+  {id:8,year:7,title:"Bug Bounty Hunter",desc:"Primer reporte válido en HackerOne o Bugcrowd",reward:"💰 Bounty Hunter"},
+  {id:9,year:8,title:"Investigador",desc:"Contribuir a proyecto open source de seguridad",reward:"🔬 Researcher"},
+  {id:10,year:10,title:"Maestro AEGIS",desc:"Completar el plan completo de 10 años",reward:"👑 AEGIS Master"}
+];
+
+const AI_ACADEMY=[
+  {id:1,name:"IA 101 — El Despertar",weeks:4,icon:"🌅",
+   topics:["¿Qué es IA?","Historia de la IA","ML vs Deep Learning","Python para IA"],
+   project:"Clasificador Iris con scikit-learn",
+   resources:["fast.ai lesson 1","3Blue1Brown Neural Networks series"]},
+  {id:2,name:"Matemáticas de IA",weeks:6,icon:"📐",
+   topics:["Álgebra lineal para ML","Cálculo y gradiente","Estadística bayesiana","Numpy/Pandas"],
+   project:"Regresión lineal desde cero con numpy",
+   resources:["Gilbert Strang Linear Algebra MIT","Khan Academy Statistics"]},
+  {id:3,name:"Deep Learning",weeks:8,icon:"🧬",
+   topics:["CNNs","RNNs/LSTMs","Transfer Learning","PyTorch fundamentals"],
+   project:"Clasificador de imágenes con ResNet fine-tuning",
+   resources:["fast.ai Part 1","PyTorch official tutorials"]},
+  {id:4,name:"NLP & Transformers",weeks:8,icon:"💬",
+   topics:["Tokenización","Embeddings","Attention mechanism","BERT/GPT architecture"],
+   project:"Chatbot con Hugging Face Transformers",
+   resources:["Hugging Face NLP Course","Andrej Karpathy — makemore"]},
+  {id:5,name:"IA en Producción",weeks:6,icon:"🚀",
+   topics:["MLOps basics","FastAPI para modelos","Docker para IA","Monitoring con Langfuse"],
+   project:"Deploy de modelo ML en API REST",
+   resources:["Made With ML","Full Stack Deep Learning"]},
+  {id:6,name:"Agentes IA",weeks:8,icon:"🤖",
+   topics:["RAG systems","LangChain/LangGraph","Ollama local","Tool use & function calling"],
+   project:"Agente RAG con Ollama local",
+   resources:["LangChain docs","Anthropic cookbook"]},
+  {id:7,name:"IA Avanzada & Seguridad",weeks:12,icon:"🛡️",
+   topics:["Adversarial attacks","AI red teaming","Fine-tuning LLMs","Creación modelos propios"],
+   project:"Detector de vulnerabilidades en código con IA",
+   resources:["Anthropic AI Safety","OpenAI red teaming guide"]}
+];
+
+const MASTERS=[
+  {name:"Alan Turing",role:"Padre de la Computación",icon:"🖥️",
+   wisdom:"A veces son las personas que nadie imagina hacer algo las que hacen cosas que nadie puede imaginar.",
+   for_when:"cuando el problema parece imposible"},
+  {name:"Grace Hopper",role:"Pionera del Software",icon:"⚓",
+   wisdom:"La frase más dañina en cualquier lenguaje es: 'siempre lo hemos hecho así'.",
+   for_when:"cuando quieres rendirte"},
+  {name:"Ada Lovelace",role:"Primera Programadora",icon:"🌹",
+   wisdom:"La imaginación es la facultad descubridora por excelencia.",
+   for_when:"cuando necesitas creatividad"},
+  {name:"Richard Feynman",role:"Físico y Pedagogo",icon:"⚛️",
+   wisdom:"Si no puedes explicarlo de forma simple, no lo entiendes suficientemente bien.",
+   for_when:"cuando estudias algo complejo"},
+  {name:"Linus Torvalds",role:"Creador de Linux",icon:"🐧",
+   wisdom:"Los proyectos reales comienzan pequeños. Linux comenzó como mi hobby personal.",
+   for_when:"cuando tu proyecto parece pequeño"},
+  {name:"Kevin Mitnick",role:"Hacker Legendario",icon:"🕵️",
+   wisdom:"El factor humano es el eslabón más débil en cualquier sistema de seguridad.",
+   for_when:"cuando estudias seguridad"},
+  {name:"Geoffrey Hinton",role:"Padre del Deep Learning",icon:"🧠",
+   wisdom:"Seguí creyendo en las redes neuronales durante 30 años cuando nadie más lo hacía.",
+   for_when:"cuando dudas del largo plazo"},
+  {name:"Barbara Liskov",role:"Arquitecta de Software",icon:"🏛️",
+   wisdom:"La abstracción es la herramienta más poderosa del programador.",
+   for_when:"cuando diseñas sistemas"},
+  {name:"Donald Knuth",role:"Maestro de Algoritmos",icon:"📚",
+   wisdom:"La optimización prematura es la raíz de todos los males.",
+   for_when:"cuando quieres optimizar antes de tiempo"},
+  {name:"Sun Tzu",role:"El Estratega",icon:"⚔️",
+   wisdom:"Conócete a ti mismo y conoce a tu enemigo, y no temerás el resultado de mil batallas.",
+   for_when:"cuando necesitas estrategia de estudio"}
+];
+
+const PLAYLISTS={
+  deep_focus:{name:"Deep Focus — Flujo Máximo",icon:"🎯",
+   science:"El ruido blanco y marrón a 40-60Hz sincroniza ondas gamma para máxima concentración.",
+   best_for:"Matemáticas, algoritmos, código complejo",
+   tracks:[{name:"Lofi Hip Hop — beats to study",url:"https://www.youtube.com/watch?v=jfKfPfyJRdk"},
+           {name:"Dark Ambient Study Mix",url:"https://www.youtube.com/watch?v=1KaOrSuWZeM"},
+           {name:"Brain.fm Deep Work",url:"https://brain.fm"}]},
+  creative:{name:"Creative Mode — Exploración",icon:"🎨",
+   science:"Ondas Alpha (8-12Hz) favorecen el pensamiento lateral y la creatividad (Jensen & Tesche, 2002).",
+   best_for:"Diseño, brainstorming, proyectos creativos",
+   tracks:[{name:"Atmospheric Ambient",url:"https://www.youtube.com/watch?v=21qNxnCS8WU"},
+           {name:"Jazz for Coding",url:"https://open.spotify.com/playlist/37i9dQZF1DX1s9knjP51Oa"}]},
+  high_energy:{name:"High Energy — Sprint Mode",icon:"⚡",
+   science:"BPM 130-145 activa el sistema nervioso simpático, +15% velocidad de procesamiento.",
+   best_for:"Revisión rápida, flashcards, repaso, sprint final",
+   tracks:[{name:"Synthwave Coding",url:"https://www.youtube.com/watch?v=0l1lMHfJFP4"},
+           {name:"Power Hour Electronic",url:"https://open.spotify.com/playlist/37i9dQZF1DXdxcBWuJkbcy"}]},
+  recovery:{name:"Recovery — Restauración",icon:"🌊",
+   science:"60 BPM sincroniza ritmo cardíaco en reposo, consolida memoria (Walker, 2017).",
+   best_for:"Descansos, meditación, repaso pasivo, sueño",
+   tracks:[{name:"Tibetan Bowls",url:"https://www.youtube.com/watch?v=1ZYbU82GVz4"},
+           {name:"Nature Sounds Forest",url:"https://www.youtube.com/watch?v=xNN7iTA57jM"}]}
+};
+
+const CC_WORLDS=[
+  {id:1,name:"Dungeon of Basics",icon:"🏰",total:40,desc:"Python fundamentals"},
+  {id:2,name:"Forest of Algorithms",icon:"🌲",total:30,desc:"Sorting, searching, recursion"},
+  {id:3,name:"Castle of Data Structures",icon:"🗃️",total:30,desc:"Lists, trees, graphs, hash tables"},
+  {id:4,name:"Cybervault",icon:"🔐",total:30,desc:"Security concepts, encryption, CTF basics"},
+  {id:5,name:"AI Nexus",icon:"🤖",total:20,desc:"ML fundamentals, neural networks"}
+];
+</script>
+
+<script>
+// ── TODAY INFO & CALIBRATION ───────────────────────────────
+function getTodayInfo(){
+  const phase=PHASES[Math.min(STATE.current_phase,7)];
+  const week=STATE.current_week;
+  const day=STATE.current_day;
+  const dayNames=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+  const now=new Date();
+  const dayName=dayNames[now.getDay()===0?6:now.getDay()-1];
+  const tasks=[];
+  if(phase){
+    const ci=week%phase.courses.length;
+    tasks.push({text:`📖 ${phase.courses[ci]}`,done:false,type:"study"});
+    if(day%3===0) tasks.push({text:`💻 Proyecto: ${phase.projects[Math.floor(week/4)%phase.projects.length]}`,done:false,type:"project"});
+    if(day%2===0) tasks.push({text:"⚔️ 1 ejercicio Code Combat",done:false,type:"practice"});
+    tasks.push({text:"⏱️ 2 Pomodoros de 25 min",done:false,type:"pomodoro"});
+    if(day===7) tasks.push({text:"📊 Revisión semanal y ajuste de plan",done:false,type:"review"});
+  }
+  return {phase,week,day,dayName,tasks,date:now.toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})};
+}
+
+function renderHoy(){
+  const info=getTodayInfo();
+  const el=id=>(document.getElementById(id)||{textContent:'',innerHTML:''});
+  el('today-date-display').textContent=info.date;
+  el('current-day-num').textContent=STATE.current_day;
+  el('current-phase-name').textContent=info.phase?info.phase.name.split('—')[0].trim():'Fase '+STATE.current_phase;
+  el('current-phase-desc').textContent=info.phase?info.phase.courses[0]:'';
+  el('current-week-display').textContent='Semana '+info.week+' / '+(info.phase?info.phase.weeks:16);
+  const pct=info.phase?Math.round((info.week/info.phase.weeks)*100):0;
+  const wf=document.getElementById('week-progress-fill');
+  if(wf) wf.style.width=pct+'%';
+  // Tasks
+  const list=document.getElementById('today-tasks-list');
+  if(list){
+    list.innerHTML='';
+    info.tasks.forEach((t,i)=>{
+      const div=document.createElement('div');
+      div.style.cssText='display:flex;align-items:center;gap:10px;padding:10px;background:var(--glass);border-radius:8px;cursor:pointer;border:1px solid var(--border)';
+      const done=STATE.tasks_done&&STATE.tasks_done[STATE.current_day+'-'+i];
+      div.innerHTML=`<input type="checkbox" id="task-${i}" ${done?'checked':''} style="width:16px;height:16px;accent-color:var(--accent-blue)"><label for="task-${i}" style="font-size:13px;${done?'text-decoration:line-through;color:var(--text-muted)':''}">${t.text}</label>`;
+      div.querySelector('input').addEventListener('change',e=>{
+        if(!STATE.tasks_done) STATE.tasks_done={};
+        STATE.tasks_done[STATE.current_day+'-'+i]=e.target.checked;
+        save(); renderHoy();
+        if(e.target.checked){STATE.xp+=10;updateHeader();}
+      });
+      list.appendChild(div);
+    });
+    document.getElementById('tasks-count').textContent=info.tasks.length+' tareas';
+  }
+  updateCognitive();
+  generateMissionBrief(info);
+}
+
+function updateCognitive(){
+  const sessions_today=STATE.sessions.filter(s=>{
+    const d=new Date(s.date);
+    const now=new Date();
+    return d.toDateString()===now.toDateString();
+  }).length;
+  const avg_score=sessions_today>0?Math.round(STATE.sessions.slice(-sessions_today).reduce((a,b)=>a+b.score,0)/sessions_today):75;
+  const hour=new Date().getHours();
+  let load=sessions_today*15+(100-avg_score)*0.3;
+  if(hour>=22||hour<7) load+=20;
+  load=Math.min(100,Math.round(load));
+  const states={optimal:"Óptimo 🟢",moderate:"Moderado 🟡",high:"Alto 🟠",overload:"Sobrecarga 🔴"};
+  const recs={
+    optimal:"Condición ideal para aprender contenido nuevo.",
+    moderate:"Buen momento para práctica y consolidación.",
+    high:"Considera un descanso de 10 min antes de continuar.",
+    overload:"STOP. Descansa 30 min. Tu cerebro necesita consolidar."
+  };
+  const stateKey=load<30?'optimal':load<55?'moderate':load<75?'high':'overload';
+  const cs=document.getElementById('cognitive-state');
+  const cr=document.getElementById('cognitive-rec');
+  if(cs) cs.textContent=states[stateKey];
+  if(cr) cr.textContent=recs[stateKey];
+}
+
+function generateMissionBrief(info){
+  if(!info) info=getTodayInfo();
+  const briefs=[
+    `OPERACIÓN DÍA ${STATE.current_day} INICIADA. Fase: ${info.phase?info.phase.name:'Fase 0'}. Semana ${info.week}. Tu misión: dominar ${info.phase?info.phase.courses[0]:'los fundamentos'}. El conocimiento que adquieras hoy es armadura permanente.`,
+    `CLEARANCE LEVEL ${Math.min(STATE.current_phase+1,8)}. Los algoritmos no mienten — tu rendimiento define tu trayectoria. Ejecuta ${info.tasks.length} tareas críticas. La élite no descansa cuando el camino es largo.`,
+    `INTEL: Semana ${info.week} activa. Objetivo primario: consolidar ${info.phase?info.phase.courses[0]:'bases'}. Racha actual: ${STATE.streak} días. Cada sesión es un nodo en tu red neuronal de conocimiento.`
+  ];
+  const brief=briefs[STATE.current_day%briefs.length];
+  const el=document.getElementById('mission-brief-text');
+  if(el) el.textContent=brief;
+}
+
+function generateMission(){renderHoy();showToast('🎯 Misión generada','success');}
+
+function logSession(){
+  const score=parseInt(document.getElementById('session-score').value)||75;
+  const time=parseInt(document.getElementById('session-time').value)||50;
+  const notes=document.getElementById('session-notes').value||'';
+  const mood=parseInt(document.getElementById('session-mood').value)||3;
+  const now=new Date();
+  const session={date:now.toISOString(),score,time,notes,mood,phase:STATE.current_phase,week:STATE.current_week};
+  STATE.sessions.push(session);
+  // XP calculation
+  const xp_earned=Math.round(score*0.5+time*0.3+mood*10+(STATE.streak>=7?50:0));
+  STATE.xp+=xp_earned;
+  STATE.total_minutes+=time;
+  STATE.total_days++;
+  // Streak logic
+  const last=STATE.last_study_date?new Date(STATE.last_study_date):null;
+  const yesterday=new Date(now); yesterday.setDate(yesterday.getDate()-1);
+  if(last&&last.toDateString()===yesterday.toDateString()){
+    STATE.streak++;
+  } else if(!last||last.toDateString()!==now.toDateString()){
+    if(last&&(now-last)>172800000) STATE.comeback_streak++;
+    STATE.streak=1;
+  }
+  STATE.max_streak=Math.max(STATE.max_streak,STATE.streak);
+  STATE.last_study_date=now.toISOString();
+  // Perfect streak check
+  if(score>=95) STATE.perfect_streak=(STATE.perfect_streak||0)+1; else STATE.perfect_streak=0;
+  // Advance day/week
+  STATE.current_day++;
+  if(STATE.current_day>7){STATE.current_day=1;STATE.current_week++;}
+  const phase=PHASES[STATE.current_phase];
+  if(phase&&STATE.current_week>phase.weeks){
+    STATE.current_phase=Math.min(STATE.current_phase+1,7);
+    STATE.current_week=1;
+    showToast(`🎉 ¡FASE ${STATE.current_phase} DESBLOQUEADA!`,'gold',5000);
+  }
+  // Check achievements
+  checkAchievements();
+  save();
+  // Feedback
+  showEmotionalFeedback(score);
+  updateHeader();
+  renderHoy();
+  document.getElementById('session-notes').value='';
+  showToast(`✅ Sesión registrada! +${xp_earned} XP`,'success');
+}
+
+function completeSession(){logSession();}
+
+function showEmotionalFeedback(score){
+  const feedbacks={
+    elite:{msg:"⚡ ¡MODO ÉLITE ACTIVADO! Rendimiento excepcional. Eres el 1% superior.",color:"#ffd700"},
+    great:{msg:"🌟 ¡Excelente trabajo! La consistencia te llevará lejos.",color:"#00ff88"},
+    good:{msg:"✅ Buen progreso. Cada sesión cuenta. Sigue adelante.",color:"#00d4ff"},
+    okay:{msg:"💪 Sesión completada. La perseverancia es la clave.",color:"#f4a261"},
+    struggle:{msg:"❤️ Los mejores programadores también tienen días difíciles. Mañana es nuevo.",color:"#ff4757"}
+  };
+  const key=score>=90&&STATE.streak>=7?'elite':score>=80?'great':score>=65?'good':score>=50?'okay':'struggle';
+  const f=feedbacks[key];
+  const el=document.getElementById('emotional-feedback');
+  if(el){el.textContent=f.msg;el.style.background=f.color+'22';el.style.color=f.color;el.style.borderLeft=`3px solid ${f.color}`;}
+}
+
+function checkAchievements(){
+  const unlocked=STATE.achievements_unlocked||[];
+  const conditions={
+    phoenix:STATE.comeback_streak>=3,
+    steel_mind:STATE.streak>=25,
+    marathon:(STATE.pomodoros_today||0)>=4,
+    centurion:STATE.total_days>=100,
+    algorithm:(STATE.cc_exercises_completed||[]).length>=10,
+    hacker:(STATE.otw_level||0)>=10,
+    consistent:(STATE.consistent_weeks||0)>=7,
+    speedrun:(STATE.perfect_streak||0)>=3,
+    aegis_master:STATE.current_phase>=7&&STATE.current_week>=256
+  };
+  ACHIEVEMENTS.forEach(a=>{
+    if(!unlocked.includes(a.id)&&conditions[a.id]){
+      STATE.achievements_unlocked.push(a.id);
+      STATE.xp+=a.xp;
+      showToast(`🏆 LOGRO: ${a.icon} ${a.title} (+${a.xp} XP)`,'gold',6000);
+    }
+  });
+}
+
+// ── HEADER UPDATE ──────────────────────────────────────────
+function updateHeader(){
+  const xd=document.getElementById('xp-display');
+  const sd=document.getElementById('streak-display');
+  if(xd) xd.textContent=`⭐ ${STATE.xp.toLocaleString()} XP`;
+  if(sd) sd.textContent=`🔥 ${STATE.streak} días`;
+}
+
+// ── PANEL ──────────────────────────────────────────────────
+function renderPanel(){
+  document.getElementById('stat-xp').textContent=STATE.xp.toLocaleString();
+  document.getElementById('stat-streak').textContent=STATE.streak+' 🔥';
+  document.getElementById('stat-days').textContent=STATE.total_days;
+  document.getElementById('stat-hours').textContent=Math.floor(STATE.total_minutes/60)+'h';
+  // Phase progress
+  const pl=document.getElementById('phase-progress-list');
+  if(pl){
+    pl.innerHTML='';
+    PHASES.forEach(p=>{
+      let pct=0;
+      if(p.id<STATE.current_phase) pct=100;
+      else if(p.id===STATE.current_phase) pct=Math.round((STATE.current_week/p.weeks)*100);
+      const div=document.createElement('div');
+      div.innerHTML=`<div class="progress-wrap"><div class="progress-label"><span style="font-size:12px">${p.name.split('—')[0].trim()}</span><span>${pct}%</span></div><div class="progress-bar"><div class="progress-fill fill-blue" style="width:${pct}%;background:${p.color}"></div></div></div>`;
+      pl.appendChild(div);
+    });
+  }
+  // Recent achievements
+  const ra=document.getElementById('recent-achievements');
+  if(ra){
+    const unlocked=STATE.achievements_unlocked||[];
+    if(unlocked.length===0){ra.innerHTML='<p style="color:var(--text-muted);font-size:13px">Completa sesiones para desbloquear logros.</p>';return;}
+    ra.innerHTML='';
+    ACHIEVEMENTS.filter(a=>unlocked.includes(a.id)).slice(-4).forEach(a=>{
+      const div=document.createElement('div');
+      div.className='achievement unlocked';
+      div.innerHTML=`<div class="achievement-icon">${a.icon}</div><div class="achievement-info"><h4>${a.title}</h4><p>${a.desc}</p></div><span class="achievement-xp">+${a.xp} XP</span>`;
+      ra.appendChild(div);
+    });
+  }
+  // History
+  const sh=document.getElementById('session-history');
+  if(sh){
+    const recent=STATE.sessions.slice(-10).reverse();
+    if(recent.length===0){sh.innerHTML='<p style="color:var(--text-muted);font-size:13px">Sin sesiones aún.</p>';return;}
+    sh.innerHTML='';
+    recent.forEach(s=>{
+      const d=new Date(s.date);
+      const div=document.createElement('div');
+      div.style.cssText='display:flex;align-items:center;gap:12px;padding:8px;background:var(--glass);border-radius:6px;font-size:12px';
+      const scoreColor=s.score>=80?'var(--accent-green)':s.score>=60?'var(--accent-gold)':'var(--accent-red)';
+      div.innerHTML=`<span style="color:var(--text-muted)">${d.toLocaleDateString('es-MX')}</span><span style="color:${scoreColor};font-weight:700;font-family:var(--font-mono)">${s.score}/100</span><span style="color:var(--text-secondary)">${s.time} min</span><span style="color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.notes||'—'}</span>`;
+      sh.appendChild(div);
+    });
+  }
+}
+
+// ── PLAN ───────────────────────────────────────────────────
+function renderPlan(){
+  const filter=document.getElementById('plan-filter').value;
+  const phases=filter==='all'?PHASES:PHASES.filter(p=>p.id===parseInt(filter));
+  const c=document.getElementById('plan-container');
+  if(!c) return;
+  c.innerHTML='';
+  phases.forEach(p=>{
+    let status='future',statusLabel='Pendiente';
+    if(p.id<STATE.current_phase){status='completed';statusLabel='✅ Completada';}
+    else if(p.id===STATE.current_phase){status='active';statusLabel='🔵 En Progreso';}
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.borderLeft=`4px solid ${p.color}`;
+    div.innerHTML=`
+      <div class="card-header">
+        <div>
+          <h3 style="font-size:17px;font-weight:800;color:${p.color};margin-bottom:4px">${p.name}</h3>
+          <span style="font-size:12px;color:var(--text-secondary)">${p.weeks} semanas (~${Math.round(p.weeks/4.3)} meses)</span>
+        </div>
+        <span class="tag ${status==='completed'?'tag-green':status==='active'?'tag-blue':'tag-purple'}">${statusLabel}</span>
+      </div>
+      <div class="grid-2" style="gap:16px;margin-top:12px">
+        <div>
+          <p class="label">📚 Cursos</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:4px">
+            ${p.courses.map(c=>`<li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px"><span style="color:${p.color}">▸</span>${c}</li>`).join('')}
+          </ul>
+        </div>
+        <div>
+          <p class="label">🛠️ Proyectos</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:4px">
+            ${p.projects.map(pr=>`<li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px"><span style="color:var(--accent-gold)">★</span>${pr}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${p.resources.map(r=>`<a href="${r}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent-blue);text-decoration:none;background:rgba(0,212,255,0.1);padding:3px 8px;border-radius:4px;border:1px solid rgba(0,212,255,0.2)">${r.replace('https://','').split('/')[0]}</a>`).join('')}
+      </div>`;
+    c.appendChild(div);
+  });
+}
+</script>
+
+<script>
+// ── POMODORO ENGINE ────────────────────────────────────────
+let pomoTimer=null,pomoSeconds=1500,pomoTotal=1500,pomoRunning=false,pomoMode='work',pomoSession=1;
+const CIRCUMFERENCE=326.7;
+
+function setPomoDuration(mins,mode='work'){
+  pomodoroReset();
+  pomoSeconds=mins*60; pomoTotal=mins*60; pomoMode=mode;
+  const lbl=document.getElementById('pomo-mode-label');
+  if(lbl) lbl.textContent=mode==='work'?'🍅 Trabajo':'🧘 Descanso';
+  updatePomoDisplay();
+}
+
+function pomodoroToggle(){
+  if(pomoRunning){clearInterval(pomoTimer);pomoRunning=false;document.getElementById('pomo-start-btn').textContent='▶ Continuar';}
+  else{pomoRunning=true;document.getElementById('pomo-start-btn').textContent='⏸ Pausar';pomoTimer=setInterval(pomoTick,1000);}
+  suggestPomoPlaylist();
+}
+
+function pomoTick(){
+  pomoSeconds--;
+  updatePomoDisplay();
+  if(pomoSeconds<=0){
+    clearInterval(pomoTimer); pomoRunning=false;
+    if(pomoMode==='work'){
+      STATE.pomodoros_today=(STATE.pomodoros_today||0)+1;
+      STATE.pomodoro_minutes_today=(STATE.pomodoro_minutes_today||0)+Math.round(pomoTotal/60);
+      document.getElementById('pomo-count-today').textContent=STATE.pomodoros_today;
+      document.getElementById('pomo-mins-today').textContent=STATE.pomodoro_minutes_today;
+      logPomoHistory('🍅 Pomodoro completado — '+Math.round(pomoTotal/60)+' min');
+      showToast('🍅 ¡Pomodoro completado! Toma un descanso.','success');
+      STATE.xp+=25; checkAchievements(); save(); updateHeader();
+      setPomoDuration(5,'break');
+    } else {
+      showToast('🔔 ¡Descanso terminado! A trabajar.','info');
+      setPomoDuration(25,'work'); pomoSession++;
+    }
+    document.getElementById('pomo-start-btn').textContent='▶ Iniciar';
+  }
+}
+
+function updatePomoDisplay(){
+  const m=Math.floor(pomoSeconds/60).toString().padStart(2,'0');
+  const s=(pomoSeconds%60).toString().padStart(2,'0');
+  const d=document.getElementById('pomo-display');
+  if(d) d.textContent=`${m}:${s}`;
+  const pct=1-(pomoSeconds/pomoTotal);
+  const c=document.getElementById('pomo-circle');
+  if(c) c.style.strokeDashoffset=CIRCUMFERENCE*(1-pct);
+  const sl=document.getElementById('pomo-session-label');
+  if(sl) sl.textContent=`Sesión ${pomoSession}/4`;
+}
+
+function pomodoroReset(){
+  clearInterval(pomoTimer); pomoRunning=false;
+  pomoSeconds=pomoTotal; updatePomoDisplay();
+  document.getElementById('pomo-start-btn').textContent='▶ Iniciar';
+}
+
+function logPomoHistory(msg){
+  const h=document.getElementById('pomo-history');
+  if(!h) return;
+  const t=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  const div=document.createElement('div');
+  div.style.cssText='display:flex;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)';
+  div.innerHTML=`<span style="color:var(--text-muted)">${t}</span><span>${msg}</span>`;
+  if(h.firstChild&&h.firstChild.textContent==='Sin sesiones aún.') h.innerHTML='';
+  h.insertBefore(div,h.firstChild);
+}
+
+function suggestPomoPlaylist(){
+  const score=(STATE.sessions.slice(-1)[0]||{score:75}).score;
+  const hour=new Date().getHours();
+  let key=score>=85?'high_energy':score<50||hour>=21?'recovery':'deep_focus';
+  const pl=PLAYLISTS[key];
+  const el=document.getElementById('pomo-playlist-suggestion');
+  if(el&&pl) el.innerHTML=`<strong>${pl.icon} ${pl.name}</strong><br><span style="font-size:11px">${pl.science}</span><br><a href="${pl.tracks[0].url}" target="_blank" class="btn btn-secondary btn-sm" style="margin-top:8px;display:inline-flex">▶ Abrir Playlist</a>`;
+}
+
+// ── CODE COMBAT ────────────────────────────────────────────
+let currentCCExercise=null;
+
+function renderCodeCombat(){
+  const filter=document.getElementById('cc-filter').value;
+  const exs=filter==='all'?CC_EXERCISES:CC_EXERCISES.filter(e=>(e.category===filter)||(e.categoria===filter));
+  const grid=document.getElementById('cc-exercise-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+  exs.forEach(ex=>{
+    const done=(STATE.cc_exercises_completed||[]).includes(ex.id);
+    const diffColors={basic:'tag-green',intermediate:'tag-blue',advanced:'tag-gold',expert:'tag-red','🟢':'tag-green','🟡':'tag-blue','🟠':'tag-gold','🔴':'tag-red'};
+    const catIcons={algorithms:'🧮',cybersecurity:'🔐',data_structures:'🗃️',ai:'🤖',Algoritmos:'🧮',Logica:'🧩',Ciberseguridad:'🔐',Sistemas:'⚙️'};
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.cssText=`cursor:pointer;opacity:${done?'0.7':'1'};border-color:${done?'var(--accent-green)':'var(--border)'}`;
+    const _d=ex.diff||ex.difficulty||'?'; const _dc=diffColors[_d]||'tag-blue';
+    const _cat=catIcons[ex.categoria]||catIcons[ex.category]||'💻';
+    const _badge=done?'<span class="tag tag-green">✅ Completado</span>':'<span class="tag '+_dc+'">'+_d+'</span>';
+    div.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <span style="font-size:20px">${_cat}</span>
+        ${_badge}
+      </div>
+      <h4 style="font-size:14px;font-weight:700;margin-bottom:4px">${ex.title}</h4>
+      <p style="font-size:11px;color:var(--text-secondary)">${ex.desc.substring(0,60)}...</p>
+      <button class="btn btn-secondary btn-sm" style="margin-top:10px;width:100%" onclick="openCCExercise(${ex.id})">
+        ${done?'📖 Revisar':'▶ Resolver'}
+      </button>`;
+    grid.appendChild(div);
+  });
+}
+
+function openCCExercise(id){
+  const ex=CC_EXERCISES.find(e=>e.id===id);
+  if(!ex) return;
+  currentCCExercise=ex;
+  const panel=document.getElementById('cc-exercise-panel');
+  document.getElementById('cc-exercise-title').textContent=`${ex.title} — ${(ex.diff||ex.difficulty||'').toUpperCase()}`;
+  document.getElementById('cc-exercise-desc').textContent=ex.desc;
+  document.getElementById('cc-hint').textContent=ex.hint;
+  const tc=document.getElementById('cc-test-cases');
+  tc.innerHTML='<span style="font-size:11px;color:var(--text-secondary);margin-right:4px">Tests:</span>';
+  ex.tests.forEach(t=>{
+    const s=document.createElement('span');
+    s.className='tag tag-purple';
+    s.textContent=`Input: ${t.i} → ${t.e}`;
+    tc.appendChild(s);
+  });
+  document.getElementById('cc-code-input').value='';
+  document.getElementById('cc-test-result').style.display='none';
+  panel.style.display='block';
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function runCCTest(){
+  const code=document.getElementById('cc-code-input').value;
+  const r=document.getElementById('cc-test-result');
+  r.style.display='block';
+  if(!code.trim()){r.textContent='⚠️ Escribe tu solución primero.';r.style.color='var(--accent-orange)';return;}
+  r.style.color='var(--accent-green)';
+  r.textContent='✅ Simulación: Los tests se ejecutarían aquí. En un entorno Python completo, se validarían los casos de prueba.\n\nRecuerda: puedes pegar tu código en https://replit.com o en tu terminal local para validarlo.';
+}
+
+function markCCComplete(){
+  if(!currentCCExercise) return;
+  if(!STATE.cc_exercises_completed) STATE.cc_exercises_completed=[];
+  if(!STATE.cc_exercises_completed.includes(currentCCExercise.id)){
+    STATE.cc_exercises_completed.push(currentCCExercise.id);
+    STATE.xp+=100; checkAchievements(); save(); updateHeader();
+    showToast(`⚔️ Ejercicio completado! +100 XP`,'success');
+    renderCodeCombat();
+  }
+}
+
+// ── ELITE GOALS ────────────────────────────────────────────
+function renderEliteGoals(){
+  const list=document.getElementById('elite-goals-list');
+  if(!list) return;
+  list.innerHTML='';
+  ELITE_GOALS.forEach(g=>{
+    const done=(STATE.elite_goals_completed||[]).includes(g.id);
+    const active=!done&&STATE.current_phase*1.5>=g.year;
+    const div=document.createElement('div');
+    div.className=`elite-goal ${done?'completed':active?'active':''}`;
+    div.innerHTML=`
+      <div class="goal-num ${done?'done':active?'current':'future'}">${done?'✓':g.id}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <h3 style="font-size:15px;font-weight:700">${g.title}</h3>
+          <span class="tag tag-purple" style="font-size:10px">Año ${g.year}</span>
+          ${done?`<span class="tag tag-green">${g.reward}</span>`:''}
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary)">${g.desc}</p>
+      </div>
+      ${!done?`<button class="btn btn-success btn-sm" onclick="completeEliteGoal(${g.id})">✅ Completar</button>`:'<span style="font-size:20px">🏆</span>'}`;
+    list.appendChild(div);
+  });
+}
+
+function completeEliteGoal(id){
+  if(!STATE.elite_goals_completed) STATE.elite_goals_completed=[];
+  if(!STATE.elite_goals_completed.includes(id)){
+    STATE.elite_goals_completed.push(id);
+    const g=ELITE_GOALS.find(e=>e.id===id);
+    STATE.xp+=500; save(); updateHeader(); renderEliteGoals();
+    showToast(`🏆 HITO ÉLITE: ${g.reward} (+500 XP)`,'gold',6000);
+  }
+}
+
+// ── AI ACADEMY ─────────────────────────────────────────────
+function renderAIAcademy(){
+  const list=document.getElementById('ai-academy-list');
+  if(!list) return;
+  list.innerHTML='';
+  AI_ACADEMY.forEach(lvl=>{
+    const unlocked=(STATE.ai_levels_unlocked||[0]).includes(lvl.id);
+    const done=(STATE.ai_levels_unlocked||[]).includes(lvl.id+1)||(STATE.ai_levels_unlocked||[]).length>lvl.id;
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.opacity=unlocked?'1':'0.5';
+    div.innerHTML=`
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:28px">${lvl.icon}</span>
+          <div>
+            <h3 style="font-size:16px;font-weight:800">Nivel ${lvl.id}: ${lvl.name}</h3>
+            <span style="font-size:12px;color:var(--text-secondary)">${lvl.weeks} semanas • ${lvl.topics.length} temas</span>
+          </div>
+        </div>
+        ${unlocked?`<button class="btn btn-success btn-sm" onclick="completeAILevel(${lvl.id})">✅ Completar</button>`:'<span class="tag tag-purple">🔒 Bloqueado</span>'}
+      </div>
+      <div class="grid-2" style="gap:12px;margin-top:12px">
+        <div><p class="label">Temas</p><ul style="list-style:none">${lvl.topics.map(t=>`<li style="font-size:12px;color:var(--text-secondary);padding:2px 0">▸ ${t}</li>`).join('')}</ul></div>
+        <div>
+          <p class="label">Proyecto Final</p>
+          <p style="font-size:13px;color:var(--accent-blue)">${lvl.project}</p>
+          <p class="label" style="margin-top:8px">Recursos</p>
+          ${lvl.resources.map(r=>`<p style="font-size:11px;color:var(--text-secondary)">→ ${r}</p>`).join('')}
+        </div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function completeAILevel(id){
+  if(!STATE.ai_levels_unlocked) STATE.ai_levels_unlocked=[0];
+  if(!STATE.ai_levels_unlocked.includes(id+1)){
+    STATE.ai_levels_unlocked.push(id+1);
+    STATE.xp+=300; save(); updateHeader(); renderAIAcademy();
+    showToast(`🤖 Nivel ${id+1} de AI Academy desbloqueado! +300 XP`,'success');
+  }
+}
+
+// ── COUNCIL OF MASTERS ─────────────────────────────────────
+function renderCouncil(){
+  const grid=document.getElementById('council-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+  MASTERS.forEach((m,i)=>{
+    const div=document.createElement('div');
+    div.className='master-card';
+    div.onclick=()=>consultMaster(i);
+    div.innerHTML=`
+      <div class="master-avatar">${m.icon}</div>
+      <div class="master-name">${m.name}</div>
+      <div class="master-role">${m.role}</div>
+      <div class="master-wisdom">"${m.wisdom.substring(0,80)}..."</div>
+      <div style="margin-top:8px"><span class="tag tag-purple" style="font-size:10px">${m.for_when}</span></div>`;
+    grid.appendChild(div);
+  });
+}
+
+function consultMaster(i){
+  const m=MASTERS[i];
+  const box=document.getElementById('master-consultation');
+  document.getElementById('master-consult-title').textContent=`${m.icon} ${m.name} — ${m.role}`;
+  document.getElementById('master-consult-wisdom').textContent=`"${m.wisdom}"`;
+  box.style.display='block';
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+function consultRandomMaster(){consultMaster(Math.floor(Math.random()*MASTERS.length));}
+
+// ── AUDIO ENGINE ───────────────────────────────────────────
+let activePl=null;
+function renderAudio(){
+  const grid=document.getElementById('playlist-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+  Object.entries(PLAYLISTS).forEach(([key,pl])=>{
+    const div=document.createElement('div');
+    div.className=`playlist-card${activePl===key?' active':''}`;
+    div.onclick=()=>selectPlaylist(key);
+    div.innerHTML=`
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:28px">${pl.icon}</span>
+        <div><div class="playlist-mode">${pl.name}</div><div style="font-size:11px;color:var(--text-secondary)">${pl.best_for}</div></div>
+      </div>
+      <div class="playlist-science" style="font-size:11px;color:var(--text-secondary);border-left:2px solid var(--accent-blue);padding-left:8px">${pl.science}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function selectPlaylist(key){
+  activePl=key;
+  const pl=PLAYLISTS[key];
+  const detail=document.getElementById('playlist-detail');
+  detail.style.display='block';
+  document.getElementById('playlist-detail-name').textContent=`${pl.icon} ${pl.name}`;
+  document.getElementById('playlist-detail-science').textContent=pl.science;
+  const tracks=document.getElementById('playlist-tracks');
+  tracks.innerHTML='';
+  pl.tracks.forEach(t=>{
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:10px;padding:10px;background:var(--glass);border-radius:8px';
+    div.innerHTML=`<span>🎵</span><span style="flex:1;font-size:13px">${t.name}</span><a href="${t.url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">▶ Abrir</a>`;
+    tracks.appendChild(div);
+  });
+  detail.scrollIntoView({behavior:'smooth'});
+  renderAudio();
+}
+</script>
+
+<script>
+// ── CC SYNC ────────────────────────────────────────────────
+function renderCCSync(){
+  // Global progress
+  const total_completed=Object.values(STATE.cc_levels_completed||{}).reduce((a,b)=>a+b,0);
+  const total_levels=150;
+  document.getElementById('cc-global-progress').textContent=`${total_completed} / ${total_levels}`;
+  const bar=document.getElementById('cc-global-bar');
+  if(bar) bar.style.width=Math.round((total_completed/total_levels)*100)+'%';
+  // Current world
+  let currentWorld=CC_WORLDS[0];
+  for(const w of CC_WORLDS){if((STATE.cc_levels_completed||{})[w.id]<w.total) {currentWorld=w;break;}}
+  document.getElementById('cc-current-world').textContent=`${currentWorld.icon} ${currentWorld.name}`;
+  document.getElementById('cc-world-progress-text').textContent=`Nivel ${(STATE.cc_levels_completed||{})[currentWorld.id]||0} / ${currentWorld.total}`;
+  // Worlds grid
+  const wg=document.getElementById('cc-worlds-grid');
+  if(wg){
+    wg.innerHTML='';
+    CC_WORLDS.forEach(w=>{
+      const done=(STATE.cc_levels_completed||{})[w.id]||0;
+      const pct=Math.round((done/w.total)*100);
+      const div=document.createElement('div');
+      div.className='cc-world';
+      div.innerHTML=`
+        <div class="cc-world-bg">${w.icon}</div>
+        <div style="position:relative">
+          <div style="font-size:20px;margin-bottom:6px">${w.icon}</div>
+          <h4 style="font-size:14px;font-weight:700">${w.name}</h4>
+          <p style="font-size:11px;color:var(--text-secondary);margin-bottom:10px">${w.desc}</p>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Progreso</span><span>${done}/${w.total}</span></div>
+            <div class="progress-bar"><div class="progress-fill fill-green" style="width:${pct}%"></div></div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn btn-secondary btn-sm" onclick="updateCCWorld(${w.id},-1)">-1</button>
+            <button class="btn btn-primary btn-sm" onclick="updateCCWorld(${w.id},1)">+1 Nivel</button>
+          </div>
+        </div>`;
+      wg.appendChild(div);
+    });
+  }
+  // Checklist
+  const cl=document.getElementById('cc-checklist');
+  if(cl){
+    const items=[
+      'Crear cuenta en CodeCombat.com',
+      'Configurar Python como lenguaje principal',
+      'Completar tutorial inicial de CodeCombat',
+      'Vincular progreso con este sistema AEGIS (manual)',
+      'Completar World 1: Dungeon of Basics (40 niveles)',
+      'Completar World 2: Forest of Algorithms (30 niveles)',
+      'Completar World 3: Castle of Data Structures (30 niveles)',
+      'Completar World 4: Cybervault (30 niveles)',
+      'Completar World 5: AI Nexus (20 niveles)'
+    ];
+    cl.innerHTML='';
+    items.forEach((item,i)=>{
+      const key='cc-check-'+i;
+      const done=STATE[key];
+      const div=document.createElement('div');
+      div.style.cssText='display:flex;align-items:center;gap:10px;padding:10px;background:var(--glass);border-radius:8px';
+      div.innerHTML=`<input type="checkbox" id="${key}" ${done?'checked':''} style="width:16px;height:16px;accent-color:var(--accent-green)"><label for="${key}" style="font-size:13px;${done?'text-decoration:line-through;color:var(--text-muted)':''}">${item}</label>`;
+      div.querySelector('input').addEventListener('change',e=>{STATE[key]=e.target.checked;save();renderCCSync();});
+      cl.appendChild(div);
+    });
+  }
+}
+
+function updateCCWorld(worldId,delta){
+  if(!STATE.cc_levels_completed) STATE.cc_levels_completed={};
+  const w=CC_WORLDS.find(x=>x.id===worldId);
+  if(!w) return;
+  const current=STATE.cc_levels_completed[worldId]||0;
+  STATE.cc_levels_completed[worldId]=Math.max(0,Math.min(w.total,current+delta));
+  if(delta>0){STATE.xp+=10;updateHeader();}
+  save(); renderCCSync();
+}
+
+// ── NOTEBOOKLM SOURCES ─────────────────────────────────────
+const NLM_SOURCES={
+  cs_fundamentals:[
+    {name:"CS50x 2026",url:"https://cs50.harvard.edu/x/",type:"Course"},
+    {name:"CS50P Python",url:"https://cs50.harvard.edu/python/",type:"Course"},
+    {name:"CS50W Web Programming",url:"https://cs50.harvard.edu/web/",type:"Course"},
+    {name:"MIT 6.001 SICP",url:"https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/",type:"Course"},
+    {name:"Nand2Tetris",url:"https://www.nand2tetris.org/",type:"Course"}
+  ],
+  cybersecurity:[
+    {name:"OWASP Top 10",url:"https://owasp.org/www-project-top-ten/",type:"Reference"},
+    {name:"OverTheWire Bandit",url:"https://overthewire.org/wargames/bandit/",type:"Practice"},
+    {name:"TryHackMe",url:"https://tryhackme.com/",type:"Platform"},
+    {name:"Hack The Box",url:"https://www.hackthebox.com/",type:"Platform"},
+    {name:"PortSwigger Web Security Academy",url:"https://portswigger.net/web-security",type:"Course"}
+  ],
+  ai_ml:[
+    {name:"fast.ai Practical Deep Learning",url:"https://www.fast.ai/",type:"Course"},
+    {name:"Stanford CS229 Machine Learning",url:"https://cs229.stanford.edu/",type:"Course"},
+    {name:"Hugging Face NLP Course",url:"https://huggingface.co/learn/nlp-course/",type:"Course"},
+    {name:"arXiv CS papers",url:"https://arxiv.org/list/cs/recent",type:"Papers"}
+  ],
+  mathematics:[
+    {name:"Khan Academy Álgebra",url:"https://es.khanacademy.org/math/algebra",type:"Course"},
+    {name:"MIT 18.06 Linear Algebra",url:"https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",type:"Course"},
+    {name:"3Blue1Brown Essence of Linear Algebra",url:"https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab",type:"Video"}
+  ]
+};
+
+function renderNotebookLM(){
+  const sl=document.getElementById('sources-list');
+  if(!sl) return;
+  sl.innerHTML='';
+  const catIcons={cs_fundamentals:'💻',cybersecurity:'🔐',ai_ml:'🤖',mathematics:'📐'};
+  const catNames={cs_fundamentals:'Fundamentos CS',cybersecurity:'Ciberseguridad',ai_ml:'IA & ML',mathematics:'Matemáticas'};
+  Object.entries(NLM_SOURCES).forEach(([cat,sources])=>{
+    const div=document.createElement('div');
+    div.innerHTML=`<h4 style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--accent-blue)">${catIcons[cat]} ${catNames[cat]}</h4>`;
+    sources.forEach(s=>{
+      const p=document.createElement('div');
+      p.style.cssText='display:flex;align-items:center;gap:8px;padding:6px;border-radius:6px;border:1px solid var(--border);margin-bottom:4px';
+      p.innerHTML=`<span class="tag tag-purple" style="flex-shrink:0">${s.type}</span><a href="${s.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent-blue);text-decoration:none;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</a>`;
+      div.appendChild(p);
+    });
+    sl.appendChild(div);
+  });
+  // Generate prompt
+  const allSources=Object.values(NLM_SOURCES).flat();
+  const prompt=`# Libro AEGIS — Fuentes para NotebookLM\n\nAgrega las siguientes ${allSources.length} fuentes a tu NotebookLM para crear tu libro de estudio personalizado:\n\n${Object.entries(NLM_SOURCES).map(([cat,sources])=>`## ${catNames[cat]}\n${sources.map(s=>`- ${s.name}: ${s.url}`).join('\n')}`).join('\n\n')}\n\n## Prompts sugeridos para NotebookLM:\n1. "Crea un plan de estudio semanal para un principiante en CS que quiere especializarse en ciberseguridad"\n2. "¿Cuáles son los prerequisitos para aprender machine learning desde cero?"\n3. "Genera un quiz de 10 preguntas sobre algoritmos básicos"\n4. "Explica la diferencia entre SQL injection y XSS de forma simple"\n5. "¿Cómo estructuro mi aprendizaje de IA siendo autodidacta?"`;
+  const ta=document.getElementById('notebooklm-prompt');
+  if(ta) ta.value=prompt;
+  const catNames2={cs_fundamentals:'Fundamentos CS',cybersecurity:'Ciberseguridad',ai_ml:'IA & ML',mathematics:'Matemáticas'};
+}
+
+function copyNotebookPrompt(){
+  const ta=document.getElementById('notebooklm-prompt');
+  if(ta){navigator.clipboard.writeText(ta.value).then(()=>showToast('📋 Prompt copiado al portapapeles','success'));}
+}
+
+// ── MISSION GENERATOR ──────────────────────────────────────
+function generateFullMission(){
+  const info=getTodayInfo();
+  const phase=info.phase||PHASES[0];
+  const brief=`🎯 MISSION BRIEF — DÍA ${STATE.current_day} | SEMANA ${STATE.current_week} | FASE ${STATE.current_phase}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 OBJETIVO PRINCIPAL: ${phase.courses[STATE.current_week%phase.courses.length]||phase.courses[0]}
+📌 PROYECTO: ${phase.projects[Math.floor(STATE.current_week/4)%phase.projects.length]||phase.projects[0]}
+
+⚡ TAREAS DE HOY:
+${info.tasks.map((t,i)=>`${i+1}. ${t.text}`).join('\n')}
+
+📊 ESTADO ACTUAL:
+- XP Total: ${STATE.xp.toLocaleString()}
+- Racha: ${STATE.streak} días
+- Días totales: ${STATE.total_days}
+- Fase: ${STATE.current_phase}/7
+
+💡 CONSEJO DEL DÍA:
+"${MASTERS[STATE.current_day%MASTERS.length].wisdom}"
+— ${MASTERS[STATE.current_day%MASTERS.length].name}
+
+🎵 PLAYLIST RECOMENDADA: ${PLAYLISTS.deep_focus.name}
+
+Recuerda: Cada sesión de estudio es una inversión en tu futuro. ¡Ejecuta!`;
+
+  document.getElementById('mission-output').innerHTML=brief.split('\n').map(l=>`<p style="margin:2px 0">${l||'&nbsp;'}</p>`).join('');
+
+  const geminiPrompt=`Actúa como mi tutor personal de programación y ciberseguridad. Estoy en el día ${STATE.current_day} de mi plan de estudio AEGIS (${STATE.total_days} días totales de estudio). Actualmente estudio: ${phase.courses[0]}. Mi racha es de ${STATE.streak} días consecutivos.
+
+Necesito que me:
+1. Des una explicación de 5 minutos sobre el tema principal de hoy
+2. Me propongas 3 ejercicios prácticos de dificultad creciente
+3. Me evalúes con una pregunta de comprensión
+4. Me des feedback motivacional adaptado a mi progreso
+
+Tema de hoy: ${phase.courses[STATE.current_week%phase.courses.length]||phase.courses[0]}
+Nivel actual: ${phase.name}`;
+
+  document.getElementById('gemini-prompt-output').value=geminiPrompt;
+  showToast('🎯 Misión generada correctamente','success');
+}
+
+async function queryOllama(){
+  const model=document.getElementById('ollama-model').value||'llama3.2';
+  const question=document.getElementById('ollama-question').value;
+  if(!question){showToast('Escribe una pregunta primero','error');return;}
+  const res=document.getElementById('ollama-response');
+  res.style.display='block';
+  res.textContent='⏳ Consultando Ollama en localhost:11434...';
+  try{
+    const r=await fetch('http://localhost:11434/api/generate',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model,prompt:question,stream:false}),signal:AbortSignal.timeout(30000)
+    });
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+    res.textContent=data.response||'Sin respuesta';
+  }catch(e){
+    res.textContent=`⚠️ No se pudo conectar con Ollama. Asegúrate de que esté ejecutándose:\n\n$ ollama serve\n$ ollama pull ${model}\n\nError: ${e.message}`;
+  }
+}
+
+function copyEl(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const text=el.value||el.textContent;
+  navigator.clipboard.writeText(text).then(()=>showToast('📋 Copiado','success'));
+}
+
+function exportData(){
+  const json=JSON.stringify(STATE,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`aegis-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📤 Datos exportados','success');
+}
+
+function resetConfirm(){
+  if(confirm('⚠️ ¿Resetear TODOS los datos? Esta acción no se puede deshacer.')){
+    localStorage.removeItem('aegis_state');
+    STATE={...DEFAULT_STATE};
+    save(); location.reload();
+  }
+}
+
+// ── INIT ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  updateHeader();
+  renderHoy();
+});
+
+window.addEventListener('beforeunload',()=>save());
+</script>
+
+<script>
+// ── AGENTE 3: PSICÓLOGO — CalibrationEngine (Bayesian Knowledge Tracing) ──
+const CalibrationEngine = {
+  // BKT Parameters per skill
+  defaults: { p_known:0.1, p_learn:0.4, p_forget:0.05, p_guess:0.2, p_slip:0.1 },
+
+  getSkill(skillId) {
+    if (!STATE.skills) STATE.skills = {};
+    if (!STATE.skills[skillId]) STATE.skills[skillId] = {...this.defaults};
+    return STATE.skills[skillId];
+  },
+
+  // Update mastery after an answer (correct=true/false)
+  update(skillId, correct) {
+    const s = this.getSkill(skillId);
+    const p_correct_if_known   = 1 - s.p_slip;
+    const p_correct_if_unknown = s.p_guess;
+    const p_wrong_if_known     = s.p_slip;
+    const p_wrong_if_unknown   = 1 - s.p_guess;
+
+    const posterior = correct
+      ? (s.p_known * p_correct_if_known) /
+        (s.p_known * p_correct_if_known + (1-s.p_known) * p_correct_if_unknown)
+      : (s.p_known * p_wrong_if_known) /
+        (s.p_known * p_wrong_if_known + (1-s.p_known) * p_wrong_if_unknown);
+
+    // Learning transition
+    s.p_known = posterior + (1 - posterior) * s.p_learn;
+    s.p_known = Math.min(0.99, Math.max(0.01, s.p_known));
+    save();
+    return s.p_known;
+  },
+
+  getMastery(skillId) {
+    return Math.round(this.getSkill(skillId).p_known * 100);
+  },
+
+  shouldAdvance(skillId) {
+    return this.getMastery(skillId) >= 85;
+  },
+
+  // Adapts study duration based on score + streak
+  getAdaptiveDuration(base_mins, score, streak) {
+    let d = base_mins;
+    if (score >= 90) d = Math.min(d + 10, 50);
+    else if (score < 60) d = Math.max(d - 10, 20);
+    if (streak >= 7) d = Math.min(d + 5, 50);
+    return d;
+  },
+
+  // Returns adjustment recommendation based on fatigue
+  getFatigueAdjustment(sessions_today, avg_score) {
+    if (sessions_today >= 4 || avg_score < 45)
+      return { action:"REST", message:"⛔ Necesitas descanso. Toma 30 min y come algo.", color:"var(--accent-red)" };
+    if (sessions_today >= 3 || avg_score < 60)
+      return { action:"LIGHTER", message:"🔶 Modo ligero. Haz repaso en vez de material nuevo.", color:"var(--accent-orange)" };
+    if (avg_score >= 88)
+      return { action:"CHALLENGE", message:"⚡ Rendimiento alto. Sube la dificultad o añade un ejercicio.", color:"var(--accent-green)" };
+    return { action:"NORMAL", message:"✅ Carga óptima. Continúa con el plan.", color:"var(--accent-blue)" };
+  },
+
+  // Returns current skill name based on phase/week
+  getCurrentSkill() {
+    const phase = PHASES[Math.min(STATE.current_phase, 7)];
+    if (!phase) return "general";
+    const idx = STATE.current_week % phase.courses.length;
+    return `phase${STATE.current_phase}_course${idx}`;
+  },
+
+  // Full calibration report for UI
+  getReport() {
+    const skillId = this.getCurrentSkill();
+    const mastery = this.getMastery(skillId);
+    const sessions_today = (STATE.sessions||[]).filter(s => {
+      return new Date(s.date).toDateString() === new Date().toDateString();
+    }).length;
+    const recent = (STATE.sessions||[]).slice(-5);
+    const avg_score = recent.length ? Math.round(recent.reduce((a,b)=>a+b.score,0)/recent.length) : 75;
+    const fatigue = this.getFatigueAdjustment(sessions_today, avg_score);
+    const adaptive_duration = this.getAdaptiveDuration(25, avg_score, STATE.streak||0);
+    const advance = this.shouldAdvance(skillId);
+    return { mastery, sessions_today, avg_score, fatigue, adaptive_duration, advance, skillId };
+  }
+};
+
+// ── CALIBRATION PANEL (injected into Hoy tab) ─────────────
+function renderCalibrationPanel() {
+  const report = CalibrationEngine.getReport();
+  const el = document.getElementById('calibration-panel');
+  if (!el) return;
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+      <div style="text-align:center">
+        <div style="font-size:28px;font-weight:900;font-family:var(--font-mono);color:var(--accent-blue)">${report.mastery}%</div>
+        <div style="font-size:11px;color:var(--text-secondary)">Dominio BKT</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:28px;font-weight:900;font-family:var(--font-mono);color:var(--accent-gold)">${report.adaptive_duration}min</div>
+        <div style="font-size:11px;color:var(--text-secondary)">Duración Adaptada</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:28px;font-weight:900;font-family:var(--font-mono);color:var(--accent-green)">${report.avg_score}/100</div>
+        <div style="font-size:11px;color:var(--text-secondary)">Score Promedio (5)</div>
+      </div>
+    </div>
+    <div style="padding:10px;border-radius:8px;background:${report.fatigue.color}22;border-left:3px solid ${report.fatigue.color};font-size:13px">
+      ${report.fatigue.message}
+    </div>
+    ${report.advance ? '<div style="margin-top:8px;padding:8px;background:rgba(0,255,136,0.1);border-radius:6px;font-size:12px;color:var(--accent-green)">🎓 ¡Maestría alcanzada! Considera avanzar al siguiente tema.</div>' : ''}
+    <div style="margin-top:8px">
+      <div class="progress-label" style="font-size:11px"><span>Progreso de dominio (BKT)</span><span>${report.mastery}%</span></div>
+      <div class="progress-bar"><div class="progress-fill fill-blue" style="width:${report.mastery}%"></div></div>
+    </div>
+  `;
+}
+
+// Patch logSession to also run calibration
+const _origLogSession = logSession;
+window.logSession = function() {
+  _origLogSession();
+  // BKT update: score >= 70 counts as correct
+  const score = parseInt(document.getElementById('session-score')?.value||75);
+  CalibrationEngine.update(CalibrationEngine.getCurrentSkill(), score >= 70);
+  renderCalibrationPanel();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Inject calibration panel after feedback-card in Hoy tab
+  const feedbackCard = document.getElementById('feedback-card');
+  if (feedbackCard) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.style.marginTop = '16px';
+    div.innerHTML = '<div class="card-header"><span class="card-title">🧠 Motor de Calibración (BKT)</span><span class="tag tag-purple">Bayesian Knowledge Tracing</span></div><div id="calibration-panel"></div>';
+    feedbackCard.after(div);
+  }
+  renderCalibrationPanel();
+});
+</script>
+
+</body>
+</html>

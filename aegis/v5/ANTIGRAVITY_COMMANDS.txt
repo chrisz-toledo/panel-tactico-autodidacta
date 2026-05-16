@@ -1,0 +1,149 @@
+# Google Antigravity IDE - Comandos para Agente Navegador
+# Fecha: 2026-05-16
+# Objetivo: Integrar 11 fuentes a Notebook LM
+
+---
+
+## 🚀 COMANDO BATCH PARA ANTIGRAVITY
+
+```antigravity
+BATCH_IMPORT_TO_NOTEBOOK_LM {
+  config: {
+    tool: "notebook_lm",
+    source: "elhacker_info_plus_external",
+    total_sources: 11,
+    mode: "agentic_search_and_add"
+  },
+  
+  sources: [
+    # PRIORIDAD CRÍTICA - Seguridad Año 5-6
+    {
+      search: "Zero Point Security Red Team Ops 2025 training course",
+      expected_url: "training.zeropointsecurity.co.uk",
+      add_to_notebook_lm: true,
+      tags: ["red-team", "c2", "cobalt-strike", "adcs"],
+      priority: 1
+    },
+    {
+      search: "Advanced Malware Analysis Redux reverse engineering x86",
+      expected_url: "elhacker.info OR malware analysis course",
+      add_to_notebook_lm: true,
+      tags: ["malware-analysis", "reverse-engineering", "assembly"],
+      priority: 1
+    },
+    {
+      search: "Active Directory Exploitation Lateral Movement Black-Box pentesting",
+      expected_url: "elhacker.info OR AD course",
+      add_to_notebook_lm: true,
+      tags: ["active-directory", "pentesting", "bloodhound"],
+      priority: 1
+    },
+    {
+      search: "Active Directory Pentesting Kali Linux RedTeam PowerShell Empire",
+      expected_url: "elhacker.info OR AD course",
+      add_to_notebook_lm: true,
+      tags: ["active-directory", "kali", "red-team", "powershell"],
+      priority: 1
+    },
+    {
+      search: "Ultimate Ethical Hacking Penetration Testing UEH assembly shellcoding",
+      expected_url: "elhacker.info OR pentesting course",
+      add_to_notebook_lm: true,
+      tags: ["pentesting", "exploit-dev", "shellcoding", "fuzzing"],
+      priority: 1
+    },
+    
+    # PRIORIDAD CRÍTICA - Cloud Año 5-6
+    {
+      search: "AWS Solutions Architect Professional SAA-C03 certification",
+      expected_url: "aws.amazon.com/certification",
+      add_to_notebook_lm: true,
+      tags: ["aws", "cloud-architecture", "certification"],
+      priority: 1
+    },
+    {
+      search: "AWS Cloud Red Team Specialist CARTS Altered Security",
+      expected_url: "alteredsecurity.com OR AWS course",
+      add_to_notebook_lm: true,
+      tags: ["aws", "cloud-red-team", "iam", "privilege-escalation"],
+      priority: 1
+    },
+    {
+      search: "Altered Security CARTP Azure Red Team Professional certification",
+      expected_url: "alteredsecurity.com/azure-red-team",
+      add_to_notebook_lm: true,
+      tags: ["azure", "cloud-red-team", "azure-ad"],
+      priority: 1
+    },
+    
+    # PRIORIDAD CRÍTICA - IA Año 7-8
+    {
+      search: "Zero To Mastery LangChain LLM Apps course",
+      expected_url: "zerotomastery.io/courses/langchain",
+      add_to_notebook_lm: true,
+      tags: ["langchain", "llm", "rag", "vector-stores"],
+      priority: 1
+    },
+    
+    # PRIORIDAD ALTA - Complementos
+    {
+      search: "Pro Git book Scott Chacon official",
+      expected_url: "git-scm.com/book",
+      add_to_notebook_lm: true,
+      tags: ["git", "ci-cd", "version-control"],
+      priority: 2
+    },
+    {
+      search: "Python Aprende Sebastián Delgado libro Python scraping pandas",
+      expected_url: "elhacker.info OR Python book PDF",
+      add_to_notebook_lm: true,
+      tags: ["python", "scraping", "pandas", "numpy"],
+      priority: 2
+    }
+  ]
+}
+```
+
+---
+
+## 📋 RESUMEN DE FUENTES POR PRIORIDAD
+
+### 🔴 PRIORIDAD 1 (CRÍTICO) - Año 5-6
+1. Zero Point Security - Red Team Ops 2025
+2. Advanced Malware Analysis Redux
+3. Active Directory Exploitation & Lateral Movement
+4. Active Directory Pentesting With Kali Linux
+5. Ultimate Ethical Hacking & Pentesting (UEH)
+6. AWS Solutions Architect Professional
+7. AWS Cloud Red Team Specialist (CARTS)
+8. Azure Red Team Professional (CARTP)
+9. ZTM - LLM Apps with LangChain
+
+### 🟡 PRIORIDAD 2 (ALTA) - Complementos
+10. Pro Git Avanzado
+11. Python Aprende (Delgado)
+
+---
+
+## 🛠️ INSTRUCCIONES DE USO
+
+1. Abrir Google Antigravity IDE
+2. Cargar agente navegador (browser agent)
+3. Pegar el comando BATCH anterior
+4. Ejecutar: "Buscar y agregar fuentes a Notebook LM"
+5. Verificar resultados en notebook.google.com
+
+---
+
+## 🔍 FALLBACK - Si el agente no encuentra
+
+Para fuentes de elhacker.info que requieren descarga manual:
+- Buscar nombres exactos en: google.com
+- Descargar archivos locales (PDF/video)
+- Subir manualmente a Notebook LM via "Upload Files"
+
+URLs públicas confirmadas:
+- Zero Point Security: https://training.zeropointsecurity.co.uk
+- AWS Certifications: https://aws.amazon.com/certification
+- ZTM LangChain: https://zerotomastery.io/courses/langchain
+- Pro Git: https://git-scm.com/book

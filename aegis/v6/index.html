@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEGIS v6.0 — Sistema de Autoaprendizaje</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <h1 class="app-title">🛡️ AEGIS v6.0</h1>
+      <span class="app-subtitle">Sistema de Autoaprendizaje Personal</span>
+    </div>
+    <div class="header-stats">
+      <span id="xp-display" class="stat-badge">0 XP</span>
+      <span id="level-display" class="stat-badge">Nivel 1</span>
+      <span id="streak-display" class="stat-badge">🔥 0 días</span>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <nav class="nav-section">
+        <h3>📚 Biblioteca</h3>
+        <button onclick="renderSourceGrid('all')" class="nav-btn active">Todas las Fuentes</button>
+        <button onclick="renderSourceGrid('methodology')" class="nav-btn">📖 Metodología (62)</button>
+        <button onclick="renderSourceGrid('python')" class="nav-btn">🐍 Python (39)</button>
+        <button onclick="renderSourceGrid('security')" class="nav-btn">🛡️ Seguridad (18)</button>
+        <button onclick="renderSourceGrid('cs50')" class="nav-btn">🎓 CS50 (19)</button>
+        <button onclick="renderSourceGrid('systems')" class="nav-btn">⚙️ Sistemas (18)</button>
+        <button onclick="renderSourceGrid('web')" class="nav-btn">🌐 Web (21)</button>
+        <button onclick="renderSourceGrid('ai')" class="nav-btn">🤖 IA/ML (12)</button>
+        <button onclick="renderSourceGrid('cloud')" class="nav-btn">☁️ Cloud (3)</button>
+      </nav>
+
+      <nav class="nav-section">
+        <h3>⚡ Acciones</h3>
+        <button onclick="exportBackup()" class="nav-btn">💾 Exportar Backup</button>
+        <label class="nav-btn file-input-label">
+          📁 Importar Backup
+          <input type="file" id="import-file" accept=".json" style="display: none;">
+        </label>
+      </nav>
+
+      <div class="nav-section">
+        <h3>📊 Progreso</h3>
+        <div id="stats-container" class="stats-mini">
+          <p>Cargando...</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard -->
+      <section class="dashboard">
+        <div class="dashboard-header">
+          <h2>Panel de Control</h2>
+          <span id="completed-display" class="progress-indicator">0/178 fuentes</span>
+        </div>
+        
+        <div id="next-source-suggestion" class="suggestion-container">
+          <p>Cargando sugerencia...</p>
+        </div>
+      </section>
+
+      <!-- Source Grid -->
+      <section class="sources-section">
+        <h2>Biblioteca de Fuentes</h2>
+        <div id="source-grid" class="source-grid">
+          <p>Cargando fuentes...</p>
+        </div>
+      </section>
+
+      <!-- Study View (inicialmente oculto) -->
+      <section id="study-view" class="study-view hidden">
+        <!-- Se llena dinámicamente -->
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

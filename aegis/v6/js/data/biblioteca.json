@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "version": "6.0",
+    "total_sources": 178,
+    "last_updated": "2026-05-16",
+    "categories": {
+      "methodology": 62,
+      "python": 39,
+      "web": 21,
+      "security": 18,
+      "systems": 18,
+      "cs50": 19,
+      "architecture": 12,
+      "ai": 12,
+      "cloud": 3,
+      "math": 7,
+      "git": 5,
+      "devops": 5,
+      "database": 3
+    }
+  },
+  "sources": [
+    { "id": 1, "name": "97 Things Every Programmer Should Know", "category": "methodology", "icon": "🧠", "url": "#", "desc": "97 consejos sobre buenas prácticas de programación de Kevlin Henney.", "tactical": "Fomenta código limpio, refactorización y madurez profesional.", "difficulty": "intermediate", "estimated_hours": 15 },
+    { "id": 2, "name": "Algebra 1 | Khan Academy", "category": "methodology", "icon": "🧮", "url": "#", "desc": "Fundamentos del álgebra: ecuaciones, funciones, desigualdades y gráficas.", "tactical": "Base matemática esencial para algoritmos y análisis Big O.", "difficulty": "beginner", "estimated_hours": 20 },
+    { "id": 3, "name": "ArchWiki", "category": "systems", "icon": "🐧", "url": "#", "desc": "Documentación oficial completa de Arch Linux: instalación, configuración, mantenimiento.", "tactical": "Supervivencia en terminal y administración pura de sistemas Linux.", "difficulty": "advanced", "estimated_hours": 50 },
+    { "id": 4, "name": "Architecture Patterns with Python", "category": "architecture", "icon": "🏗️", "url": "#", "desc": "DDD y microservicios en Python de Harry Percival.", "tactical": "Base indispensable para crear APIs escalables con FastAPI en producción.", "difficulty": "advanced", "estimated_hours": 25 },
+    { "id": 5, "name": "Beej's Guide to Network Programming", "category": "systems", "icon": "🌐", "url": "#", "desc": "Guía clásica de redes y sockets en C de Brian Hall.", "tactical": "Entender telecomunicaciones a nivel hardware y desarrollar herramientas ofensivas.", "difficulty": "advanced", "estimated_hours": 30 },
+    { "id": 6, "name": "HackTheBox Academy", "category": "security", "icon": "🛡️", "url": "#", "desc": "Catálogo completo de cursos de ciberseguridad de HackTheBox.", "tactical": "Manual definitivo para entrenar tácticas de Hacking Ético.", "difficulty": "intermediate", "estimated_hours": 100 },
+    { "id": 7, "name": "Clean Architecture - Uncle Bob", "category": "architecture", "icon": "🏛️", "url": "#", "desc": "Diseño de arquitecturas desacopladas de Robert C. Martin.", "tactical": "Reglas para pasar de escribir código simple a ser Arquitecto de Software.", "difficulty": "advanced", "estimated_hours": 20 },
+    { "id": 8, "name": "CS50 - Bugs and Debugging", "category": "cs50", "icon": "🐛", "url": "#", "desc": "Técnicas sistemáticas de depuración de Harvard.", "tactical": "Resolución analítica de fallos lógicos y de memoria.", "difficulty": "intermediate", "estimated_hours": 5 },
+    { "id": 9, "name": "C Programming Tutorial", "category": "systems", "icon": "💻", "url": "#", "desc": "Introducción a C y gestión de memoria.", "tactical": "Interacción directa con hardware y comprensión de vulnerabilidades.", "difficulty": "intermediate", "estimated_hours": 30 },
+    { "id": 10, "name": "CS50P 2024 - Week 0", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Fundamentos de Python: variables, funciones, sintaxis.", "tactical": "Primeros pasos en sintaxis para dominar Python.", "difficulty": "beginner", "estimated_hours": 3 },
+    { "id": 11, "name": "CS50P 2024 - Week 1", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Condicionales en Python: if, elif, else, operadores lógicos.", "tactical": "Toma de decisiones lógicas en programación.", "difficulty": "beginner", "estimated_hours": 3 },
+    { "id": 12, "name": "CS50x 2024 - Algorithms", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Algoritmos de búsqueda, ordenamiento y Big O.", "tactical": "Optimización crítica de rendimiento de programas.", "difficulty": "intermediate", "estimated_hours": 8 },
+    { "id": 13, "name": "CS50x 2024 - Week 0", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Pensamiento computacional con Scratch.", "tactical": "Arquitectura mental y lógica secuencial.", "difficulty": "beginner", "estimated_hours": 3 },
+    { "id": 14, "name": "CS50x 2024 - Week 1", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Transición a C: compiladores, memoria, sintaxis.", "tactical": "Entender metal en Linux y bajo nivel.", "difficulty": "intermediate", "estimated_hours": 5 },
+    { "id": 15, "name": "CS50x 2024 - Week 2", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Arrays en C y fundamentos de criptografía.", "tactical": "Base crítica para ciberseguridad y manejo de bytes.", "difficulty": "intermediate", "estimated_hours": 8 },
+    { "id": 16, "name": "CS50x 2024 - Week 3", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Eficiencia algorítmica y estructuras de datos.", "tactical": "Optimización de datos y rendimiento.", "difficulty": "intermediate", "estimated_hours": 8 },
+    { "id": 17, "name": "CS50x 2024 - Week 6", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Conceptos de C reimplementados en Python.", "tactical": "Hardware vs alto nivel, abstracción.", "difficulty": "intermediate", "estimated_hours": 5 },
+    { "id": 18, "name": "CS50x 2025 Syllabus", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Syllabus actualizado de CS50x 2025.", "tactical": "Referencia de estándares modernos.", "difficulty": "beginner", "estimated_hours": 2 },
+    { "id": 19, "name": "CS50x 2025 - Lecture 0", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Bases de IA y Scratch con CS50 Duck.", "tactical": "Lógica visual y comprensión de LLMs.", "difficulty": "beginner", "estimated_hours": 3 },
+    { "id": 20, "name": "CS50x 2026", "category": "cs50", "icon": "🎓", "url": "#", "desc": "Proyección temario 2026.", "tactical": "Roadmap competitivo y tendencias.", "difficulty": "beginner", "estimated_hours": 2 },
+    { "id": 121, "name": "AD Exploitation and Lateral Movement", "category": "security", "icon": "🛡️", "url": "#", "desc": "AD Pentesting: Domain Privilege Escalation, Cross-Forest Trust, BloodHound, PowerView.", "tactical": "CRÍTICO Año 5-6: Active Directory pentesting real.", "difficulty": "advanced", "estimated_hours": 40, "priority": "critical" },
+    { "id": 122, "name": "AD Pentesting With Kali Linux-RedTeam", "category": "security", "icon": "🛡️", "url": "#", "desc": "Red Team AD: Domain Enumeration, Lateral Movement, PowerShell Empire, EvilWinRM.", "tactical": "CRÍTICO Año 5-6: AD completo con Kali Linux.", "difficulty": "advanced", "estimated_hours": 30, "priority": "critical" },
+    { "id": 123, "name": "Advanced Malware Analysis Redux", "category": "security", "icon": "☠️", "url": "#", "desc": "Reverse Engineering, x86/x64 Architecture, Dynamic/Static Analysis, Memory Forensics.", "tactical": "CRÍTICO Año 5-6: Malware Analysis avanzado.", "difficulty": "advanced", "estimated_hours": 50, "priority": "critical" },
+    { "id": 124, "name": "Zero Point Security - Red Team Ops 2025", "category": "security", "icon": "🔴", "url": "#", "desc": "Red Team completo: C2, Lateral Movement, Kerberos, ADCS, Pivoting, Domain Dominance.", "tactical": "CRÍTICO: Red Team profesional moderno.", "difficulty": "advanced", "estimated_hours": 60, "priority": "critical" },
+    { "id": 125, "name": "Ultimate Ethical Hacking (UEH)", "category": "security", "icon": "⚔️", "url": "#", "desc": "Pentesting: x86 Assembly, Fuzzing, Buffer Overflows, Shellcoding, Active Directory.", "tactical": "Pentesting con exploit development.", "difficulty": "advanced", "estimated_hours": 80, "priority": "critical" },
+    { "id": 126, "name": "AWS Solutions Architect Professional", "category": "cloud", "icon": "☁️", "url": "#", "desc": "AWS SAA-C03: Multi-Account, VPC, Serverless, Security, Disaster Recovery.", "tactical": "CRÍTICO: Cloud Architecture AWS profesional.", "difficulty": "advanced", "estimated_hours": 50, "priority": "critical" },
+    { "id": 127, "name": "AWS Cloud Red Team Specialist (CARTS)", "category": "cloud", "icon": "🔴", "url": "#", "desc": "AWS Red Teaming: IAM, EC2, Lambda, S3, Secrets Manager, RDS, Containers.", "tactical": "CRÍTICO: Cloud Red Team AWS.", "difficulty": "advanced", "estimated_hours": 40, "priority": "critical" },
+    { "id": 128, "name": "Azure Red Team Professional (CARTP)", "category": "cloud", "icon": "🔴", "url": "#", "desc": "Azure Red Team: Labs, walkthroughs, técnicas ofensivas en Azure AD y recursos.", "tactical": "Azure Red Team profesional completo.", "difficulty": "advanced", "estimated_hours": 40, "priority": "critical" },
+    { "id": 129, "name": "ZTM - LLM Apps with LangChain", "category": "ai", "icon": "🤖", "url": "#", "desc": "LangChain, Vector Stores (Pinecone), RAG, Gemini, Proyecto Q&A completo.", "tactical": "CRÍTICO: LangChain y RAG práctico.", "difficulty": "intermediate", "estimated_hours": 30, "priority": "critical" }
+  ]
+}

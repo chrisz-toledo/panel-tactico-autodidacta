@@ -1,0 +1,137 @@
+{
+  "fuentes_nuevas_aegis": [
+    {
+      "id": 119,
+      "name": "progit.pdf - Manual de Git Avanzado",
+      "category": "git",
+      "icon": "🐙",
+      "desc": "Manual maestro de Scott Chacon y Ben Straub sobre Git avanzado. Gestión de ramas complejas, rebase, rescate de historiales rotos, despliegue distribuido y administración de repositorios para CI/CD profesional.",
+      "tactical": "Pieza maestra innegociable para orquestar infraestructuras colaborativas e Integración Continua (CI/CD) de forma profesional.",
+      "nivel": "intermedio-avanzado",
+      "duracion": "Variable",
+      "prerequisitos": "Control básico de terminal Linux y Git"
+    },
+    {
+      "id": 120,
+      "name": "python-aprende-sergio-delgado.pdf - Aprende Python",
+      "category": "python",
+      "icon": "🐍",
+      "desc": "Compendio transversal de Python por Sebastián Delgado. Abarca estructuras y expresiones regulares, scraping web avanzado (requests, beautifulsoup, selenium), hasta librerías de ciencia de datos como Numpy, Pandas y matplotlib.",
+      "tactical": "Enciclopedia táctica multidisciplinar que refuerza simultáneamente las primeras fases del Roadmap y prepara para procesamiento intensivo de datos e IA.",
+      "nivel": "intermedio",
+      "duracion": "Variable",
+      "prerequisitos": "Ninguno"
+    },
+    {
+      "id": 121,
+      "name": "Active Directory Exploitation and Lateral Movement Black-Box",
+      "category": "security",
+      "icon": "🛡️",
+      "desc": "Curso avanzado de pentesting en Active Directory. Cubre Domain Privilege Escalation, Cross-Forest Trust Attacks, enumeración con BloodHound y PowerView, movimiento lateral y persistencia en dominios Windows.",
+      "tactical": "CRÍTICO Año 5-6: Active Directory pentesting real para Red Team profesional.",
+      "nivel": "avanzado",
+      "duracion": "40+ horas",
+      "prerequisitos": "Windows, Redes, Pentesting básico"
+    },
+    {
+      "id": 122,
+      "name": "Active Directory Pentesting With Kali Linux-RedTeam",
+      "category": "security",
+      "icon": "🛡️",
+      "desc": "Red Team en Active Directory usando Kali Linux. Domain Enumeration, Lateral Movement, PowerShell Empire, EvilWinRM, Metasploit, persistencia y dominancia de dominios corporativos.",
+      "tactical": "CRÍTICO Año 5-6: AD completo con Kali Linux para operaciones Red Team.",
+      "nivel": "avanzado",
+      "duracion": "30+ horas",
+      "prerequisitos": "Linux, Pentesting, Active Directory básico"
+    },
+    {
+      "id": 123,
+      "name": "Advanced Malware Analysis Redux",
+      "category": "security",
+      "icon": "☠️",
+      "desc": "Análisis avanzado de malware: Reverse Engineering, arquitectura x86/x64, análisis dinámico y estático, Memory Forensics, desempaquetado y desofuscación de malware real.",
+      "tactical": "CRÍTICO Año 5-6: Malware Analysis avanzado para ciberseguridad defensiva y ofensiva.",
+      "nivel": "avanzado",
+      "duracion": "50+ horas",
+      "prerequisitos": "Assembly, Sistemas Operativos, Redes"
+    },
+    {
+      "id": 124,
+      "name": "Zero Point Security - Red Team Ops 2025.2",
+      "category": "security",
+      "icon": "🔴",
+      "desc": "Curso completo de Red Team moderno: Command & Control (C2), External Reconnaissance, Initial Compromise, Host Persistence, Privilege Escalation, Credential Theft, Kerberos attacks, ADCS, Pivoting, Domain Dominance, Data Exfiltration.",
+      "tactical": "CRÍTICO: Red Team profesional moderno con técnicas actuales 2025.",
+      "nivel": "avanzado",
+      "duracion": "60+ horas",
+      "prerequisitos": "Pentesting avanzado, Active Directory"
+    },
+    {
+      "id": 125,
+      "name": "Ultimate Ethical Hacking and Penetration Testing (UEH)",
+      "category": "security",
+      "icon": "⚔️",
+      "desc": "Pentesting completo desde fundamentos hasta exploit development: x86 Assembly, Fuzzing, Buffer Overflows, Shellcoding, Active Directory pentesting, Web App Security, Post Exploitation.",
+      "tactical": "Pentesting integral con exploit development para formación completa.",
+      "nivel": "avanzado",
+      "duracion": "80+ horas",
+      "prerequisitos": "Programación, Redes, Linux"
+    },
+    {
+      "id": 126,
+      "name": "AWS Certified Solutions Architect - Professional 2023",
+      "category": "cloud",
+      "icon": "☁️",
+      "desc": "Certificación AWS SAA-C03 profesional: Multi-Account Architectures, VPC, Serverless, Security avanzado, Disaster Recovery, High Availability, cost optimization, microservicios.",
+      "tactical": "CRÍTICO: Cloud Architecture AWS profesional para infraestructura escalable.",
+      "nivel": "avanzado",
+      "duracion": "50+ horas",
+      "prerequisitos": "AWS básico, Arquitectura de sistemas"
+    },
+    {
+      "id": 127,
+      "name": "AWS Cloud Red Team Specialist [CARTS]",
+      "category": "cloud",
+      "icon": "🔴",
+      "desc": "Red Team especializado en AWS: IAM, EC2, Lambda, S3, Secrets Manager, RDS, Containers. Técnicas ofensivas en cloud: privilege escalation, lateral movement, data exfiltration en entornos AWS.",
+      "tactical": "CRÍTICO: Cloud Red Team AWS para pentesting en entornos cloud modernos.",
+      "nivel": "avanzado",
+      "duracion": "40+ horas",
+      "prerequisitos": "AWS, Pentesting, Cloud básico"
+    },
+    {
+      "id": 128,
+      "name": "Altered Security - Certified Azure Red Team Professional (CARTP)",
+      "category": "cloud",
+      "icon": "🔴",
+      "desc": "Red Team profesional en Azure: Labs prácticos, walkthroughs, técnicas ofensivas en Azure AD, Azure Resources, privilege escalation, lateral movement, persistence en entornos Microsoft cloud.",
+      "tactical": "Azure Red Team profesional completo para entornos corporativos Microsoft.",
+      "nivel": "avanzado",
+      "duracion": "40+ horas",
+      "prerequisitos": "Azure, Active Directory, Pentesting"
+    },
+    {
+      "id": 129,
+      "name": "ZTM - Developing LLM Apps with LangChain",
+      "category": "ai",
+      "icon": "🤖",
+      "desc": "Desarrollo de aplicaciones LLM con LangChain: Deep dive en LangChain, Vector Stores (Pinecone), RAG (Retrieval Augmented Generation), Google Gemini models, Proyecto Q&A completo con documentos privados.",
+      "tactical": "CRÍTICO: LangChain y RAG práctico para aplicaciones de IA en producción.",
+      "nivel": "intermedio-avanzado",
+      "duracion": "30+ horas",
+      "prerequisitos": "Python, Machine Learning básico"
+    }
+  ],
+  "metadata": {
+    "total_fuentes_nuevas": 11,
+    "ids": "119-129",
+    "categorias_afectadas": {
+      "git": 1,
+      "python": 1,
+      "security": 5,
+      "cloud": 3,
+      "ai": 1
+    },
+    "fecha_generacion": "2026-05-16"
+  }
+}

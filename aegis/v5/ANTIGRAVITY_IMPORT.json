@@ -1,0 +1,143 @@
+{
+  "import_config": {
+    "tool": "Google Antigravity IDE",
+    "method": "agentic_browser",
+    "target": "notebook_lm",
+    "batch_size": 11,
+    "auto_categorize": true
+  },
+  "sources": [
+    {
+      "id": 119,
+      "title": "Pro Git Avanzado - Scott Chacon",
+      "url": "https://git-scm.com/book/en/v2",
+      "public_url": "https://git-scm.com/book/en/v2",
+      "fallback_search": "Pro Git book Scott Chacon PDF",
+      "category": "git",
+      "priority": "high",
+      "description": "Manual maestro de Git: ramas complejas, rebase, rescate, CI/CD profesional",
+      "tags": ["git", "ci/cd", "version-control", "devops"]
+    },
+    {
+      "id": 120,
+      "title": "Python Aprende - Sebastián Delgado",
+      "url": "search://python-aprende-sergio-delgado-quintero.pdf",
+      "public_url": null,
+      "fallback_search": "Python Aprende Sergio Delgado libro PDF Python scraping pandas",
+      "category": "python",
+      "priority": "high",
+      "description": "Python transversal: scraping, requests, beautifulsoup, numpy, pandas, matplotlib",
+      "tags": ["python", "scraping", "data-science", "pandas", "numpy"]
+    },
+    {
+      "id": 121,
+      "title": "Active Directory Exploitation and Lateral Movement Black-Box",
+      "url": "search://elhacker.info AD exploitation lateral movement course",
+      "public_url": null,
+      "fallback_search": "Active Directory Exploitation Lateral Movement Black-Box pentesting course",
+      "category": "security",
+      "priority": "critical",
+      "description": "AD Pentesting: Domain Privilege Escalation, Cross-Forest Trust, BloodHound, PowerView",
+      "tags": ["active-directory", "pentesting", "red-team", "bloodhound", "lateral-movement"]
+    },
+    {
+      "id": 122,
+      "title": "Active Directory Pentesting With Kali Linux-RedTeam",
+      "url": "search://elhacker.info AD pentesting Kali Linux RedTeam",
+      "public_url": null,
+      "fallback_search": "Active Directory Pentesting Kali Linux RedTeam PowerShell Empire",
+      "category": "security",
+      "priority": "critical",
+      "description": "Red Team AD: Domain Enumeration, Lateral Movement, PowerShell Empire, EvilWinRM",
+      "tags": ["active-directory", "kali-linux", "red-team", "powershell-empire", "pentesting"]
+    },
+    {
+      "id": 123,
+      "title": "Advanced Malware Analysis Redux",
+      "url": "search://elhacker.info Advanced Malware Analysis Redux",
+      "public_url": null,
+      "fallback_search": "Advanced Malware Analysis Redux reverse engineering x86 x64",
+      "category": "security",
+      "priority": "critical",
+      "description": "Malware Analysis: Reverse Engineering, x86/x64, Dynamic/Static Analysis, Memory Forensics",
+      "tags": ["malware-analysis", "reverse-engineering", "assembly", "forensics", "x86"]
+    },
+    {
+      "id": 124,
+      "title": "Zero Point Security - Red Team Ops 2025.2",
+      "url": "https://training.zeropointsecurity.co.uk/products/red-team-ops",
+      "public_url": "https://training.zeropointsecurity.co.uk",
+      "fallback_search": "Zero Point Security Red Team Ops 2025 C2 Cobalt Strike",
+      "category": "security",
+      "priority": "critical",
+      "description": "Red Team moderno: C2, Kerberos, ADCS, Pivoting, Domain Dominance, Data Exfiltration",
+      "tags": ["red-team", "c2", "kerberos", "adcs", "cobalt-strike", "pentesting"]
+    },
+    {
+      "id": 125,
+      "title": "Ultimate Ethical Hacking and Penetration Testing (UEH)",
+      "url": "search://Ultimate Ethical Hacking Penetration Testing UEH course",
+      "public_url": null,
+      "fallback_search": "Ultimate Ethical Hacking Penetration Testing UEH assembly shellcoding",
+      "category": "security",
+      "priority": "critical",
+      "description": "Pentesting completo: x86 Assembly, Fuzzing, Buffer Overflows, Shellcoding, AD",
+      "tags": ["pentesting", "exploit-development", "assembly", "shellcoding", "fuzzing"]
+    },
+    {
+      "id": 126,
+      "title": "AWS Certified Solutions Architect - Professional 2023",
+      "url": "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+      "public_url": "https://aws.amazon.com/certification",
+      "fallback_search": "AWS Solutions Architect Professional SAA-C03 certification",
+      "category": "cloud",
+      "priority": "critical",
+      "description": "AWS SAA-C03: Multi-Account, VPC, Serverless, Security, Disaster Recovery",
+      "tags": ["aws", "cloud-architecture", "serverless", "vpc", "certification"]
+    },
+    {
+      "id": 127,
+      "title": "AWS Cloud Red Team Specialist (CARTS)",
+      "url": "search://AWS Cloud Red Team Specialist CARTS course",
+      "public_url": null,
+      "fallback_search": "AWS Cloud Red Team Specialist CARTS IAM privilege escalation",
+      "category": "cloud",
+      "priority": "critical",
+      "description": "AWS Red Team: IAM, EC2, Lambda, S3, privilege escalation, lateral movement cloud",
+      "tags": ["aws", "cloud-red-team", "pentesting", "iam", "lambda", "privilege-escalation"]
+    },
+    {
+      "id": 128,
+      "title": "Azure Red Team Professional (CARTP)",
+      "url": "https://www.alteredsecurity.com/azure-red-team",
+      "public_url": "https://www.alteredsecurity.com",
+      "fallback_search": "Altered Security CARTP Azure Red Team Professional certification",
+      "category": "cloud",
+      "priority": "critical",
+      "description": "Azure Red Team: Azure AD, Azure Resources, privilege escalation, lateral movement",
+      "tags": ["azure", "cloud-red-team", "azure-ad", "pentesting", "microsoft"]
+    },
+    {
+      "id": 129,
+      "title": "ZTM - Developing LLM Apps with LangChain",
+      "url": "https://zerotomastery.io/courses/langchain",
+      "public_url": "https://zerotomastery.io/courses/langchain",
+      "fallback_search": "Zero To Mastery LangChain LLM RAG Pinecone vector stores",
+      "category": "ai",
+      "priority": "critical",
+      "description": "LangChain: Vector Stores, RAG, Gemini, Proyecto Q&A con documentos privados",
+      "tags": ["langchain", "llm", "rag", "vector-stores", "pinecone", "gemini"]
+    }
+  ],
+  "search_queries": [
+    "Pro Git book Scott Chacon",
+    "Python Aprende Sergio Delgado PDF",
+    "Active Directory Exploitation Lateral Movement course",
+    "Zero Point Security Red Team Ops training",
+    "Advanced Malware Analysis Redux reverse engineering",
+    "AWS Solutions Architect Professional SAA-C03",
+    "AWS Cloud Red Team Specialist CARTS",
+    "Altered Security CARTP Azure Red Team",
+    "Zero To Mastery LangChain course"
+  ]
+}

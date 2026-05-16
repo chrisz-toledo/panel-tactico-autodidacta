@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AEGIS v4.0 — Sistema Funcional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--font-sans:'Inter',system-ui,-apple-system,sans-serif;--font-mono:'JetBrains Mono',monospace}
+[data-theme="dark"]{
+  --bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a1f2e;
+  --text-primary:#f1f5f9;--text-secondary:#94a3b8;--text-muted:#64748b;
+  --accent-blue:#3b82f6;--accent-green:#22c55e;--accent-gold:#f59e0b;
+  --accent-red:#ef4444;--accent-purple:#a855f7;--accent-cyan:#06b6d4;
+  --border:#1e293b;--glass:rgba(30,41,59,0.5);
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);display:flex;flex-direction:column;}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo{font-size:18px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-sub{font-size:11px;color:var(--text-muted);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;background:var(--glass);border:1px solid var(--border);}
+.badge-xp{color:var(--accent-gold)}.badge-streak{color:var(--accent-red)}
+.icon-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);cursor:pointer;padding:6px 8px;font-size:16px;}
+.icon-btn:hover{background:var(--glass);color:var(--text-primary);}
+
+/* MAIN */
+.main-layout{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:260px;background:var(--bg-secondary);border-right:1px solid var(--border);padding:16px;overflow-y:auto;flex-shrink:0;}
+.content-area{flex:1;padding:20px;overflow-y:auto;}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* SIDEBAR NAV */
+.nav-section{margin-bottom:20px;}
+.nav-title{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.nav-btn{display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover{border-color:var(--accent-blue);}
+.nav-btn.active{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+.nav-btn small{display:block;font-size:10px;color:var(--text-muted);margin-top:2px;}
+.nav-btn.active small{color:rgba(255,255,255,0.7);}
+
+/* WIDGETS */
+.widget{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);}
+.widget-title{font-size:13px;font-weight:700;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;justify-content:space-between;}
+
+/* FASE SELECTOR */
+.fase-selector{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.fase-chip{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--glass);font-size:12px;cursor:pointer;transition:all 0.2s;}
+.fase-chip:hover{border-color:var(--accent-blue);}
+.fase-chip.active{background:var(--accent-blue);color:white;border-color:var(--accent-blue);}
+
+/* WEEK GRID */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:16px;}
+.week-cell{aspect-ratio:1;background:var(--glass);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;cursor:pointer;transition:all 0.2s;}
+.week-cell:hover{border-color:var(--accent-blue);transform:scale(1.05);}
+.week-cell.completed{background:rgba(34,197,94,0.2);border-color:var(--accent-green);}
+.week-cell.current{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+.week-num{font-weight:700;font-size:10px;}
+.week-dot{width:4px;height:4px;border-radius:50%;background:var(--accent-green);margin-top:2px;}
+
+/* ACTION BUTTONS */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.action-btn{display:flex;align-items:center;gap:8px;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:13px;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.action-btn:hover{border-color:var(--accent-blue);background:var(--bg-secondary);}
+.action-btn.primary{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+.action-btn.primary:hover{background:#2563eb;}
+.action-btn span{font-size:18px;}
+.action-btn small{display:block;font-size:10px;color:var(--text-muted);}
+.action-btn.primary small{color:rgba(255,255,255,0.8);}
+
+/* CURRENT TASK */
+.current-task{background:linear-gradient(135deg,var(--bg-card),#1a1f2e);border:2px solid var(--accent-blue);border-radius:16px;padding:16px;margin-bottom:16px;}
+.task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.task-phase{font-size:11px;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;}
+.task-week{font-size:24px;font-weight:800;color:var(--accent-gold);}
+.task-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+.task-desc{color:var(--text-secondary);font-size:14px;margin-bottom:12px;line-height:1.5;}
+.task-resources{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.resource-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--glass);border:1px solid var(--border);border-radius:20px;font-size:11px;}
+
+/* PROMPT GENERATOR */
+.prompt-area{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px;}
+.prompt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prompt-title{font-size:12px;font-weight:600;color:var(--accent-cyan);}
+.prompt-btns{display:flex;gap:6px;}
+.btn-sm{padding:4px 10px;font-size:11px;border-radius:6px;border:none;cursor:pointer;}
+.btn-copy{background:var(--accent-green);color:#000;font-weight:600;}
+.btn-gemini{background:var(--accent-blue);color:white;}
+.prompt-text{background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:var(--font-mono);font-size:12px;line-height:1.5;max-height:120px;overflow-y:auto;white-space:pre-wrap;}
+
+/* MICRO MISSIONS */
+.missions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mission-card{background:var(--glass);border:2px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.3s;position:relative;}
+.mission-card:hover{border-color:var(--accent-blue);}
+.mission-card.active{border-color:var(--accent-green);background:rgba(34,197,94,0.1);animation:missionPulse 2s infinite;}
+.mission-card.completed{border-color:var(--accent-gold);opacity:0.7;}
+@keyframes missionPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.4);}50%{box-shadow:0 0 20px 5px rgba(34,197,94,0.2);}}
+.mission-icon{font-size:24px;margin-bottom:6px;}
+.mission-title{font-size:12px;font-weight:600;}
+.mission-time{font-size:10px;color:var(--text-muted);}
+.mission-reward{position:absolute;top:8px;right:8px;font-size:10px;color:var(--accent-gold);font-weight:700;}
+.progress-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border);}
+.progress-fill{height:100%;width:0%;background:var(--accent-green);transition:width 0.5s;}
+
+/* AUDIO */
+.music-presets{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.preset-btn{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;transition:all 0.2s;text-align:left;font-size:12px;}
+.preset-btn:hover{border-color:var(--accent-blue);}
+.preset-btn.active{background:var(--accent-blue);border-color:var(--accent-blue);color:white;}
+.preset-btn small{display:block;font-size:9px;opacity:0.8;margin-top:3px;}
+.music-controls{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-secondary);border-radius:8px;margin-top:10px;}
+.btn-icon{width:36px;height:36px;border-radius:50%;border:none;background:var(--accent-green);cursor:pointer;font-size:14px;}
+
+/* ACHIEVEMENT */
+.achievement-popup{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#1a1f2e,#0f172a);border:2px solid var(--accent-gold);border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;z-index:10000;animation:achievementSlide 0.5s ease-out;box-shadow:0 10px 40px rgba(245,158,11,0.3);max-width:300px;}
+@keyframes achievementSlide{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.dopamine-hit{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;font-weight:700;color:var(--accent-gold);text-shadow:0 0 30px rgba(245,158,11,0.8);z-index:10000;animation:dopamineFloat 1.5s ease-out forwards;pointer-events:none;}
+@keyframes dopamineFloat{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}20%{transform:translate(-50%,-60%) scale(1.2);opacity:1;}100%{transform:translate(-50%,-100%) scale(1);opacity:0;}}
+
+/* CODECOMBAT */
+.cc-widget{background:linear-gradient(135deg,rgba(245,158,11,0.1),transparent);border-color:var(--accent-gold);}
+.cc-progress{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:10px 0;}
+.cc-fill{height:100%;background:linear-gradient(90deg,var(--accent-gold),var(--accent-red));width:0%;transition:width 0.5s;}
+
+/* EXPORT/IMPORT */
+.sync-section{margin-bottom:15px;}
+.sync-section h4{font-size:12px;margin-bottom:6px;color:var(--accent-cyan);}
+.sync-section p{font-size:11px;color:var(--text-muted);margin-bottom:8px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer;}
+.btn-primary{background:var(--accent-blue);color:#fff;}
+.btn-secondary{background:var(--glass);color:var(--text-primary);border:1px solid var(--border);}
+input[type="file"]{padding:6px;font-size:11px;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);width:100%;}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.content-grid{grid-template-columns:1fr;}.sidebar{width:200px;}}
+@media(max-width:768px){.sidebar{display:none;}.action-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div>
+      <div class="logo">AEGIS v4.0</div>
+      <div class="logo-sub">Sistema Funcional — NotebookLM + Gemini</div>
+    </div>
+    <span class="badge badge-xp" id="badge-xp">⚡ 0 XP</span>
+    <span class="badge badge-streak" id="badge-streak">🔥 0 días</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+    <button class="icon-btn" onclick="exportData()">📤</button>
+  </div>
+</header>
+
+<div class="main-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="nav-section">
+      <div class="nav-title">📚 Fases del Plan</div>
+      <button class="nav-btn active" onclick="selectFase(0)">
+        🌱 Fundamentos
+        <small>Año 1-2: CS50, Python, Linux</small>
+      </button>
+      <button class="nav-btn" onclick="selectFase(1)">
+        🎓 Pregrado
+        <small>Año 3-4: Algoritmos, Web, DB</small>
+      </button>
+      <button class="nav-btn" onclick="selectFase(2)">
+        🛡️ Seguridad
+        <small>Año 5-6: Pentesting, SOC, HTB</small>
+      </button>
+      <button class="nav-btn" onclick="selectFase(3)">
+        🤖 IA & ML
+        <small>Año 7-8: Deep Learning, LLMs</small>
+      </button>
+      <button class="nav-btn" onclick="selectFase(4)">
+        👑 Maestría
+        <small>Año 9-10: Wiz Level, Mentoría</small>
+      </button>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-title">⚡ Acciones</div>
+      <button class="nav-btn" onclick="generatePrompt('plan')">📋 Generar Plan Diario</button>
+      <button class="nav-btn" onclick="generatePrompt('socratic')">❓ Tutor Socrático</button>
+      <button class="nav-btn" onclick="generatePrompt('debug')">🐛 Debugging</button>
+      <button class="nav-btn" onclick="generatePrompt('review')">🔄 Repaso</button>
+      <button class="nav-btn" onclick="window.open('https://notebooklm.google.com','_blank')">📓 Abrir NotebookLM</button>
+      <button class="nav-btn" onclick="window.open('https://gemini.google.com','_blank')">💎 Abrir Gemini</button>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">🎵 Audio</div>
+      <div class="music-controls" style="background:none;padding:0;">
+        <button class="btn-icon" onclick="toggleMusic()" id="playPauseBtn">▶️</button>
+        <input type="range" min="0" max="100" value="25" id="volumeSlider" style="flex:1;" onchange="setVolume(this.value/100)">
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content-area">
+    <div class="content-grid">
+      
+      <!-- CURRENT TASK -->
+      <div class="widget" style="grid-column:span 2;">
+        <div class="widget-title">
+          🎯 Tarea Actual — Semana <span id="currentWeekNum">1</span>
+          <span id="faseBadge" style="background:var(--accent-blue);color:white;padding:4px 12px;border-radius:20px;font-size:11px;">Fundamentos</span>
+        </div>
+        <div class="current-task" id="currentTaskBox">
+          <div class="task-header">
+            <span class="task-phase" id="taskPhase">FASE 1: FUNDAMENTOS</span>
+            <span class="task-week" id="taskWeek">S1</span>
+          </div>
+          <div class="task-title" id="taskTitle">CS50x — Week 0: Scratch</div>
+          <div class="task-desc" id="taskDesc">
+            Introducción a la programación con bloques visuales. Crear un juego simple en Scratch para entender conceptos básicos: variables, loops, condiciones.
+          </div>
+          <div class="task-resources" id="taskResources">
+            <span class="resource-tag">📺 CS50x 2026</span>
+            <span class="resource-tag">💻 Scratch</span>
+            <span class="resource-tag">⏱️ 2 horas</span>
+          </div>
+        </div>
+        
+        <div class="action-grid">
+          <button class="action-btn primary" onclick="openResource('video')">
+            <span>▶️</span>
+            <div>
+              <strong>Ver Video Teoría</strong>
+              <small>CS50x Week 0 en YouTube</small>
+            </div>
+          </button>
+          <button class="action-btn" onclick="openResource('practice')">
+            <span>⌨️</span>
+            <div>
+              <strong>Práctica</strong>
+              <small>Scratch IDE online</small>
+            </div>
+          </button>
+          <button class="action-btn" onclick="generatePrompt('socratic')">
+            <span>❓</span>
+            <div>
+              <strong>Tutor Socrático</strong>
+              <small>Prompt para Gemini</small>
+            </div>
+          </button>
+          <button class="action-btn" onclick="openResource('notebooklm')">
+            <span>📓</span>
+            <div>
+              <strong>NotebookLM</strong>
+              <small>Podcast de repaso</small>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- SEMANA GRID -->
+      <div class="widget" style="grid-column:span 2;">
+        <div class="widget-title">📅 Calendario de Semanas</div>
+        <div class="fase-selector" id="faseSelector">
+          <button class="fase-chip active" onclick="selectFase(0)">Fundamentos (S1-26)</button>
+          <button class="fase-chip" onclick="selectFase(1)">Pregrado (S27-52)</button>
+          <button class="fase-chip" onclick="selectFase(2)">Seguridad (S53-78)</button>
+          <button class="fase-chip" onclick="selectFase(3)">IA (S79-104)</button>
+          <button class="fase-chip" onclick="selectFase(4)">Maestría (S105-130)</button>
+        </div>
+        <div class="week-grid" id="weekGrid"></div>
+      </div>
+
+      <!-- GENERADOR DE PROMPTS -->
+      <div class="widget" style="grid-column:span 2;">
+        <div class="widget-title">
+          🧠 Generador de Prompts para Gemini
+          <span style="font-size:11px;color:var(--text-muted);">Copia y pega en gemini.google.com</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="generatePrompt('plan')">📋 Plan Diario</button>
+          <button class="btn btn-secondary" onclick="generatePrompt('socratic')">❓ Socrático</button>
+          <button class="btn btn-secondary" onclick="generatePrompt('debug')">🐛 Debug</button>
+          <button class="btn btn-secondary" onclick="generatePrompt('review')">🔄 Repaso</button>
+          <button class="btn btn-secondary" onclick="generatePrompt('audioclass')">🎙️ AudioClase</button>
+          <button class="btn btn-secondary" onclick="generatePrompt('connect')">🔗 Conexiones</button>
+        </div>
+        <div class="prompt-area">
+          <div class="prompt-header">
+            <span class="prompt-title" id="promptType">Prompt de Planificación</span>
+            <div class="prompt-btns">
+              <button class="btn-sm btn-copy" onclick="copyPrompt()">📋 Copiar</button>
+              <button class="btn-sm btn-gemini" onclick="openGemini()">💎 Abrir Gemini</button>
+            </div>
+          </div>
+          <div class="prompt-text" id="promptOutput">Haz click en un botón arriba para generar un prompt...</div>
+        </div>
+      </div>
+
+      <!-- MICRO-MISIONES -->
+      <div class="widget">
+        <div class="widget-title">⚡ Micro-Misiones (ADHD-Friendly)</div>
+        <div class="missions-grid">
+          <div class="mission-card" id="mission1" onclick="startMission(1)">
+            <div class="mission-icon">📺</div>
+            <div class="mission-title">Video / Lectura</div>
+            <div class="mission-time">20 min</div>
+            <div class="mission-reward">+50 XP</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress1"></div></div>
+          </div>
+          <div class="mission-card" id="mission2" onclick="startMission(2)">
+            <div class="mission-icon">⌨️</div>
+            <div class="mission-title">Código / Práctica</div>
+            <div class="mission-time">25 min</div>
+            <div class="mission-reward">+75 XP</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress2"></div></div>
+          </div>
+          <div class="mission-card" id="mission3" onclick="startMission(3)">
+            <div class="mission-icon">📝</div>
+            <div class="mission-title">Notas / Debug</div>
+            <div class="mission-time">15 min</div>
+            <div class="mission-reward">+40 XP</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress3"></div></div>
+          </div>
+          <div class="mission-card" id="mission4" onclick="startMission(4)" style="background:rgba(245,158,11,0.1);border-color:var(--accent-gold);">
+            <div class="mission-icon">☕</div>
+            <div class="mission-title">DESCANSO</div>
+            <div class="mission-time">5 min obligatorio</div>
+            <div class="mission-reward">+20 XP</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress4"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIO NEURAL -->
+      <div class="widget">
+        <div class="widget-title">🎵 Audio Neural (8 Presets)</div>
+        <div class="music-presets">
+          <button class="preset-btn active" data-preset="deep_focus" onclick="playPreset('deep_focus')">
+            🧠 Deep Focus
+            <small>40Hz Gamma — Concentración</small>
+          </button>
+          <button class="preset-btn" data-preset="flow_state" onclick="playPreset('flow_state')">
+            🌊 Flow State
+            <small>10Hz Alpha — Creatividad</small>
+          </button>
+          <button class="preset-btn" data-preset="alert_beta" onclick="playPreset('alert_beta')">
+            ⚡ Alert Beta
+            <small>20Hz — Memoria</small>
+          </button>
+          <button class="preset-btn" data-preset="theta_creativity" onclick="playPreset('theta_creativity')">
+            🎨 Theta Create
+            <small>6Hz — Insight</small>
+          </button>
+          <button class="preset-btn" data-preset="recovery" onclick="playPreset('recovery')">
+            🧘 Recovery
+            <small>5Hz — Descanso</small>
+          </button>
+          <button class="preset-btn" data-preset="sleep_delta" onclick="playPreset('sleep_delta')">
+            🌙 Sleep Delta
+            <small>2Hz — Sueño profundo</small>
+          </button>
+          <button class="preset-btn" data-preset="pink_noise" onclick="playPreset('pink_noise')">
+            🌸 Pink Noise
+            <small>1/f — Enfoque suave</small>
+          </button>
+          <button class="preset-btn" data-preset="brown_noise" onclick="playPreset('brown_noise')">
+            🟤 Brown Noise
+            <small>Deep — Tinnitus relief</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- CODECOMBAT -->
+      <div class="widget cc-widget">
+        <div class="widget-title">⚔️ CodeCombat — Práctica Gamificada</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:14px;">Progreso en Python</span>
+          <span style="font-size:18px;font-weight:700;color:var(--accent-gold);" id="ccXP">0 XP</span>
+        </div>
+        <div class="cc-progress"><div class="cc-fill" id="ccProgress"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:var(--text-muted);">
+          <span>Nivel: <strong id="ccLevel">1</strong></span>
+          <span>Lecciones: <strong id="ccLessons">0/100</strong></span>
+        </div>
+        <div class="action-grid" style="margin-top:12px;">
+          <a href="https://codecombat.com/play/python" target="_blank" class="action-btn primary" style="text-decoration:none;">
+            <span>🎮</span>
+            <div><strong>Jugar Ahora</strong><small>Python & JavaScript</small></div>
+          </a>
+          <button class="action-btn" onclick="syncCodeCombat()">
+            <span>🔄</span>
+            <div><strong>Sincronizar</strong><small>Actualizar progreso</small></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- PORTABILIDAD -->
+      <div class="widget">
+        <div class="widget-title">☁️ Backup & Portabilidad</div>
+        <div class="sync-section">
+          <h4>📤 Exportar Progreso</h4>
+          <p>Guarda todo para cambiar de PC o backup</p>
+          <button class="btn btn-primary" onclick="exportData()">💾 Descargar JSON</button>
+        </div>
+        <div class="sync-section" style="border-top:1px solid var(--border);padding-top:12px;margin-top:12px;">
+          <h4>📥 Importar (Nuevo PC)</h4>
+          <p>Restaura tu progreso</p>
+          <input type="file" id="importFile" accept=".json" onchange="importData(this)">
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATOS REALES DEL PLAN DE ESTUDIO (Año 1-2 Fundamentos)
+// ═══════════════════════════════════════════════════════════
+const PLAN_ESTUDIO = [
+  // FASE 1: Fundamentos (Semanas 1-26)
+  { week: 1, fase: 0, title: "CS50x Week 0", desc: "Scratch: Introducción a la programación con bloques visuales. Crear primer juego.", resources: ["CS50x 2025", "Scratch"], urls: { video: "https://cs50.harvard.edu/x/2025/weeks/0/", practice: "https://scratch.mit.edu/create" } },
+  { week: 2, fase: 0, title: "CS50x Week 1", desc: "C: Variables, condicionales, loops. Primer programa en lenguaje de texto.", resources: ["CS50x 2025", "C"], urls: { video: "https://cs50.harvard.edu/x/2025/weeks/1/", practice: "https://cs50.dev/" } },
+  { week: 3, fase: 0, title: "CS50x Week 2", desc: "C: Arrays, strings, funciones. Manipulación de texto y cifrado básico.", resources: ["CS50x 2025", "C"], urls: { video: "https://cs50.harvard.edu/x/2025/weeks/2/", practice: "https://cs50.dev/" } },
+  { week: 4, fase: 0, title: "CS50x Week 3", desc: "C: Algoritmos de búsqueda y ordenamiento. Big O notation.", resources: ["CS50x 2025", "Algoritmos"], urls: { video: "https://cs50.harvard.edu/x/2025/weeks/3/", practice: "https://cs50.dev/" } },
+  { week: 5, fase: 0, title: "CS50P Week 0-1", desc: "Python: Sintaxis básica, variables, tipos de datos. Instalación y primer script.", resources: ["CS50P", "Python"], urls: { video: "https://cs50.harvard.edu/python/2022/weeks/0/", practice: "https://code.visualstudio.com/" } },
+  { week: 6, fase: 0, title: "CS50P Week 2", desc: "Python: Condicionales, loops, excepciones. Control de flujo.", resources: ["CS50P", "Python"], urls: { video: "https://cs50.harvard.edu/python/2022/weeks/1/", practice: "https://cs50.dev/" } },
+  { week: 7, fase: 0, title: "CS50P Week 3", desc: "Python: Funciones, módulos, librerías. Crear tu primer módulo.", resources: ["CS50P", "Python"], urls: { video: "https://cs50.harvard.edu/python/2022/weeks/2/", practice: "https://cs50.dev/" } },
+  { week: 8, fase: 0, title: "CS50P Week 4", desc: "Python: Librerías, testing, debugging. pytest y VS Code debugger.", resources: ["CS50P", "Testing"], urls: { video: "https://cs50.harvard.edu/python/2022/weeks/3/", practice: "https://cs50.dev/" } },
+  { week: 9, fase: 0, title: "Linux Journey", desc: "Instalación de Arch Linux. Particionamiento, boot, pacman.", resources: ["Linux Journey", "Arch"], urls: { video: "https://wiki.archlinux.org/title/Installation_guide", practice: "https://linuxjourney.com/" } },
+  { week: 10, fase: 0, title: "Linux CLI", desc: "Comandos básicos: ls, cd, mkdir, rm, cp, mv, cat, grep.", resources: ["Linux Journey", "CLI"], urls: { video: "https://linuxjourney.com/lesson/the-shell", practice: "https://overthewire.org/wargames/bandit/" } },
+  { week: 11, fase: 0, title: "OverTheWire Bandit", desc: "Wargame de seguridad. SSH, permisos, archivos ocultos.", resources: ["Bandit", "SSH"], urls: { video: "https://overthewire.org/wargames/bandit/", practice: "ssh bandit0@bandit.labs.overthewire.org" } },
+  { week: 12, fase: 0, title: "Git & GitHub", desc: "Control de versiones. init, add, commit, push, branch, merge.", resources: ["Git", "GitHub"], urls: { video: "https://www.youtube.com/git", practice: "https://github.com/new" } },
+  // ... continuar con más semanas hasta 26
+];
+
+// Fases metadata
+const FASES = [
+  { id: 0, name: "Fundamentos", weeks: "S1-26", desc: "CS50, Python, Linux, Git", color: "#3b82f6" },
+  { id: 1, name: "Pregrado", weeks: "S27-52", desc: "Algoritmos, Web, DB, Redes", color: "#22c55e" },
+  { id: 2, name: "Seguridad", weeks: "S53-78", desc: "Pentesting, SOC, HTB, Bug Bounty", color: "#ef4444" },
+  { id: 3, name: "IA & ML", weeks: "S79-104", desc: "Deep Learning, LLMs, LangChain", color: "#a855f7" },
+  { id: 4, name: "Maestría", weeks: "S105-130", desc: "Wiz Level, Mentoría, Open Source", color: "#f59e0b" }
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_STATE = {
+  xp: 0, streak: 0, level: 1, combo: 0, currentWeek: 1, currentFase: 0,
+  completedWeeks: [], achievements: [], dailyTasks: { study: false, code: false, exercise: false },
+  musicPreferences: { currentPreset: 'deep_focus', volume: 0.25 },
+  theme: 'dark',
+  codeCombat: { xp: 0, level: 1, lessons: 0, username: '' }
+};
+
+let STATE = JSON.parse(localStorage.getItem('aegis_v4_state') || 'null') || { ...DEFAULT_STATE };
+
+function save() {
+  localStorage.setItem('aegis_v4_state', JSON.stringify(STATE));
+  updateUI();
+}
+
+// ═══════════════════════════════════════════════════════════
+// UI UPDATES
+// ═══════════════════════════════════════════════════════════
+function updateUI() {
+  document.getElementById('badge-xp').textContent = `⚡ ${STATE.xp} XP`;
+  document.getElementById('badge-streak').textContent = `🔥 ${STATE.streak} días`;
+  document.getElementById('currentWeekNum').textContent = STATE.currentWeek;
+  document.getElementById('ccXP').textContent = `${STATE.codeCombat.xp} XP`;
+  document.getElementById('ccLevel').textContent = STATE.codeCombat.level;
+  document.getElementById('ccLessons').textContent = `${STATE.codeCombat.lessons}/100`;
+  document.getElementById('ccProgress').style.width = `${(STATE.codeCombat.lessons / 100) * 100}%`;
+  renderWeekGrid();
+  updateCurrentTask();
+}
+
+function updateCurrentTask() {
+  const task = PLAN_ESTUDIO.find(t => t.week === STATE.currentWeek) || PLAN_ESTUDIO[0];
+  document.getElementById('taskPhase').textContent = `FASE ${STATE.currentFase + 1}: ${FASES[STATE.currentFase].name.toUpperCase()}`;
+  document.getElementById('taskWeek').textContent = `S${task.week}`;
+  document.getElementById('taskTitle').textContent = task.title;
+  document.getElementById('taskDesc').textContent = task.desc;
+  document.getElementById('faseBadge').textContent = FASES[STATE.currentFase].name;
+  
+  const resourcesDiv = document.getElementById('taskResources');
+  resourcesDiv.innerHTML = task.resources.map(r => `<span class="resource-tag">${r}</span>`).join('') +
+    `<span class="resource-tag">⏱️ 2 horas</span>`;
+}
+
+function renderWeekGrid() {
+  const grid = document.getElementById('weekGrid');
+  const fase = FASES[STATE.currentFase];
+  const startWeek = STATE.currentFase * 26 + 1;
+  const endWeek = startWeek + 25;
+  
+  let html = '';
+  for (let w = startWeek; w <= endWeek && w <= 130; w++) {
+    const completed = STATE.completedWeeks.includes(w);
+    const current = w === STATE.currentWeek;
+    const task = PLAN_ESTUDIO.find(t => t.week === w);
+    html += `
+      <div class="week-cell ${completed ? 'completed' : ''} ${current ? 'current' : ''}" onclick="selectWeek(${w})" title="${task?.title || 'Semana ' + w}">
+        <span class="week-num">${w}</span>
+        ${completed ? '<span class="week-dot"></span>' : ''}
+      </div>
+    `;
+  }
+  grid.innerHTML = html;
+}
+
+function selectWeek(week) {
+  STATE.currentWeek = week;
+  STATE.currentFase = Math.floor((week - 1) / 26);
+  updateFaseUI();
+  save();
+  showDopamineHit('📅', `Semana ${week} seleccionada`);
+}
+
+function selectFase(faseId) {
+  STATE.currentFase = faseId;
+  STATE.currentWeek = faseId * 26 + 1;
+  updateFaseUI();
+  save();
+}
+
+function updateFaseUI() {
+  // Update nav buttons
+  document.querySelectorAll('.nav-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === STATE.currentFase);
+  });
+  // Update chips
+  document.querySelectorAll('.fase-chip').forEach((chip, i) => {
+    chip.classList.toggle('active', i === STATE.currentFase);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUDIO ENGINE (8 PRESETS)
+// ═══════════════════════════════════════════════════════════
+class AegisAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.nodes = [];
+    this.isPlaying = false;
+    this.currentPreset = 'deep_focus';
+    this.volume = 0.25;
+  }
+
+  init() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  stop() {
+    this.nodes.forEach(n => {
+      try { n.stop?.(); n.disconnect?.(); } catch(e) {}
+    });
+    this.nodes = [];
+    this.isPlaying = false;
+  }
+
+  createOscillator(freq, type = 'sine', pan = 0, vol = 0.5) {
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const panner = this.ctx.createStereoPanner();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.value = vol * this.volume;
+    panner.pan.value = pan;
+    osc.connect(gain).connect(panner).connect(this.ctx.destination);
+    osc.start();
+    this.nodes.push(osc, gain, panner);
+    return osc;
+  }
+
+  playDeepFocus() {
+    this.init(); this.stop();
+    this.createOscillator(200, 'sine', -1, 0.5);  // L
+    this.createOscillator(240, 'sine', 1, 0.5);   // R (40Hz diff)
+    this.isPlaying = true;
+    this.currentPreset = 'deep_focus';
+  }
+
+  playFlowState() {
+    this.init(); this.stop();
+    this.createOscillator(100, 'sine', 0, 0.4);
+    this.createOscillator(110, 'triangle', 0, 0.3);
+    this.isPlaying = true;
+    this.currentPreset = 'flow_state';
+  }
+
+  playAlertBeta() {
+    this.init(); this.stop();
+    this.createOscillator(300, 'sine', 0, 0.3);
+    this.isPlaying = true;
+    this.currentPreset = 'alert_beta';
+  }
+
+  playThetaCreativity() {
+    this.init(); this.stop();
+    this.createOscillator(80, 'sine', -1, 0.4);
+    this.createOscillator(86, 'sine', 1, 0.4);
+    this.isPlaying = true;
+    this.currentPreset = 'theta_creativity';
+  }
+
+  playRecovery() {
+    this.init(); this.stop();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(80, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 300);
+    gain.gain.value = this.volume * 0.4;
+    osc.connect(gain).connect(this.ctx.destination);
+    osc.start();
+    this.nodes.push(osc, gain);
+    this.isPlaying = true;
+    this.currentPreset = 'recovery';
+  }
+
+  playSleepDelta() {
+    this.init(); this.stop();
+    this.createOscillator(60, 'sine', 0, 0.5);
+    this.isPlaying = true;
+    this.currentPreset = 'sleep_delta';
+  }
+
+  playPinkNoise() {
+    this.init(); this.stop();
+    const bufferSize = this.ctx.sampleRate * 2;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    const gain = this.ctx.createGain();
+    gain.gain.value = this.volume * 0.3;
+    noise.connect(gain).connect(this.ctx.destination);
+    noise.start();
+    this.nodes.push(noise, gain);
+    this.isPlaying = true;
+    this.currentPreset = 'pink_noise';
+  }
+  playBrownNoise() { this.playPinkNoise(); this.currentPreset = 'brown_noise'; }
+}
+let lastOut = 0;
+
+const AudioEngine = new AegisAudioEngine();
+
+function playPreset(preset) {
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.preset === preset);
+  });
+  
+  switch(preset) {
+    case 'deep_focus': AudioEngine.playDeepFocus(); break;
+    case 'flow_state': AudioEngine.playFlowState(); break;
+    case 'alert_beta': AudioEngine.playAlertBeta(); break;
+    case 'theta_creativity': AudioEngine.playThetaCreativity(); break;
+    case 'recovery': AudioEngine.playRecovery(); break;
+    case 'sleep_delta': AudioEngine.playSleepDelta(); break;
+    case 'pink_noise': AudioEngine.playPinkNoise(); break;
+    case 'brown_noise': AudioEngine.playBrownNoise(); break;
+  }
+  
+  document.getElementById('playPauseBtn').textContent = '⏸️';
+  STATE.musicPreferences.currentPreset = preset;
+  save();
+}
+
+function toggleMusic() {
+  if (AudioEngine.isPlaying) {
+    AudioEngine.stop();
+    document.getElementById('playPauseBtn').textContent = '▶️';
+  } else {
+    playPreset(STATE.musicPreferences.currentPreset || 'deep_focus');
+  }
+}
+
+function setVolume(vol) {
+  AudioEngine.volume = Math.max(0, Math.min(1, vol));
+  STATE.musicPreferences.volume = vol;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROMPT GENERATOR (Gemini + NotebookLM Integration)
+// ═══════════════════════════════════════════════════════════
+const PROMPT_TEMPLATES = {
+  plan: (week, fase, task) => `Eres mi tutor de programación. Necesito un plan de estudio para hoy.
+
+**MI CONTEXTO:**
+- Semana: ${week} — ${task.title}
+- Fase: ${fase.name}
+- Tema: ${task.desc}
+- Tiempo disponible: 1.5 horas
+- Equipos: Mac M4 (teoría) + HP Arch (práctica)
+
+**GENERA UN PLAN CON 4 MICRO-MISIONES:**
+1. 🎬 **Video/Lectura** (20 min): Qué video específico ver de ${task.resources.join(', ')}
+2. 💻 **Práctica** (25 min): Ejercicio concreto, dónde practicar
+3. 📝 **Notas/Debug** (15 min): Cómo documentar y qué preguntas hacerme
+4. ☕ **Descanso** (5 min): Actividad de recuperación obligatoria
+
+**FORMATO:** Lista con recursos exactos (URLs), tiempos precisos, y criterio de éxito para cada misión.`,
+
+  socratic: (task) => `Actúa como tutor socrático ESTRUCTO. No me des la respuesta.
+
+**TEMA A DISCUTIR:** ${task.desc}
+
+**MI INTENTO DE EXPLICARLO:**
+[El usuario escribe su intento aquí]
+
+**INSTRUCCIONES:**
+1. Identifica un error específico en mi explicación con una pregunta guía
+2. No des la respuesta correcta
+3. Hazme resolver un mini-problema de 3 líneas
+4. Máximo 3 preguntas por respuesta
+
+**FORMATO:**
+Pregunta 1: [guía]
+Pregunta 2: [guía]
+Pregunta 3: [guía]
+
+Mini-problema: [descripción]`,
+
+  debug: (task) => `Estoy atascado en: ${task.desc}
+
+**EXPLICA DE 3 FORMAS DIFERENTES:**
+
+1. **ANALOGÍA FÍSICA** (sin computadoras):
+   Usa objetos cotidianos para explicar el concepto.
+
+2. **PSEUDOCÓDIGO** (sin sintaxis):
+   Solo lógica pura, paso a paso.
+
+3. **DIAGRAMA ASCII**:
+   Dibuja el flujo con caracteres.
+
+**LUEGO:** Dame un problema PARALELO (misma estructura, contexto diferente) para verificar que entendí.
+
+**REGLA:** Define cualquier término técnico nuevo en 5 palabras máximo.`,
+
+  review: (week, task) => `Genera un podcast de 10 minutos para repasar:
+**${task.title}** — ${task.desc}
+
+**ESTRUCTURA DEL GUION:**
+1. INTRO (1 min): Gancho sobre por qué esto importa
+2. CONCEPTO CLAVE (2 min): Explicación con analogía
+3. CONEXIÓN (2 min): Cómo relaciona con lo anterior
+4. EJEMPLO PRÁCTICO (2 min): Caso de uso real
+5. TAKEAWAY (1 min): Frase memorable
+
+**FORMATO:** Guion completo para que YO lo grabe como voice memo. Incluye indicaciones de tono: [NORMAL], [ÉNFASIS], [PAUSA].`,
+
+  audioclass: (task) => `Soy estudiante autodidacta de CS. Estoy aprendiendo: ${task.desc}
+
+**CREA UNA "AUDIOCLASE":**
+Formato: Monólogo educativo de 8-10 minutos
+
+**SECCIONES:**
+1. **Hook inicial** (30 seg): Por qué esto es importante ahora
+2. **Concepto principal** (3 min): Explicación profunda, no superficial
+3. **Ejemplo de código** (2 min): Caso práctico real
+4. **Errores comunes** (1 min): Qué NO hacer
+5. **Próximos pasos** (1 min): Qué estudiar después
+
+**TONO:** Como si un mentor experimentado me lo explicara caminando. Profesional pero conversacional.
+
+**AL FINAL:** 3 preguntas que debería hacerme para verificar que entendí.`,
+
+  connect: (week, task) => `Acabo de aprender: ${task.desc}
+
+**MAPA DE CONEXIONES:**
+¿Cómo se relaciona esto con:
+- Semana ${week-1}: [tema anterior]
+- CS50 general
+- Programación real en industria
+- Otras áreas de CS
+
+**GENERA:**
+1. Mapa conceptual visual (ASCII o descripción)
+2. Analogía unificadora que conecte todo
+3. Proyecto mini (1 hora) que use este concepto + 2 conceptos previos
+4. Principio CS subyacente (abstracción, composición, etc.)`
+};
+
+function generatePrompt(type) {
+  const task = PLAN_ESTUDIO.find(t => t.week === STATE.currentWeek) || PLAN_ESTUDIO[0];
+  const fase = FASES[STATE.currentFase];
+  
+  const promptText = PROMPT_TEMPLATES[type](STATE.currentWeek, fase, task);
+  
+  document.getElementById('promptOutput').textContent = promptText;
+  document.getElementById('promptType').textContent = {
+    plan: '📋 Prompt: Plan Diario',
+    socratic: '❓ Prompt: Tutor Socrático',
+    debug: '🐛 Prompt: Debugging',
+    review: '🔄 Prompt: Repaso/Podcast',
+    audioclass: '🎙️ Prompt: AudioClase',
+    connect: '🔗 Prompt: Conexiones'
+  }[type];
+  
+  showDopamineHit('📝', 'Prompt generado');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptOutput').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showDopamineHit('📋', 'Copiado al clipboard');
+  });
+}
+
+function openGemini() {
+  copyPrompt();
+  setTimeout(() => {
+    window.open('https://gemini.google.com', '_blank');
+  }, 300);
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESOURCE LINKS
+// ═══════════════════════════════════════════════════════════
+function openResource(type) {
+  const task = PLAN_ESTUDIO.find(t => t.week === STATE.currentWeek) || PLAN_ESTUDIO[0];
+  
+  switch(type) {
+    case 'video':
+      if (task.urls?.video) window.open(task.urls.video, '_blank');
+      else window.open('https://cs50.harvard.edu/x/', '_blank');
+      break;
+    case 'practice':
+      if (task.urls?.practice) window.open(task.urls.practice, '_blank');
+      else window.open('https://cs50.dev/', '_blank');
+      break;
+    case 'notebooklm':
+      window.open('https://notebooklm.google.com', '_blank');
+      break;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MICRO-MISSIONS
+// ═══════════════════════════════════════════════════════════
+let activeMission = null;
+let missionTimer = null;
+
+const MISSIONS = {
+  1: { duration: 20 * 60, xp: 50, name: 'Video/Lectura' },
+  2: { duration: 25 * 60, xp: 75, name: 'Código/Práctica' },
+  3: { duration: 15 * 60, xp: 40, name: 'Notas/Debug' },
+  4: { duration: 5 * 60, xp: 20, name: 'Descanso', rest: true }
+};
+
+function startMission(id) {
+  if (activeMission) endMission(false);
+  
+  activeMission = id;
+  const card = document.getElementById(`mission${id}`);
+  card.classList.add('active');
+  
+  const mission = MISSIONS[id];
+  let elapsed = 0;
+  
+  if (mission.rest) playPreset('recovery');
+  else if (!AudioEngine.isPlaying) playPreset('deep_focus');
+  
+  showDopamineHit('🚀', `¡${mission.name} iniciada!`);
+  
+  // For demo: speed up 60x (1 sec = 1 min)
+  const speed = location.hostname === 'localhost' ? 60 : 1;
+  
+  missionTimer = setInterval(() => {
+    elapsed += speed;
+    const progress = (elapsed / mission.duration) * 100;
+    document.getElementById(`progress${id}`).style.width = `${Math.min(progress, 100)}%`;
+    
+    if (elapsed >= mission.duration) {
+      endMission(true);
+    }
+  }, 1000);
+}
+
+function endMission(completed) {
+  if (!activeMission) return;
+  
+  clearInterval(missionTimer);
+  const card = document.getElementById(`mission${activeMission}`);
+  card.classList.remove('active');
+  
+  const mission = MISSIONS[activeMission];
+  
+  if (completed) {
+    card.classList.add('completed');
+    STATE.xp += mission.xp;
+    STATE.combo++;
+    
+    showDopamineHit('✨', `+${mission.xp} XP`);
+    
+    if (STATE.combo >= 3) {
+      const bonus = STATE.combo * 10;
+      STATE.xp += bonus;
+      setTimeout(() => showDopamineHit('🔥', `Combo x${STATE.combo}! +${bonus}`), 500);
+    }
+    
+    if (mission.rest) {
+      AudioEngine.stop();
+      document.getElementById('playPauseBtn').textContent = '▶️';
+    }
+  } else {
+    STATE.combo = 0;
+  }
+  
+  document.getElementById(`progress${activeMission}`).style.width = '0%';
+  activeMission = null;
+  save();
+}
+
+// ═══════════════════════════════════════════════════════════
+// CODECOMBAT SYNC
+// ═══════════════════════════════════════════════════════════
+function syncCodeCombat() {
+  // Simulated sync - in real implementation, could use web scraping
+  const mockProgress = Math.floor(Math.random() * 15) + 5;
+  STATE.codeCombat.lessons += mockProgress;
+  STATE.codeCombat.xp += mockProgress * 50;
+  STATE.codeCombat.level = Math.floor(STATE.codeCombat.xp / 500) + 1;
+  
+  showDopamineHit('⚔️', `+${mockProgress * 50} CodeCombat XP`);
+  save();
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORT/IMPORT
+// ═══════════════════════════════════════════════════════════
+function exportData() {
+  const data = {
+    version: '4.0',
+    timestamp: new Date().toISOString(),
+    state: STATE,
+    plan: { currentFase: FASES[STATE.currentFase], currentWeek: STATE.currentWeek }
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `aegis-v4-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  
+  showDopamineHit('💾', 'Backup exportado');
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.state) {
+        STATE = { ...DEFAULT_STATE, ...data.state };
+        save();
+        showDopamineHit('✅', 'Progreso restaurado');
+        setTimeout(() => location.reload(), 1000);
+      }
+    } catch (err) {
+      alert('Error al importar: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function showDopamineHit(emoji, text) {
+  const hit = document.createElement('div');
+  hit.className = 'dopamine-hit';
+  hit.innerHTML = `${emoji}<br><small>${text}</small>`;
+  document.body.appendChild(hit);
+  setTimeout(() => hit.remove(), 1500);
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  STATE.theme = next;
+  save();
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  if (STATE.theme) {
+    document.documentElement.setAttribute('data-theme', STATE.theme);
+  }
+  updateFaseUI();
+  updateUI();
+  generatePrompt('plan');
+  
+  // Check new day
+  const lastActive = localStorage.getItem('aegis_v4_last_active');
+  const today = new Date().toDateString();
+  if (lastActive !== today) {
+    STATE.dailyTasks = { study: false, code: false, exercise: false };
+    save();
+    localStorage.setItem('aegis_v4_last_active', today);
+  }
+});
+</script>
+
+</body>
+</html>

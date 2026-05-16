@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0e17">
+<title>UNI-AUTO ULTIMATE v3.0 — Tu Universidad en un Archivo</title>
+<style>
+:root{--bg:#0a0e17;--bg2:#111827;--bg3:#1f2937;--border:#374151;--text:#e5e7eb;--text2:#9ca3af;--accent:#38bdf8;--accent2:#22c55e;--accent3:#f59e0b;--accent4:#a78bfa;--danger:#ef4444;--warn:#f97316;--mobile-bar:#0f172a}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.container{max-width:1450px;margin:0 auto;padding:12px}
+
+/* Header */
+header{background:linear-gradient(135deg,var(--bg2) 0%,#0f172a 100%);border:1px solid var(--border);border-radius:14px;padding:24px 16px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(56,189,248,0.07) 0%,transparent 70%);animation:pulse 10s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+header h1{font-size:2em;margin-bottom:6px;position:relative}header h1 span{color:var(--accent)}
+header p{color:var(--text2);position:relative;font-size:.95em}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:3px;border:1px solid}
+.badge-blue{background:rgba(56,189,248,.12);color:var(--accent);border-color:rgba(56,189,248,.25)}
+.badge-green{background:rgba(34,197,94,.12);color:var(--accent2);border-color:rgba(34,197,94,.25)}
+.badge-orange{background:rgba(245,158,11,.12);color:var(--accent3);border-color:rgba(245,158,11,.25)}
+.badge-purple{background:rgba(167,139,250,.12);color:var(--accent4);border-color:rgba(167,139,250,.25)}
+.badge-red{background:rgba(239,68,68,.12);color:var(--danger);border-color:rgba(239,68,68,.25)}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;transition:transform .2s,border-color .2s}
+.stat-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.stat-card .number{font-size:1.7em;font-weight:800;color:var(--accent)}.stat-card .label{color:var(--text2);font-size:.78em;margin-top:3px}
+
+/* Tabs */
+.tabs{display:flex;gap:5px;margin-bottom:16px;flex-wrap:nowrap;overflow-x:auto;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:100;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
+.tab-btn{padding:8px 14px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);border-radius:8px;cursor:pointer;font-size:.78em;font-weight:700;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.tab-btn:hover{background:var(--bg3);color:var(--text)}.tab-btn.active{background:var(--accent);color:#0a0e17;border-color:var(--accent)}
+.tab-content{display:none}.tab-content.active{display:block;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Phase / Course */
+.phase{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.phase-header{padding:14px 18px;background:linear-gradient(90deg,var(--bg3) 0%,transparent 100%);border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+.phase-header:hover{background:var(--bg3)}.phase-header h2{font-size:1.1em;display:flex;align-items:center;gap:8px}
+.phase-header h2 .icon{font-size:1.1em}.phase-meta{color:var(--text2);font-size:.8em}
+.phase-content{display:none;padding:0}.phase-content.open{display:block}
+.course{border-bottom:1px solid var(--border);padding:14px 18px;transition:background .15s}.course:last-child{border-bottom:none}
+.course:hover{background:rgba(56,189,248,.02)}.course-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;flex-wrap:wrap;gap:5px}
+.course-title{font-size:1em;font-weight:700;color:var(--text)}.course-tags{display:flex;gap:4px;flex-wrap:wrap}
+.course-desc{color:var(--text2);font-size:.85em;margin-bottom:8px}
+.course-resources{display:flex;gap:6px;flex-wrap:wrap}
+.resource-link{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;font-size:.74em;font-weight:600;text-decoration:none;transition:all .2s}
+.resource-link:hover{transform:translateY(-1px)}.link-course{background:rgba(56,189,248,.1);color:var(--accent);border:1px solid rgba(56,189,248,.18)}
+.link-book{background:rgba(34,197,94,.1);color:var(--accent2);border:1px solid rgba(34,197,94,.18)}
+.link-lab{background:rgba(245,158,11,.1);color:var(--accent3);border:1px solid rgba(245,158,11,.18)}
+.link-video{background:rgba(167,139,250,.1);color:var(--accent4);border:1px solid rgba(167,139,250,.18)}
+
+/* Progress */
+.progress-section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.progress-section h3{margin-bottom:10px;font-size:1em}.progress-bar-bg{background:var(--bg3);border-radius:8px;height:18px;overflow:hidden;margin-bottom:5px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:8px;transition:width .5s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.7em;font-weight:800;color:#0a0e17;min-width:35px}
+
+/* Panel */
+.panel-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px}
+.panel-card h4{margin-bottom:8px;color:var(--accent3);font-size:1em}.panel-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.panel-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:.9em;min-width:100px;width:auto;flex:1}
+.panel-input:focus{outline:none;border-color:var(--accent)}.panel-btn{padding:10px 18px;border-radius:8px;border:none;background:var(--accent);color:#0a0e17;font-weight:700;cursor:pointer;transition:all .2s;font-size:.9em}.panel-btn:hover{background:#7dd3fc;transform:translateY(-1px)}
+.panel-btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}.panel-btn-secondary:hover{background:var(--border)}
+.brief-output{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:Consolas,monospace;font-size:.8em;color:var(--text2);white-space:pre-wrap;max-height:280px;overflow-y:auto;margin-top:10px}
+.check-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}.check-item:last-child{border-bottom:none}
+.check-box{width:20px;height:20px;border:2px solid var(--border);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75em;transition:all .2s;flex-shrink:0}.check-box:hover{border-color:var(--accent)}
+.check-box.checked{background:var(--accent2);border-color:var(--accent2);color:#fff}.check-text{font-size:.85em}.check-text.done{text-decoration:line-through;color:var(--text2)}
+
+/* Tools */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.tool-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;transition:all .2s}.tool-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tool-card h4{color:var(--accent);margin-bottom:6px;font-size:.95em}.tool-card p{color:var(--text2);font-size:.82em;margin-bottom:10px}
+.tool-card .install{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-family:Consolas,Monaco,monospace;font-size:.72em;color:var(--accent2);overflow-x:auto}
+
+/* Audio */
+.audio-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.audio-card h5{color:var(--accent);margin-bottom:5px;font-size:.9em}.audio-card p{color:var(--text2);font-size:.8em;margin-bottom:6px}
+.copy-btn{padding:5px 10px;border-radius:6px;border:none;background:var(--bg3);color:var(--text);font-size:.72em;cursor:pointer;border:1px solid var(--border)}.copy-btn:hover{background:var(--border)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.82em}th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:var(--bg3);color:var(--accent);font-weight:700;text-transform:uppercase;font-size:.72em;letter-spacing:.5px}tr:hover{background:rgba(56,189,248,.02)}
+
+/* Mindset */
+.mindset-box{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.25);border-radius:10px;padding:16px;margin:14px 0}
+.mindset-box h4{color:var(--accent4);margin-bottom:6px;font-size:.95em}
+.warning-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:16px;margin-bottom:14px}
+.warning-box h4{color:var(--danger);margin-bottom:6px}
+.tip-box{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:16px;margin-bottom:14px}
+.tip-box h4{color:var(--accent2);margin-bottom:6px}
+
+/* Mobile-specific */
+.mobile-banner{display:none;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0a0e17;padding:12px 16px;border-radius:10px;margin-bottom:14px;text-align:center;font-weight:700;font-size:.9em}
+.mobile-reading-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.mobile-reading-card h4{color:var(--accent);margin-bottom:8px;font-size:1em}.mobile-reading-card p{color:var(--text2);font-size:.85em;margin-bottom:10px}
+.big-btn{display:block;width:100%;padding:14px;border-radius:10px;border:none;background:var(--accent);color:#0a0e17;font-weight:800;font-size:1em;margin-bottom:10px;cursor:pointer;text-align:center;text-decoration:none}
+.big-btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+
+/* Responsive */
+@media(max-width:768px){
+.container{padding:8px}
+header{padding:18px 12px}header h1{font-size:1.5em}
+.stats-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-card{padding:10px 6px}.stat-card .number{font-size:1.4em}
+.tabs{padding:8px 0;gap:4px}
+.tab-btn{padding:7px 10px;font-size:.72em}
+.phase-header{padding:12px 14px}.phase-header h2{font-size:1em}
+.course{padding:12px 14px}.course-title{font-size:.95em}
+.panel-row{flex-direction:column;align-items:stretch}
+.panel-input{width:100%;min-width:unset}
+.panel-btn{width:100%}
+.tools-grid{grid-template-columns:1fr}
+table{font-size:.78em}th,td{padding:7px 8px}
+.brief-output{font-size:.75em}
+.mobile-banner{display:block}
+}
+
+footer{text-align:center;padding:24px;color:var(--text2);border-top:1px solid var(--border);margin-top:24px;font-size:.8em}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<header>
+<h1>🏛️ <span>UNI-AUTO</span> ULTIMATE v3.0</h1>
+<p>Tu Universidad Completa en un Archivo | PC + Móvil | 2026-2032</p>
+<div style="margin-top:10px">
+<span class="badge badge-blue">100% Offline</span>
+<span class="badge badge-green">PC + Móvil</span>
+<span class="badge badge-orange">6 Fases · ~4,200h</span>
+<span class="badge badge-purple">Panel Táctico</span>
+<span class="badge badge-red">CyberSec + CS</span>
+</div>
+</header>
+
+<!-- MOBILE BANNER -->
+<div class="mobile-banner" id="mobile-banner">
+📱 Modo Móvil Activado — Perfecto para lecturas y repaso
+</div>
+
+<!-- STATS -->
+<div class="stats-grid">
+<div class="stat-card"><div class="number" id="stat-total">0</div><div class="label">Cursos</div></div>
+<div class="stat-card"><div class="number" id="stat-hours">0</div><div class="label">Horas</div></div>
+<div class="stat-card"><div class="number" id="stat-progress">0%</div><div class="label">Progreso</div></div>
+<div class="stat-card"><div class="number" id="stat-streak">0</div><div class="label">Racha 🔥</div></div>
+<div class="stat-card"><div class="number" id="stat-ip">0</div><div class="label">IP</div></div>
+<div class="stat-card"><div class="number" id="stat-sessions">0</div><div class="label">Sesiones</div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+<button class="tab-btn active" onclick="showTab('plan')">📚 Plan</button>
+<button class="tab-btn" onclick="showTab('panel')">🛡️ Panel</button>
+<button class="tab-btn" onclick="showTab('today')">📖 Hoy</button>
+<button class="tab-btn" onclick="showTab('tools')">🛠️ Tools</button>
+<button class="tab-btn" onclick="showTab('labs')">🧪 Labs</button>
+<button class="tab-btn" onclick="showTab('audio')">🎧 Audio</button>
+<button class="tab-btn" onclick="showTab('certs')">🏅 Certs</button>
+<button class="tab-btn" onclick="showTab('mindset')">🧠 Mindset</button>
+<button class="tab-btn" onclick="showTab('tracker')">📊 Tracker</button>
+</div>
+
+<!-- ==================== TAB: PLAN DE ESTUDIOS ==================== -->
+<div id="plan" class="tab-content active">
+<div class="tip-box"><h4>💡 Cómo usar este plan</h4><p>Este no es un bootcamp. Es una carrera universitaria completa. Metodología: <strong>1) Teoría → 2) Proyecto → 3) Enseñar (blog/GitHub) → 4) Repetir.</strong> Usa el Panel Táctico para registrar cada sesión.</p></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2><span class="icon">🌱</span> FASE 0: Fundamentos Secundaria + Preparación</h2><div class="phase-meta">Meses 1-6 | ~15-20 hrs/semana | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Matemáticas: Álgebra, Geometría y Precálculo</span><div class="course-tags"><span class="badge badge-blue">Fundamento</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Base matemática indispensable. Sin esto no entenderás criptografía, algoritmos ni redes.</div><div class="course-resources"><a class="resource-link link-course" href="https://es.khanacademy.org/math" target="_blank">📐 Khan Academy (ES)</a><a class="resource-link link-video" href="https://www.youtube.com/playlist?list=PLyQSN7X0ro2314mKyUiOILaOC2hk6Pc3j" target="_blank">▶️ Julio Profe</a><a class="resource-link link-book" href="https://openstax.org/details/books/algebra-and-trigonometry" target="_blank">📖 OpenStax Álgebra</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Pensamiento Computacional + Intro CS</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Aprende a pensar como computadora antes de programar. Resolución de problemas, abstracción, descomposición.</div><div class="course-resources"><a class="resource-link link-course" href="https://cs50.harvard.edu/x/2026/" target="_blank">🎓 CS50x 2026 — Harvard</a><a class="resource-link link-video" href="https://www.youtube.com/cs50" target="_blank">▶️ CS50 YouTube</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Linux para Principiantes + Terminal</span><div class="course-tags"><span class="badge badge-orange">Lab</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">El 90% de servidores corren Linux. Debes dominar la terminal antes de escribir código serio.</div><div class="course-resources"><a class="resource-link link-course" href="https://linuxjourney.com/" target="_blank">🐧 Linux Journey</a><a class="resource-link link-book" href="https://linuxcommand.org/tlcl.php" target="_blank">📖 The Linux Command Line</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Inglés Técnico para IT</span><div class="course-tags"><span class="badge badge-blue">Soft Skill</span></div></div><div class="course-desc">El 95% de documentación técnica está en inglés. Nivel intermedio mínimo requerido.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.duolingo.com/" target="_blank">🦉 Duolingo</a><a class="resource-link link-video" href="https://www.youtube.com/@EnglishClass101" target="_blank">▶️ EnglishClass101</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto Fase 0</h4><p>Configura tu estación de trabajo: Mac M4 (producción) + HP Arch Linux (trinchera). Documenta todo en Obsidian. Crea tu primer repositorio GitHub con README profesional.</p></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2><span class="icon">🎓</span> FASE 1: Pregrado Año 1 — Programación y Fundamentos</h2><div class="phase-meta">Meses 7-18 | ~20-25 hrs/semana | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Programación Imperativa con Python</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Tu primer lenguaje. Python te enseña lógica, estructuras de control, funciones, y manejo de archivos sin la complejidad de C.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.py4e.com/" target="_blank">🎓 Python for Everybody</a><a class="resource-link link-book" href="https://greenteapress.com/thinkpython2/thinkpython2.pdf" target="_blank">📖 Think Python 2e</a><a class="resource-link link-lab" href="https://exercism.org/tracks/python" target="_blank">💻 Exercism Python</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Programación de Sistemas con C</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">C es el lenguaje de los sistemas operativos. Aprenderás memoria, punteros, y cómo la computadora realmente funciona.</div><div class="course-resources"><a class="resource-link link-course" href="https://cs50.harvard.edu/x/2026/" target="_blank">🎓 CS50 (módulo C)</a><a class="resource-link link-book" href="https://www.bell-labs.com/usr/dmr/www/cbook.pdf" target="_blank">📖 K&R C</a><a class="resource-link link-lab" href="https://www.codingame.com/" target="_blank">💻 CodinGame</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Estructuras de Datos y Algoritmos Básicos</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Listas, pilas, colas, árboles, grafos, búsqueda y ordenamiento. Base de toda entrevista técnica y diseño de sistemas.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.coursera.org/learn/algorithms-part1" target="_blank">🎓 Princeton Algorithms I</a><a class="resource-link link-book" href="https://runestone.academy/ns/books/published/pythonds/index.html" target="_blank">📖 Problem Solving with DS</a><a class="resource-link link-lab" href="https://visualgo.net/" target="_blank">💻 VisuAlgo</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Matemáticas Discretas para CS</span><div class="course-tags"><span class="badge badge-blue">Matemáticas</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Lógica proposicional, teoría de conjuntos, combinatoria, grafos. Esencial para criptografía y análisis de algoritmos.</div><div class="course-resources"><a class="resource-link link-course" href="https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/" target="_blank">🎓 MIT 6.042J</a><a class="resource-link link-book" href="https://www.cs.yale.edu/homes/aspnes/classes/202/notes.pdf" target="_blank">📖 Discrete Math Notes (Yale)</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Git, Control de Versiones y Flujo de Trabajo</span><div class="course-tags"><span class="badge badge-orange">Herramienta</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Todo tu trabajo debe vivir en GitHub. Aprende branching, merging, pull requests, y flujos colaborativos.</div><div class="course-resources"><a class="resource-link link-book" href="https://git-scm.com/book/en/v2" target="_blank">📖 Pro Git</a><a class="resource-link link-course" href="https://www.atlassian.com/git/tutorials" target="_blank">🎓 Atlassian Git</a><a class="resource-link link-lab" href="https://learngitbranching.js.org/" target="_blank">💻 Learn Git Branching</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Redes de Computadoras I</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Modelo OSI/TCP-IP, subnetting, DNS, DHCP, HTTP, routing básico. Sin redes no hay ciberseguridad.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFeZRBIxEbV" target="_blank">▶️ NetworkChuck</a><a class="resource-link link-book" href="https://gaia.cs.umass.edu/kurose_ross/index.php" target="_blank">📖 Computer Networking (recursos)</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto Fase 1</h4><p>Construye un <strong>gestor de contraseñas en Python</strong> (CLI) con cifrado AES, SQLite, y autenticación. Súbelo a GitHub con README, tests unitarios, y documentación.</p></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2><span class="icon">⚙️</span> FASE 2: Pregrado Año 2 — Sistemas y Arquitectura</h2><div class="phase-meta">Meses 19-30 | ~25 hrs/semana | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Arquitectura de Computadores: Nand2Tetris</span><div class="course-tags"><span class="badge badge-blue">Sistemas</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Construye una computadora desde una compuerta NAND hasta un sistema operativo funcional.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.nand2tetris.org/" target="_blank">🎓 Nand2Tetris</a><a class="resource-link link-book" href="https://www.nand2tetris.org/book" target="_blank">📖 The Elements of Computing Systems</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Sistemas Operativos en Profundidad</span><div class="course-tags"><span class="badge badge-blue">Sistemas</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Procesos, threads, scheduling, memoria virtual, sistemas de archivos, concurrencia, deadlocks.</div><div class="course-resources"><a class="resource-link link-book" href="http://pages.cs.wisc.edu/~remzi/OSTEP/" target="_blank">📖 OSTEP (¡GRATIS!)</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Bases de Datos Relacionales y SQL</span><div class="course-tags"><span class="badge badge-blue">Core</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Diseño relacional, normalización, índices, transacciones ACID, SQL avanzado.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.edx.org/cs50" target="_blank">🎓 CS50 SQL</a><a class="resource-link link-book" href="https://sqlbolt.com/" target="_blank">📖 SQLBolt</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Desarrollo Web Full Stack</span><div class="course-tags"><span class="badge badge-blue">Aplicaciones</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">HTML, CSS, JS, DOM, APIs REST, backend básico. Necesitas entender cómo se construyen apps para poder hackearlas y defenderlas.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.theodinproject.com/" target="_blank">🎓 The Odin Project</a><a class="resource-link link-book" href="https://eloquentjavascript.net/" target="_blank">📖 Eloquent JavaScript</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Seguridad Informática Fundamentos</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">CIA Triad, threat modeling, autenticación, autorización, criptografía simétrica/asimétrica, hashing, certificados TLS.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.coursera.org/learn/intro-cyber-security" target="_blank">🎓 NYU: Intro CyberSec</a><a class="resource-link link-book" href="https://www.crypto101.io/" target="_blank">📖 Crypto 101</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto Fase 2</h4><p>Construye un <strong>mini-sistema operativo educativo</strong> (bootloader + kernel básico en C/ASM) O un <strong>sistema POS web completo</strong> con JWT, roles, PostgreSQL, y logs de auditoría.</p></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2><span class="icon">🔬</span> FASE 3: Pregrado Año 3 — Algoritmos, Teoría y Ciberseguridad</h2><div class="phase-meta">Meses 31-42 | ~25-30 hrs/semana | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Algoritmos Avanzados y Complejidad</span><div class="course-tags"><span class="badge badge-blue">Teoría</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Divide y vencerás, programación dinámica, greedy, grafos avanzados, NP-completitud.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.coursera.org/learn/algorithms-part2" target="_blank">🎓 Princeton Algorithms II</a><a class="resource-link link-book" href="https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf" target="_blank">📖 CLRS</a><a class="resource-link link-lab" href="https://leetcode.com/" target="_blank">💻 LeetCode</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Teoría de la Computación</span><div class="course-tags"><span class="badge badge-blue">Teoría</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Autómatas, lenguajes formales, máquinas de Turing, computabilidad, complejidad P vs NP.</div><div class="course-resources"><a class="resource-link link-course" href="https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/" target="_blank">🎓 MIT 18.404J</a><a class="resource-link link-book" href="https://www.amazon.com/Introduction-Theory-Computation-Michael-Sipser/dp/113318779X" target="_blank">📖 Sipser: Intro to TOC</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Compiladores e Intérpretes</span><div class="course-tags"><span class="badge badge-purple">Especial</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Lexing, parsing, AST, análisis semántico, generación de código. Conecta directamente con tu proyecto Hado DSL.</div><div class="course-resources"><a class="resource-link link-course" href="https://craftinginterpreters.com/" target="_blank">🎓 Crafting Interpreters (¡GRATIS!)</a><a class="resource-link link-book" href="https://www3.nd.edu/~dthain/compilerbook/" target="_blank">📖 Intro to Compilers (ND)</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Ciberseguridad Ofensiva (Pentesting)</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Reconocimiento, escaneo, enumeración, explotación, post-explotación, reporte.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.kali.org/" target="_blank">🎓 Kali Linux</a><a class="resource-link link-book" href="https://overthewire.org/wargames/" target="_blank">💻 OverTheWire</a><a class="resource-link link-lab" href="https://www.vulnhub.com/" target="_blank">💻 VulnHub</a><a class="resource-link link-lab" href="https://tryhackme.com/" target="_blank">💻 TryHackMe</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Ciberseguridad Defensiva (Blue Team)</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">SIEM, análisis de logs, detección de intrusos, hardening, respuesta a incidentes.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.elastic.co/security-for-beginners" target="_blank">🎓 Elastic Security</a><a class="resource-link link-book" href="https://www.sans.org/white-papers/" target="_blank">📖 SANS White Papers</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto Fase 3</h4><p>Construye un <strong>scanner de vulnerabilidades web automatizado</strong> en Python. Detecta SQLi, XSS, configs inseguras. Documenta la arquitectura con diagramas.</p></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2><span class="icon">🏗️</span> FASE 4: Pregrado Año 4 — Ingeniería y Arquitectura</h2><div class="phase-meta">Meses 43-54 | ~25-30 hrs/semana | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Ingeniería de Software y Arquitectura</span><div class="course-tags"><span class="badge badge-blue">Arquitectura</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Patrones de diseño, arquitectura MVC/Microservicios, APIs, testing, CI/CD, DevOps básico.</div><div class="course-resources"><a class="resource-link link-book" href="https://refactoring.guru/" target="_blank">📖 Refactoring Guru</a><a class="resource-link link-book" href="https://martinfowler.com/books/eaa.html" target="_blank">📖 Patterns of Enterprise Architecture</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Sistemas Distribuidos</span><div class="course-tags"><span class="badge badge-blue">Arquitectura</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Consistencia, disponibilidad, partición (CAP), replicación, consenso (Raft), message queues.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.distributed-systems.net/index.php/books/distributed-systems-3rd-edition-2017/" target="_blank">📖 Distributed Systems (Tanenbaum)</a><a class="resource-link link-course" href="https://www.youtube.com/playlist?list=PLeKd45zvjcDFUEv_ohr_HdUFeZRBIxEbV" target="_blank">▶️ MIT 6.824</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Machine Learning y Data Science (Fundamentos)</span><div class="course-tags"><span class="badge badge-purple">Especial</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Regresión, clasificación, clustering, redes neuronales básicas. La IA transforma la ciberseguridad.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.fast.ai/" target="_blank">🎓 Fast.ai</a><a class="resource-link link-book" href="https://d2l.ai/" target="_blank">📖 Dive into Deep Learning</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Seguridad Avanzada: Forense, Malware, Threat Intel</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Análisis forense de discos, análisis de malware estático/dinámico, IOCs, MITRE ATT&CK, threat hunting.</div><div class="course-resources"><a class="resource-link link-course" href="https://attack.mitre.org/" target="_blank">🎓 MITRE ATT&CK</a><a class="resource-link link-lab" href="https://www.sans.org/digital-forensics-incident-response/" target="_blank">💻 SANS DFIR</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Proyecto Final de Pregrado (Tesis Equivalente)</span><div class="course-tags"><span class="badge badge-purple">Tesis</span></div></div><div class="course-desc">6 meses para construir algo significativo. Diseño de arquitectura, implementación, documentación técnica, presentación.</div><div class="course-resources"><span class="resource-link link-lab">💻 Opción A: Hado v1.0 — DSL cybersecurity con backend Go</span><span class="resource-link link-lab">💻 Opción B: SIEM open-source para LATAM PYMES</span><span class="resource-link link-lab">💻 Opción C: Framework pentesting automatizado</span></div></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2><span class="icon">🎓</span> FASE 5: Maestría Equivalente — Especialización e Investigación</h2><div class="phase-meta">Meses 55-78 | ~20-30 hrs/semana | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Criptografía Aplicada y Teórica</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Criptografía de clave pública, curvas elípticas, TLS 1.3, zero-knowledge proofs, post-quantum crypto.</div><div class="course-resources"><a class="resource-link link-course" href="https://www.coursera.org/learn/crypto" target="_blank">🎓 Stanford Crypto I</a><a class="resource-link link-book" href="https://crypto.stanford.edu/~dabo/cryptobook/" target="_blank">📖 Applied Cryptography (Boneh, gratis)</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Seguridad de Redes Avanzada</span><div class="course-tags"><span class="badge badge-red">Seguridad</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">Firewalls NG, IDS/IPS avanzados, segmentación zero-trust, VPNs, SD-WAN security.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.firewall.cx/" target="_blank">📖 Firewall.cx</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Arquitectura de Software a Escala</span><div class="course-tags"><span class="badge badge-blue">Arquitectura</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">System design interviews, sharding, caching, CDNs, load balancing, microservicios, event-driven, DDD.</div><div class="course-resources"><a class="resource-link link-book" href="https://www.designingdataintensiveapplications.com/" target="_blank">📖 Designing Data-Intensive Applications</a><a class="resource-link link-video" href="https://www.youtube.com/@SystemDesignInterview" target="_blank">▶️ System Design Interview</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Cloud Computing y DevSecOps</span><div class="course-tags"><span class="badge badge-blue">Cloud</span><span class="badge badge-green">Gratis</span></div></div><div class="course-desc">AWS/Azure/GCP fundamentos, containers (Docker/Kubernetes), IaC (Terraform), pipelines CI/CD seguras.</div><div class="course-resources"><a class="resource-link link-course" href="https://aws.amazon.com/training/digital/" target="_blank">🎓 AWS Free Training</a><a class="resource-link link-course" href="https://www.qwiklabs.com/" target="_blank">🎓 Qwiklabs (GCP)</a></div></div>
+<div class="course"><div class="course-header"><span class="course-title">Investigación, Publicación y Comunidad</span><div class="course-tags"><span class="badge badge-purple">Investigación</span></div></div><div class="course-desc">Escribe papers técnicos, blog posts, contribuye a open-source, habla en conferencias virtuales.</div><div class="course-resources"><a class="resource-link link-course" href="https://arxiv.org/" target="_blank">📄 arXiv</a><a class="resource-link link-course" href="https://dev.to/" target="_blank">📝 Dev.to</a></div></div>
+<div class="mindset-box"><h4>🧠 Proyecto de Maestría</h4><p>Publica un <strong>paper técnico o serie de blogs</strong> sobre un tema original. Presenta en meetup virtual. Posiciónate como <strong>expert</strong>, no solo "programador".</p></div>
+</div></div>
+
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2><span class="icon">💼</span> FASE 6: Empleabilidad y Certificaciones</h2><div class="phase-meta">Meses 79-84 | ~15 hrs/semana | Prep $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-header"><span class="course-title">Portafolio Profesional y Marca Personal</span><div class="course-tags"><span class="badge badge-blue">Carrera</span></div></div><div class="course-desc">GitHub impecable, LinkedIn optimizado, blog técnico activo, proyectos documentados con arquitectura explicada.</div></div>
+<div class="course"><div class="course-header"><span class="course-title">Entrevistas Técnicas y System Design</span><div class="course-tags"><span class="badge badge-blue">Carrera</span></div></div><div class="course-desc">Practica coding interviews, system design, y behavioral interviews en inglés.</div><div class="course-resources"><a class="resource-link link-lab" href="https://pramp.com/" target="_blank">💻 Pramp (free)</a><a class="resource-link link-lab" href="https://interviewing.io/" target="_blank">💻 interviewing.io</a></div></div>
+</div></div>
+</div>
+
+<!-- ==================== TAB: PANEL TACTICO ==================== -->
+<div id="panel" class="tab-content">
+<div class="tip-box"><h4>🛡️ Panel de Control de Sesiones</h4><p>Registra cada sesión de estudio. Tu progreso se guarda localmente. Exporta/Importa JSON para backup o sincronización con tu HP Arch Linux.</p></div>
+
+<div class="stats-grid">
+<div class="stat-card"><div class="number" id="panel-sessions">0</div><div class="label">Sesiones</div></div>
+<div class="stat-card"><div class="number" id="panel-hours">0</div><div class="label">Horas</div></div>
+<div class="stat-card"><div class="number" id="panel-streak">0</div><div class="label">Racha 🔥</div></div>
+<div class="stat-card"><div class="number" id="panel-ip">0</div><div class="label">IP</div></div>
+</div>
+
+<!-- SMART STATE -->
+<div class="panel-card" style="border-color:var(--accent)">
+<h4>🧭 Smart State — Dónde estás ahora</h4>
+<div id="smart-state-display" style="color:var(--text2);font-size:.9em">
+<p>Analizando tu historial...</p>
+</div>
+</div>
+
+<!-- REGISTRO -->
+<div class="panel-card">
+<h4>✍️ Registrar Nueva Sesión</h4>
+<div class="panel-row">
+<select id="p-phase" class="panel-input" onchange="updatePanelTask()">
+<option value="0">FASE 0: Fundamentos</option>
+<option value="1">FASE 1: Pregrado Año 1</option>
+<option value="2">FASE 2: Pregrado Año 2</option>
+<option value="3">FASE 3: Pregrado Año 3</option>
+<option value="4">FASE 4: Pregrado Año 4</option>
+<option value="5">FASE 5: Maestría</option>
+<option value="6">FASE 6: Empleabilidad</option>
+</select>
+<select id="p-week" class="panel-input" onchange="updatePanelTask()">
+<option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option>
+<option value="5">Semana 5</option><option value="6">Semana 6</option><option value="7">Semana 7</option><option value="8">Semana 8</option>
+<option value="9">Semana 9</option><option value="10">Semana 10</option><option value="11">Semana 11</option><option value="12">Semana 12</option>
+</select>
+<select id="p-day" class="panel-input">
+<option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option>
+</select>
+</div>
+<div class="panel-row">
+<input id="p-topic" class="panel-input" style="flex:1" placeholder="Tema estudiado hoy...">
+<input id="p-lesson" class="panel-input" style="flex:1" placeholder="Lección / Commit de la derrota...">
+</div>
+<div class="panel-row">
+<label style="color:var(--text2);font-size:.85em">⚡ Energía:</label>
+<select id="p-energy" class="panel-input"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+<label style="color:var(--text2);font-size:.85em">⭐ Score /10:</label>
+<select id="p-score" class="panel-input"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected>5</option><option>10</option></select>
+<label style="color:var(--text2);font-size:.85em">⏱️ Min:</label>
+<input id="p-duration" class="panel-input" type="number" value="60" min="1" max="480" style="width:70px">
+</div>
+<div class="panel-row">
+<label style="display:flex;align-items:center;gap:6px;color:var(--text2);font-size:.85em;cursor:pointer"><input type="checkbox" id="p-verified" style="accent-color:var(--accent2)"> 🏆 Semana verificada al 100%</label>
+<label style="display:flex;align-items:center;gap:6px;color:var(--text2);font-size:.85em;cursor:pointer"><input type="checkbox" id="p-extra" style="accent-color:var(--accent3)"> 🔥 Práctica extra</label>
+</div>
+<div class="panel-row" style="margin-top:10px">
+<button class="panel-btn" onclick="saveSession()">💾 Guardar Sesión</button>
+<button class="panel-btn panel-btn-secondary" onclick="generateBrief()">🎯 Mission Brief</button>
+<button class="panel-btn panel-btn-secondary" onclick="quickStart()">🚀 Quick Start</button>
+</div>
+<div class="panel-row" style="margin-top:8px">
+<button class="panel-btn panel-btn-secondary" onclick="exportJSON()">📤 Exportar JSON</button>
+<button class="panel-btn panel-btn-secondary" onclick="importJSON()">📥 Importar JSON</button>
+<button class="panel-btn panel-btn-secondary" onclick="importArch()">🐧 Importar Arch</button>
+</div>
+<div id="brief-area" style="display:none;margin-top:12px">
+<div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+<button class="copy-btn" onclick="copyBrief()">📋 Copiar Brief</button>
+<button class="copy-btn" onclick="window.open('https://gemini.google.com/app','_blank')">🤖 Abrir Gemini</button>
+<button class="copy-btn" onclick="window.open('https://notebooklm.google.com','_blank')">📓 NotebookLM</button>
+</div>
+<div class="brief-output" id="brief-text"></div>
+</div>
+</div>
+
+<!-- TAREA DEL DIA -->
+<div class="panel-card">
+<h4>📌 Tarea Recomendada para Hoy</h4>
+<div id="panel-task" style="color:var(--text2);font-size:.9em;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">Selecciona fase y semana arriba para ver la tarea recomendada...</div>
+<div style="margin-top:8px;color:var(--text2);font-size:.82em" id="panel-book"></div>
+</div>
+
+<!-- BITACORA -->
+<div class="panel-card">
+<h4>📜 Bitácora de Sesiones</h4>
+<div id="session-log" style="max-height:300px;overflow-y:auto">
+<p style="color:var(--text2);font-size:.85em">No hay sesiones registradas aún.</p>
+</div>
+</div>
+
+<!-- ARCH SYNC -->
+<div class="panel-card">
+<h4>🐧 Sincronización con Trinchera Arch Linux</h4>
+<p style="color:var(--text2);font-size:.82em;margin-bottom:8px">En tu HP con Arch, guarda sesiones en JSON y pégalo aquí para mergear.</p>
+<textarea id="arch-import" class="panel-input" style="width:100%;min-height:70px;font-family:monospace;font-size:.75em" placeholder='[{"date":"2026-05-10","phase":1,"week":2,...}]'></textarea>
+</div>
+</div>
+
+<!-- ==================== TAB: HOY (Mobile-Optimized) ==================== -->
+<div id="today" class="tab-content">
+<div class="tip-box"><h4>📖 Modo Hoy — Tu sesión de estudio en un vistazo</h4><p>Esta pestaña está optimizada para <strong>móvil</strong>. Aquí ves qué estudiar hoy, abres lecturas rápidas, y registras sesiones simples.</p></div>
+
+<div class="panel-card" style="border-color:var(--accent3)">
+<h4>🎯 Tu Sesión de Hoy</h4>
+<div id="today-task" style="font-size:1.1em;color:var(--text);margin-bottom:12px">Cargando...</div>
+<div id="today-book" style="color:var(--text2);font-size:.9em;margin-bottom:12px"></div>
+<div id="today-cs50" style="color:var(--text2);font-size:.85em;margin-bottom:16px"></div>
+<a class="big-btn" href="#" id="today-read-btn" target="_blank">📖 Abrir Lectura Principal</a>
+<a class="big-btn big-btn-secondary" href="https://gemini.google.com/app" target="_blank">🤖 Abrir Gemini (Tutor IA)</a>
+<a class="big-btn big-btn-secondary" href="https://notebooklm.google.com" target="_blank">📓 Abrir NotebookLM</a>
+</div>
+
+<div class="panel-card">
+<h4>⚡ Registro Rápido (Móvil)</h4>
+<div class="panel-row">
+<select id="t-phase" class="panel-input"><option value="0">F0</option><option value="1">F1</option><option value="2">F2</option><option value="3">F3</option><option value="4">F4</option><option value="5">F5</option><option value="6">F6</option></select>
+<select id="t-week" class="panel-input"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+<select id="t-day" class="panel-input"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select>
+</div>
+<input id="t-topic" class="panel-input" style="width:100%;margin-bottom:8px" placeholder="Tema estudiado">
+<div class="panel-row">
+<select id="t-energy" class="panel-input"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+<select id="t-score" class="panel-input"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected>5</option><option>10</option></select>
+<input id="t-duration" class="panel-input" type="number" value="45" min="1" max="300" style="width:80px">
+</div>
+<button class="big-btn" onclick="saveTodaySession()">💾 Guardar Sesión Rápida</button>
+</div>
+
+<div class="panel-card">
+<h4>📚 Lecturas del Día (Abrir en Móvil)</h4>
+<div id="today-readings"></div>
+</div>
+
+<div class="panel-card">
+<h4>🎧 Audio del Día</h4>
+<div id="today-audio"></div>
+</div>
+</div>
+
+<!-- ==================== TAB: TOOLS ==================== -->
+<div id="tools" class="tab-content">
+<div class="tip-box"><h4>🛠️ Toolbox Local (Todo Gratuito)</h4><p>Instala estas herramientas en tu PC. Son el entorno de trabajo de un profesional.</p></div>
+<div class="tools-grid">
+<div class="tool-card"><h4>📝 Visual Studio Code</h4><p>IDE universal. Soporta todos los lenguajes via extensiones.</p><div class="install">code.visualstudio.com<br>Extensiones: Python, C/C++, Go, Docker, GitLens</div></div>
+<div class="tool-card"><h4>🐧 VirtualBox + VMs</h4><p>Virtualización gratuita para labs de seguridad.</p><div class="install">virtualbox.org<br>VMs: Kali Linux, Ubuntu Server, Metasploitable 2</div></div>
+<div class="tool-card"><h4>🐳 Docker Desktop</h4><p>Containers para labs rápidos.</p><div class="install">docker.com/products/docker-desktop</div></div>
+<div class="tool-card"><h4>🧠 Ollama (IA Local)</h4><p>LLM local sin pagar APIs. Tu copiloto offline.</p><div class="install">ollama.com<br>ollama run codellama<br>ollama run deepseek-coder</div></div>
+<div class="tool-card"><h4>📓 Obsidian</h4><p>Segundo cerebro digital. Notas locales, markdown, grafos.</p><div class="install">obsidian.md<br>Uso personal: 100% gratis</div></div>
+<div class="tool-card"><h4>🌐 Draw.io Desktop</h4><p>Dibuja arquitecturas, diagramas de red, flujos.</p><div class="install">diagrams.net</div></div>
+<div class="tool-card"><h4>🔍 Wireshark</h4><p>Analizador de protocolos de red.</p><div class="install">wireshark.org</div></div>
+<div class="tool-card"><h4>🗄️ PostgreSQL + pgAdmin</h4><p>Base de datos relacional profesional.</p><div class="install">postgresql.org</div></div>
+<div class="tool-card"><h4>⚡ Git + GitHub</h4><p>Control de versiones y portafolio público.</p><div class="install">git-scm.com | github.com</div></div>
+<div class="tool-card"><h4>🔐 KeePassXC</h4><p>Gestor de contraseñas local y cifrado.</p><div class="install">keepassxc.org</div></div>
+<div class="tool-card"><h4>🎯 Burp Suite Community</h4><p>Plataforma de pentesting web. Edición gratuita.</p><div class="install">portswigger.net/burp/communitydownload</div></div>
+<div class="tool-card"><h4>📊 Wazuh (SIEM OSS)</h4><p>Seguridad unificada: HIDS, log analysis, threat detection.</p><div class="install">wazuh.com → Docker deployment</div></div>
+</div>
+</div>
+
+<!-- ==================== TAB: LABS ==================== -->
+<div id="labs" class="tab-content">
+<div class="warning-box"><h4>⚠️ Reglas de Oro del Lab</h4><p><strong>NUNCA</strong> ataques redes que no sean tuyas. <strong>Siempre</strong> usa redes aisladas (Host-Only/NAT). <strong>Documenta todo</strong>.</p></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 1: Red Básica Aislada</h2><div class="phase-meta">Fase 1-2 | VirtualBox | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">Topología: Host → vboxnet0 → Kali (attacker) + Ubuntu Server (target) + Metasploitable 2 (vulnerable).</div>
+<table><tr><th>VM</th><th>Rol</th><th>IP</th><th>RAM</th></tr><tr><td>Kali Linux</td><td>Atacante</td><td>192.168.56.101</td><td>4GB</td></tr><tr><td>Ubuntu Server</td><td>Servidor</td><td>192.168.56.102</td><td>2GB</td></tr><tr><td>Metasploitable 2</td><td>Vulnerable</td><td>192.168.56.103</td><td>512MB</td></tr></table>
+<div class="course-resources"><span class="resource-link link-lab">1. VirtualBox → Host Network Manager → vboxnet0</span><span class="resource-link link-lab">2. Kali VM: kali.org/get-kali</span><span class="resource-link link-lab">3. Metasploitable 2: sourceforge.net/projects/metasploitable</span><span class="resource-link link-lab">4. Desde Kali: nmap -sn 192.168.56.0/24</span></div>
+</div></div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 2: Apps Web Vulnerables</h2><div class="phase-meta">Fase 2-3 | Docker | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">Despliega apps intencionalmente vulnerables en Docker para practicar OWASP Top 10.</div>
+<div class="install" style="margin-bottom:12px"># DVWA<br>docker run --rm -it -p 80:80 vulnerables/web-dvwa<br><br># Juice Shop<br>docker run --rm -p 3000:3000 bkimminich/juice-shop<br><br># WebGoat<br>docker run -p 8080:8080 webgoat/webgoat</div>
+<div class="course-resources"><span class="resource-link link-lab">Accede: http://192.168.56.1:80</span><span class="resource-link link-lab">Practica: SQLi, XSS, CSRF, IDOR</span></div>
+</div></div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 3: SIEM + Detección</h2><div class="phase-meta">Fase 3-4 | Docker | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">Construye un SOC miniatura en tu PC.</div>
+<div class="install" style="margin-bottom:12px"># Wazuh All-in-One<br>git clone https://github.com/wazuh/wazuh-docker.git<br>cd wazuh-docker/single-node<br>docker-compose up -d</div>
+<div class="course-resources"><span class="resource-link link-lab">1. Wazuh agent en VM Ubuntu</span><span class="resource-link link-lab">2. Ataque desde Kali → observa alertas</span><span class="resource-link link-lab">3. Escribe reglas custom</span></div>
+</div></div></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🧪 Lab 4: Active Directory</h2><div class="phase-meta">Fase 4-5 | VirtualBox | $0</div></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-desc">Simula red empresarial Windows con AD.</div>
+<div class="course-resources"><span class="resource-link link-lab">VM 1: Windows Server 2022 (Eval 180 días) → DC</span><span class="resource-link link-lab">VM 2: Windows 10/11 (Eval) → Workstation</span><span class="resource-link link-lab">VM 3: Kali Linux → Attacker</span><span class="resource-link link-lab">Practica: Kerberoasting, Pass-the-Hash, BloodHound</span></div>
+</div></div></div>
+</div>
+
+<!-- ==================== TAB: AUDIO ==================== -->
+<div id="audio" class="tab-content">
+<div class="tip-box"><h4>🎧 Audio Prompts para NotebookLM / Ollama</h4><p>Copia el prompt, pégalo en NotebookLM → Audio Overview → Customize, o úsalo con Ollama local.</p></div>
+<div id="audio-container"></div>
+</div>
+
+<!-- ==================== TAB: CERTS ==================== -->
+<div id="certs" class="tab-content">
+<div class="tip-box"><h4>🏅 Estrategia de Certificaciones</h4><p><strong>Fase 1-5: $0.</strong> Prepárate con este plan. Certifícate solo cuando estés listo (Fase 6).</p></div>
+<div class="tools-grid">
+<div class="tool-card"><h4>🟢 GitHub Foundations</h4><p>Domino de Git, Actions, colaboración.</p><div class="install">~$50-100 | Fácil | Dev + Sec</div></div>
+<div class="tool-card"><h4>🟢 LPI Linux Essentials</h4><p>Base sólida Linux. Reconocida globalmente.</p><div class="install">~$120 | Fácil | SysAdmin</div></div>
+<div class="tool-card"><h4>🟡 CompTIA Security+</h4><p>La certificación entry-level más reconocida en cybersec. DoD 8570.</p><div class="install">~$400 | Media | Cybersec</div></div>
+<div class="tool-card"><h4>🟡 AWS Cloud Practitioner</h4><p>Fundamentos cloud. Puerta a DevSecOps.</p><div class="install">~$100 | Fácil-Media | Cloud</div></div>
+<div class="tool-card"><h4>🟠 eJPT (INE)</h4><p>Pentesting práctico hands-on. Muy respetada.</p><div class="install">~$200 | Media | Pentest</div></div>
+<div class="tool-card"><h4>🟠 OSCP</h4><p>El estándar de oro. Examen 24h hackeando máquinas reales.</p><div class="install">~$1,600 | Difícil | Pentest</div></div>
+<div class="tool-card"><h4>🔴 CISSP</h4><p>Gestión y arquitectura enterprise. Nivel senior.</p><div class="install">~$750 | Difícil | Arquitecto</div></div>
+</div>
+<div class="progress-section" style="margin-top:16px">
+<h3>📋 Checklist Pre-Certificación</h3>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">200+ horas de labs (TryHackMe, VulnHub, HTB)</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Dominar 3 lenguajes: Python, C/Go, JS/TS</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">5+ proyectos en GitHub con arquitectura documentada</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">10+ artículos técnicos en blog</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Contribuir a 2+ proyectos open-source</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">50+ problemas LeetCode medianos/difíciles</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Diseñar y documentar 3+ sistemas completos</span></div>
+<div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><span class="check-text">Inglés: lectura técnica fluida, conversación básica</span></div>
+</div>
+</div>
+
+<!-- ==================== TAB: MINDSET ==================== -->
+<div id="mindset" class="tab-content">
+<div class="mindset-box"><h4>🧠 "Picar Código" vs "Diseñar Sistemas"</h4><p>Los bootcamps enseñan <strong>sintaxis</strong>. Un ingeniero diseña <strong>arquitecturas</strong>: qué tecnología usar, cómo escalar, dónde poner la DB, cómo proteger datos. Eso paga $100k+/año y permite trabajo remoto.</p></div>
+<div class="phase"><div class="phase-header" onclick="togglePhase(this)"><div><h2>🔄 Los 5 Pilares del Pensamiento Sistémico</h2></div><span style="font-size:1.3em">▼</span></div><div class="phase-content">
+<div class="course"><div class="course-title">1. Abstracción-Jerarquía</div><div class="course-desc">No pienses en "código". Piensa en <strong>capas</strong>: Usuario → API → Negocio → Persistencia → Infra. Cada capa es un sistema con contratos.</div></div>
+<div class="course"><div class="course-title">2. Estado-Transición</div><div class="course-desc">Todo sistema es una máquina de estados. Las transiciones deben ser <strong>atómicas, trazables y seguras</strong>. Dibuja diagramas antes de programar.</div></div>
+<div class="course"><div class="course-title">3. Fallo-Primero</div><div class="course-desc">Asume que todo fallará. Diseña para la recuperación, no solo el camino feliz. Esto separa junior de senior.</div></div>
+<div class="course"><div class="course-title">4. Seguridad por Diseño</div><div class="course-desc">La seguridad no es un plugin al final. Es una propiedad emergente. Usa <strong>threat modeling</strong> (STRIDE) en cada proyecto.</div></div>
+<div class="course"><div class="course-title">5. Composición-Reutilización</div><div class="course-desc">Los grandes sistemas se componen. Tu trabajo es elegir componentes correctos y definir sus interacciones.</div></div>
+</div></div>
+<div class="tip-box"><h4>✍️ Ritual Diario de Arquitecto</h4><p>Antes de abrir VS Code:</p><ol style="margin-left:20px;margin-top:6px;color:var(--text2)"><li>Dibuja el sistema en papel (cajas y flechas)</li><li>Escribe el "contrato" de cada componente</li><li>Identifica 3 ataques posibles y 3 defensas</li><li>Luego programa</li></ol></div>
+<div class="progress-section"><h3>📚 Libros que Reconfiguran el Cerebro</h3>
+<table><tr><th>Libro</th><th>Qué te enseña</th><th>Dónde</th></tr><tr><td>The Elements of Computing Systems (Nand2Tetris)</td><td>Cómo funciona una computadora desde cero</td><td>nand2tetris.org</td></tr><tr><td>Operating Systems: Three Easy Pieces</td><td>Cómo funciona un SO moderno</td><td>pages.cs.wisc.edu/~remzi/OSTEP/</td></tr><tr><td>Crafting Interpreters</td><td>Cómo funcionan los lenguajes de programación</td><td>craftinginterpreters.com</td></tr><tr><td>Designing Data-Intensive Applications</td><td>Cómo diseñar sistemas que escalan</td><td>Compra usado</td></tr><tr><td>The Architecture of Open Source Applications</td><td>Cómo piensan arquitectos reales</td><td>aosabook.org (¡GRATIS!)</td></tr><tr><td>Crypto 101</td><td>Criptografía sin matemáticas intimidantes</td><td>crypto101.io</td></tr></table>
+</div>
+</div>
+
+<!-- ==================== TAB: TRACKER ==================== -->
+<div id="tracker" class="tab-content">
+<div class="progress-section"><h3>📊 Progreso Global</h3><div class="progress-bar-bg"><div class="progress-bar-fill" id="global-progress" style="width:0%">0%</div></div><p style="color:var(--text2);font-size:.8em;margin-top:5px">Marca cursos completados. Se guarda automáticamente.</p></div>
+<div class="progress-section"><h3>✅ FASE 0</h3><div id="tracker-f0"></div></div>
+<div class="progress-section"><h3>✅ FASE 1</h3><div id="tracker-f1"></div></div>
+<div class="progress-section"><h3>✅ FASE 2</h3><div id="tracker-f2"></div></div>
+<div class="progress-section"><h3>✅ FASE 3</h3><div id="tracker-f3"></div></div>
+<div class="progress-section"><h3>✅ FASE 4</h3><div id="tracker-f4"></div></div>
+<div class="progress-section"><h3>✅ FASE 5</h3><div id="tracker-f5"></div></div>
+<div class="progress-section"><h3>✅ FASE 6</h3><div id="tracker-f6"></div></div>
+<div style="text-align:center;margin-top:14px"><button onclick="resetProgress()" style="padding:10px 20px;background:var(--danger);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700">🗑️ Resetear Progreso</button></div>
+</div>
+
+<footer>
+<p>UNI-AUTO ULTIMATE v3.0 | PC + Móvil | 2026-2032</p>
+<p style="margin-top:5px;font-size:.78em">Guarda este archivo en tu PC y móvil. Ábrelo con doble click. Funciona 100% offline.</p>
+<p style="margin-top:3px;font-size:.72em;color:var(--text2)">Basado en: OSSU, MIT OCW, Harvard CS50, Nand2Tetris, Panel Táctico v5.0</p>
+</footer>
+</div>
+
+<script>
+// ── Core ──
+function showTab(tabId){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(tabId).classList.add('active');event.target.classList.add('active');if(tabId==='today')updateTodayTab();}
+function togglePhase(header){const c=header.nextElementSibling;const a=header.querySelector('span:last-child');c.classList.toggle('open');a.textContent=c.classList.contains('open')?'▲':'▼';}
+function toggleCheck(box){box.classList.toggle('checked');box.textContent=box.classList.contains('checked')?'✓':'';box.nextElementSibling.classList.toggle('done');}
+
+// ── Data ──
+const PHASE_NAMES=['F0: Fundamentos','F1: Pregrado Año 1','F2: Pregrado Año 2','F3: Pregrado Año 3','F4: Pregrado Año 4','F5: Maestría','F6: Empleabilidad'];
+const PHASE_WEEKS=[4,12,12,12,12,24,6];
+const BOOKS_BY_PHASE={
+0:"📖 The Linux Command Line (Shotts) + Khan Academy Matemáticas",
+1:"📖 Think Python 2e (Downey) + Pro Git (Chacon)",
+2:"📖 Nand2Tetris (Nisan & Schocken) + OSTEP (Remzi)",
+3:"📖 CLRS (Intro to Algorithms) + Crafting Interpreters (Nystrom)",
+4:"📖 Designing Data-Intensive Applications (Kleppmann) + Refactoring Guru",
+5:"📖 Applied Cryptography (Boneh, gratis) + Distributed Systems (Tanenbaum)",
+6:"📖 Cracking the Coding Interview (McDowell) + System Design Interview"
+};
+const CS50X={
+0:"CS50x Sem 0 — Scratch: pensamiento computacional, funciones, bucles",
+1:"CS50x Sem 1 — C: compilación, tipos, operadores, condicionales, bucles",
+2:"CS50x Sem 2 — Arrays: memoria, cadenas, cifrado, depuración",
+3:"CS50x Sem 3 — Algorithms: búsqueda lineal/binaria, Bubble/Merge Sort, Big O",
+4:"CS50x Sem 4 — Memory: punteros, malloc/free, estructuras, archivos",
+5:"CS50x Sem 5 — Data Structures: listas enlazadas, árboles, tablas hash, tries",
+6:"CS50x Sem 6 — Python: sintaxis, tipos, listas, dicts, archivos",
+7:"CS50x Sem 7 — SQL + AI: SQLite, SELECT/INSERT/UPDATE/DELETE, JOINs",
+8:"CS50x Sem 8 — HTML, CSS, JavaScript: DOM, eventos, fetch API",
+9:"CS50x Sem 9 — Flask: rutas, Jinja2, sesiones, formularios",
+10:"CS50x Sem 10 — Proyecto Final: diseñar, ejecutar y presentar portfolio"
+};
+
+function getTask(phase,week,day){
+const tasks={
+0:{1:"Khan Academy Álgebra + CS50 Sem 0",2:"Linux Journey comandos básicos + Python variables",3:"Condicionales + bucles en Python",4:"Funciones + Git init"},
+1:{1:"Python for Everybody Sem 1-2",2:"CS50 Sem 1 (C)",3:"CS50 Sem 2 (Arrays)",4:"Estructuras de datos básicas",5:"Matemáticas discretas",6:"Redes OSI/TCP-IP",7:"Git avanzado",8:"Proyecto: Gestor de contraseñas",9:"Repaso + pytest",10:"CS50 Sem 3 (Algorithms)",11:"CS50 Sem 4 (Memory)",12:"Proyecto final Fase 1"},
+2:{1:"Nand2Tetris Sem 1-2",2:"Nand2Tetris Sem 3-4",3:"OSTEP: procesos y memoria",4:"OSTEP: concurrencia",5:"SQL y normalización",6:"PostgreSQL",7:"HTML5 + CSS Flexbox/Grid",8:"DOM + Fetch API",9:"Flask: rutas y Jinja2",10:"API REST",11:"Seguridad: CIA Triad + cripto",12:"Proyecto POS web + auditoría"},
+3:{1:"Algoritmos avanzados: DP, greedy",2:"Grafos avanzados",3:"Teoría: autómatas",4:"Máquinas de Turing, P vs NP",5:"Crafting Interpreters: scanner",6:"Crafting Interpreters: parser",7:"Hado DSL: parser real",8:"Pentesting: reconocimiento",9:"Pentesting: explotación web",10:"Blue Team: SIEM + Wazuh",11:"Blue Team: logs",12:"Proyecto: Scanner vulns web"},
+4:{1:"Patrones: SOLID, Factory",2:"Arquitectura MVC vs Microservicios",3:"Sistemas distribuidos: CAP",4:"Raft + message queues",5:"ML: regresión",6:"Redes neuronales básicas",7:"Forense: análisis de disco",8:"Malware: análisis estático",9:"MITRE ATT&CK",10:"Threat hunting",11:"Proyecto final: diseño",12:"Proyecto final: implementación"},
+5:{1:"Cripto: RSA, clave pública",2:"Curvas elípticas, TLS 1.3",3:"Zero-knowledge proofs",4:"Post-quantum crypto",5:"Firewalls NG",6:"IDS/IPS avanzados",7:"System Design: sharding",8:"System Design: caching",9:"AWS: IAM, VPC",10:"Docker + Kubernetes",11:"Terraform + CI/CD",12:"Investigación: paper",13:"Investigación: publicación",14:"Contribución open-source",15:"Charla en meetup",16:"Blog técnico avanzado",17:"Networking profesional",18:"Mentoría",19:"Especialización",20:"Especialización",21:"Especialización",22:"Especialización",23:"Especialización",24:"Proyecto maestría final"},
+6:{1:"Portafolio: GitHub + LinkedIn",2:"Blog técnico + marca",3:"Pramp: mock interviews",4:"System design practice",5:"Aplicaciones a trabajos remotos",6:"Negociación salarial"}
+};
+return(tasks[phase]&&tasks[phase][week])||`Continúa con ${PHASE_NAMES[phase]} — Semana ${week}.`;
+}
+
+// ── Sessions ──
+function getSessions(){return JSON.parse(localStorage.getItem('uni-auto-sessions')||'[]');}
+function saveSessions(s){localStorage.setItem('uni-auto-sessions',JSON.stringify(s));}
+
+function updatePanelStats(){
+const s=getSessions();const totalMin=s.reduce((a,e)=>a+(e.duration_min||0),0);const hours=Math.round(totalMin/60*10)/10;
+let streak=0;const dates=[...new Set(s.map(e=>e.date.slice(0,10)))].sort();const today=new Date().toISOString().slice(0,10);let check=new Date();check.setDate(check.getDate()-1);if(dates.includes(today))streak=1;while(dates.includes(check.toISOString().slice(0,10))){streak++;check.setDate(check.getDate()-1);}
+let ip=0;for(const e of s){ip+=e.score*10;if(e.verified_100)ip+=50;if(e.extra_practice)ip+=20;}
+document.getElementById('panel-sessions').textContent=s.length;document.getElementById('panel-hours').textContent=hours;document.getElementById('panel-streak').textContent=streak;document.getElementById('panel-ip').textContent=ip;document.getElementById('stat-streak').textContent=streak;document.getElementById('stat-ip').textContent=ip;document.getElementById('stat-hours').textContent=hours;document.getElementById('stat-sessions').textContent=s.length;
+}
+
+function renderLog(){
+const s=getSessions();const log=document.getElementById('session-log');if(!s.length){log.innerHTML='<p style="color:var(--text2);font-size:.85em">No hay sesiones registradas aún.</p>';return;}
+log.innerHTML=s.slice().reverse().map(e=>{
+const t=e.verified_100?'🏆':'';const x=e.extra_practice?'🔥':'';const dt=new Date(e.date).toLocaleString('es-GT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+return`<div style="border-bottom:1px solid var(--border);padding:8px 0;font-size:.82em"><div style="font-weight:700;color:var(--accent)">${t}${x} F${e.phase} W${e.week} · ${e.day} · ${dt}</div><div style="color:var(--text)">${e.topic}</div><div style="color:var(--text2)">⭐ ${e.score}/10 · ⚡ ${e.energy}/5 · ⏱️ ${e.duration_min}min</div>${e.lesson?`<div style="color:var(--accent3);margin-top:3px;font-size:.8em">💡 ${e.lesson}</div>`:''}</div>`;
+}).join('');
+}
+
+function updatePanelTask(){
+const ph=parseInt(document.getElementById('p-phase').value);const wk=parseInt(document.getElementById('p-week').value);
+document.getElementById('panel-task').innerHTML=`<strong>${PHASE_NAMES[ph]} — Semana ${wk}:</strong><br>${getTask(ph,wk,'Lunes')}`;
+document.getElementById('panel-book').textContent=BOOKS_BY_PHASE[ph]||'';
+}
+
+function saveSession(){
+const ph=parseInt(document.getElementById('p-phase').value);const wk=parseInt(document.getElementById('p-week').value);const day=document.getElementById('p-day').value;
+const topic=document.getElementById('p-topic').value||'Sin tema';const lesson=document.getElementById('p-lesson').value||'';
+const energy=parseInt(document.getElementById('p-energy').value);const score=parseInt(document.getElementById('p-score').value);const dur=parseInt(document.getElementById('p-duration').value)||0;
+const verified=document.getElementById('p-verified').checked;const extra=document.getElementById('p-extra').checked;
+const entry={id:crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2),date:new Date().toISOString(),phase:ph,week:wk,day:day,topic:topic,lesson:lesson,energy:energy,score:score,duration_min:dur,verified_100:verified,extra_practice:extra,platform:'HTML Panel'};
+const s=getSessions();s.push(entry);saveSessions(s);updatePanelStats();renderLog();updateSmartState();
+document.getElementById('p-topic').value='';document.getElementById('p-lesson').value='';
+alert('✅ Sesión guardada. ¡Sigue así!');
+}
+
+function saveTodaySession(){
+const ph=parseInt(document.getElementById('t-phase').value);const wk=parseInt(document.getElementById('t-week').value);const day=document.getElementById('t-day').value;
+const topic=document.getElementById('t-topic').value||'Sin tema';const energy=parseInt(document.getElementById('t-energy').value);const score=parseInt(document.getElementById('t-score').value);const dur=parseInt(document.getElementById('t-duration').value)||0;
+const entry={id:crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2),date:new Date().toISOString(),phase:ph,week:wk,day:day,topic:topic,lesson:'',energy:energy,score:score,duration_min:dur,verified_100:false,extra_practice:false,platform:'Mobile Quick'};
+const s=getSessions();s.push(entry);saveSessions(s);updatePanelStats();renderLog();updateSmartState();updateTodayTab();
+document.getElementById('t-topic').value='';
+alert('✅ Sesión rápida guardada.');
+}
+
+function generateBrief(){
+const ph=parseInt(document.getElementById('p-phase').value);const wk=parseInt(document.getElementById('p-week').value);const day=document.getElementById('p-day').value;const energy=parseInt(document.getElementById('p-energy').value);
+const s=getSessions();const last=s.length?s[s.length-1]:{};
+const role=energy>=4?'GENERAL':(energy>=2?'SOCRÁTICO':'HISTORIADOR');
+const today=new Date().toLocaleDateString('es-GT',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const task=getTask(ph,wk,day);const cs50x=CS50X[Math.max(0,wk-1)]||'';const book=BOOKS_BY_PHASE[ph]||'';
+const brief=`🛡️ MISSION BRIEF — ${today}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PILOTO: Christian Toledo
+FASE: ${ph} (${PHASE_NAMES[ph]}) | SEMANA: ${wk} | DÍA: ${day} | ENERGÍA: ${energy}/5
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 ÚLTIMA SESIÓN:
+ Tema: ${last.topic||'Primera sesión'}
+ Lección: ${last.lesson||'N/A'}
+
+🎯 TAREA DE HOY:
+ ${task}
+${cs50x?`📚 CS50x PARALELO:
+ ${cs50x}`:''}
+📖 LECTURA RECOMENDADA:
+ ${book}
+
+🤖 ROL SOLICITADO: ${role}
+
+INSTRUCCIONES PARA TUTOR IA:
+1. Activa el rol indicado.
+2. NO des la solución directa. Hazme pensar.
+3. Si energía ≤ 2, haz revisión, no conceptos nuevos.
+4. Al final, genera mi entrada de diario para el Panel.
+5. Soy Christian Toledo. Mac M4 (producción) + HP Arch Linux (trinchera).
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+document.getElementById('brief-text').textContent=brief;document.getElementById('brief-area').style.display='block';
+}
+function copyBrief(){navigator.clipboard.writeText(document.getElementById('brief-text').textContent).then(()=>alert('📋 Brief copiado'));}
+function quickStart(){generateBrief();window.open('https://gemini.google.com/app','_blank');}
+function exportJSON(){const s=getSessions();const blob=new Blob([JSON.stringify(s,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='uni_auto_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const data=JSON.parse(ev.target.result);if(!Array.isArray(data))throw new Error('No es array');const s=getSessions();const ex=new Set(s.map(x=>x.id));let added=0;for(const entry of data){if(!ex.has(entry.id)){s.push(entry);ex.add(entry.id);added++;}}saveSessions(s);updatePanelStats();renderLog();updateSmartState();alert(`📥 ${added} sesiones importadas`);}catch(err){alert('❌ Error: '+err.message);}};r.readAsText(f);};inp.click();}
+function importArch(){const raw=document.getElementById('arch-import').value.trim();if(!raw){alert('Pega JSON de Arch primero');return;}try{const data=JSON.parse(raw);if(!Array.isArray(data))throw new Error('No es array');const s=getSessions();const ex=new Set(s.map(x=>x.id||`${x.date}|${x.phase}|${x.week}`));let added=0;for(const entry of data){const key=entry.id||`${entry.date}|${entry.phase||0}|${entry.week||1}`;if(!ex.has(key)){entry.platform='Arch Linux';s.push(entry);ex.add(key);added++;}}saveSessions(s);updatePanelStats();renderLog();updateSmartState();alert(`🐧 ${added} sesiones de Arch importadas`);document.getElementById('arch-import').value='';}catch(err){alert('❌ Error: '+err.message);}}
+
+// ── Smart State ──
+function updateSmartState(){
+const s=getSessions();if(!s.length){document.getElementById('smart-state-display').innerHTML='<p>Aún no hay sesiones. Empieza registrando tu primera sesión arriba.</p>';return;}
+const phases=sortedUnique(s.map(e=>e.phase));const lastPhase=Math.max(...phases);
+const advanceCount=s.filter(e=>e.phase===lastPhase).length;
+const nextPhase=advanceCount>=5&&lastPhase<6?lastPhase+1:lastPhase;
+const totalMin=s.reduce((a,e)=>a+(e.duration_min||0),0);
+const today=new Date().toISOString().slice(0,10);const studiedToday=s.some(e=>e.date.startsWith(today));
+document.getElementById('smart-state-display').innerHTML=`
+<p><strong style="color:var(--accent)">Fase actual recomendada:</strong> ${PHASE_NAMES[nextPhase]}</p>
+<p><strong>Sesiones en fase ${lastPhase}:</strong> ${advanceCount} ${advanceCount>=5?'✅ (listo para avanzar)':`(${5-advanceCount} más para avanzar)`}</p>
+<p><strong>Total horas estudiadas:</strong> ${Math.round(totalMin/60*10)/10}h</p>
+<p><strong>¿Estudiaste hoy?</strong> ${studiedToday?'✅ Sí':'❌ No — ¡registra una sesión!'}</p>
+<p><strong>Libro recomendado:</strong> ${BOOKS_BY_PHASE[nextPhase]||''}</p>
+`;
+// Auto-set panel to recommended phase
+if(!studiedToday){document.getElementById('p-phase').value=nextPhase;updatePanelTask();}
+}
+function sortedUnique(arr){return [...new Set(arr)].sort((a,b)=>a-b);}
+
+// ── Today Tab ──
+function updateTodayTab(){
+const s=getSessions();let phase=0,week=1;
+if(s.length){
+const phases=sortedUnique(s.map(e=>e.phase));const lp=Math.max(...phases);
+const wc=s.filter(e=>e.phase===lp).length;phase=wc>=5&&lp<6?lp+1:lp;
+const weeksInPhase=s.filter(e=>e.phase===phase).map(e=>e.week);week=weeksInPhase.length?Math.max(...weeksInPhase):1;
+}
+const dayNames=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const todayDay=dayNames[new Date().getDay()];
+const task=getTask(phase,week,todayDay);const cs50x=CS50X[Math.max(0,week-1)]||'';const book=BOOKS_BY_PHASE[phase]||'';
+document.getElementById('today-task').innerHTML=`<strong style="color:var(--accent)">${PHASE_NAMES[phase]} — Semana ${week} · ${todayDay}</strong><br><br>${task}`;
+document.getElementById('today-book').textContent=book;
+document.getElementById('today-cs50').textContent=cs50x?`CS50x: ${cs50x}`:'';
+// Readings
+const readings=[
+{url:'https://es.khanacademy.org/math',text:'📐 Khan Academy — Matemáticas',phases:[0]},
+{url:'https://cs50.harvard.edu/x/2026/',text:'🎓 CS50x 2026 — Harvard',phases:[0,1,2,3]},
+{url:'https://linuxjourney.com/',text:'🐧 Linux Journey',phases:[0,1]},
+{url:'https://www.py4e.com/',text:'🎓 Python for Everybody',phases:[1]},
+{url:'https://greenteapress.com/thinkpython2/thinkpython2.pdf',text:'📖 Think Python 2e (PDF)',phases:[1]},
+{url:'https://www.nand2tetris.org/',text:'🎓 Nand2Tetris',phases:[2]},
+{url:'http://pages.cs.wisc.edu/~remzi/OSTEP/',text:'📖 OSTEP — Sistemas Operativos (GRATIS)',phases:[2]},
+{url:'https://sqlbolt.com/',text:'📖 SQLBolt — SQL Interactivo',phases:[2]},
+{url:'https://craftinginterpreters.com/',text:'🎓 Crafting Interpreters (GRATIS)',phases:[3]},
+{url:'https://www.coursera.org/learn/algorithms-part2',text:'🎓 Princeton Algorithms II',phases:[3]},
+{url:'https://tryhackme.com/',text:'💻 TryHackMe — Pentesting',phases:[3,4]},
+{url:'https://www.designingdataintensiveapplications.com/',text:'📖 Designing Data-Intensive Applications',phases:[4,5]},
+{url:'https://attack.mitre.org/',text:'🎓 MITRE ATT&CK Framework',phases:[4,5]},
+{url:'https://crypto.stanford.edu/~dabo/cryptobook/',text:'📖 Applied Cryptography (Boneh, gratis)',phases:[5]},
+{url:'https://www.fast.ai/',text:'🎓 Fast.ai — Deep Learning',phases:[4,5]},
+];
+const relevant=readings.filter(r=>r.phases.includes(phase));
+document.getElementById('today-readings').innerHTML=relevant.map(r=>`<a class="big-btn big-btn-secondary" href="${r.url}" target="_blank" style="margin-bottom:8px;font-size:.9em;padding:10px">${r.text}</a>`).join('')||'<p style="color:var(--text2);font-size:.85em">No hay lecturas específicas para esta fase.</p>';
+// Audio
+const audioPrompts=[
+{phase:0,title:'Fundamentos de Titanio',text:'Deep Dive 15 min: Linux + Python básico, 15 comandos esenciales, variables, tipos de datos.'},
+{phase:1,title:'Python Intermedio + Estructuras',text:'Deep Dive 20 min: listas, diccionarios, tuplas, sets. Analogías del mundo real. List comprehensions.'},
+{phase:2,title:'Nand2Tetris + Sistemas Operativos',text:'Deep Dive 25 min: de NAND hasta assembler. Procesos, memoria virtual, scheduling en Linux.'},
+{phase:3,title:'Algoritmos y Compiladores',text:'Deep Dive 25 min: Big O, DP, grafos. Luego: ¿por qué construir tu propio lenguaje (Hado)?'},
+{phase:4,title:'Arquitectura a Escala',text:'Deep Dive 25 min: CAP theorem, sharding, caching. Caso real: POS para 10,000 tiendas LATAM.'},
+{phase:5,title:'Criptografía Avanzada',text:'Deep Dive 25 min: RSA, curvas elípticas, TLS 1.3, zero-knowledge proofs, post-quantum crypto.'},
+{phase:6,title:'Portafolio y Carrera Remota',text:'The Debate 20 min: ¿GitHub projects vs certificaciones vs networking? Estrategia práctica 2026.'},
+];
+const au=audioPrompts.find(a=>a.phase===phase)||audioPrompts[0];
+document.getElementById('today-audio').innerHTML=`<div class="audio-card"><h5>🎧 ${au.title}</h5><p style="font-size:.85em;color:var(--text2)">${au.text}</p><button class="copy-btn" onclick="navigator.clipboard.writeText('${au.text.replace(/'/g,"\'")}').then(()=>alert('📋 Prompt copiado'))">📋 Copiar Prompt</button></div>`;
+// Set quick form
+if(s.length){document.getElementById('t-phase').value=phase;document.getElementById('t-week').value=week;document.getElementById('t-day').value=todayDay;}
+}
+
+// ── Tracker ──
+const trackerData={
+'tracker-f0':['Matemáticas: Álgebra, Geometría, Precálculo','Pensamiento Computacional (CS50)','Linux para Principiantes','Inglés Técnico'],
+'tracker-f1':['Python Imperativo','Programación en C','Estructuras de Datos y Algoritmos','Matemáticas Discretas','Git y Control de Versiones','Redes de Computadoras I'],
+'tracker-f2':['Arquitectura: Nand2Tetris I y II','Sistemas Operativos','Bases de Datos y SQL','Web Full Stack','Seguridad Fundamentos'],
+'tracker-f3':['Algoritmos Avanzados','Teoría de la Computación','Compiladores e Intérpretes','Pentesting (Red Team)','Blue Team / Defensa'],
+'tracker-f4':['Ingeniería de Software','Sistemas Distribuidos','Machine Learning','Forense y Malware','Proyecto Final Pregrado'],
+'tracker-f5':['Criptografía Avanzada','Seguridad de Redes','Arquitectura a Escala','Cloud y DevSecOps','Investigación y Publicación'],
+'tracker-f6':['Portafolio Profesional','Entrevistas Técnicas','Networking Profesional','Aplicación a Trabajos Remotos']
+};
+function initTracker(){for(const[id,items]of Object.entries(trackerData)){const c=document.getElementById(id);if(!c)continue;const saved=JSON.parse(localStorage.getItem('uni-auto-'+id)||'[]');c.innerHTML=items.map((item,i)=>{const ch=saved.includes(i)?'checked':'';const dn=saved.includes(i)?'done':'';const ck=saved.includes(i)?'✓':'';return`<div class="check-item"><div class="check-box ${ch}" onclick="toggleTrackerCheck('${id}',${i},this)">${ck}</div><span class="check-text ${dn}">${item}</span></div>`;}).join('');}updateGlobalProgress();}
+function toggleTrackerCheck(id,index,box){box.classList.toggle('checked');box.textContent=box.classList.contains('checked')?'✓':'';box.nextElementSibling.classList.toggle('done');let s=JSON.parse(localStorage.getItem('uni-auto-'+id)||'[]');if(s.includes(index))s=s.filter(x=>x!==index);else s.push(index);localStorage.setItem('uni-auto-'+id,JSON.stringify(s));updateGlobalProgress();}
+function updateGlobalProgress(){let t=0,d=0;for(const[id,items]of Object.entries(trackerData)){t+=items.length;const s=JSON.parse(localStorage.getItem('uni-auto-'+id)||'[]');d+=s.length;}const p=t>0?Math.round((d/t)*100):0;document.getElementById('global-progress').style.width=p+'%';document.getElementById('global-progress').textContent=p+'%';document.getElementById('stat-progress').textContent=p+'%';document.getElementById('stat-total').textContent=t;}
+function resetProgress(){if(confirm('¿Borrar TODO?')){for(const id of Object.keys(trackerData)){localStorage.removeItem('uni-auto-'+id);}localStorage.removeItem('uni-auto-sessions');initTracker();updatePanelStats();renderLog();updateSmartState();}}
+
+// ── Audio Prompts Full ──
+const audioPrompts=[
+{phase:0,weeks:'1-4',title:'Fundamentos de Titanio',fmt:'Deep Dive',min:15,text:'Genera un episodio Deep Dive de 15 min para un estudiante que acaba de instalar Arch Linux y aprende Python. Cubre: 15 comandos de terminal esenciales, variables Python, tipos de datos, y por qué Linux es ventaja. Tono motivador, directo.'},
+{phase:0,weeks:'5-8',title:'Condicionales, Bucles y Funciones',fmt:'The Brief',min:10,text:'Genera The Brief de 10 min sobre los tres pilares de la lógica: condicionales, bucles, funciones. Por cada concepto: qué es, cuándo usarlo, ejemplo verbal. Cierra con ejercicio de reto.'},
+{phase:1,weeks:'1-4',title:'Python Intermedio + Estructuras',fmt:'Deep Dive',min:20,text:'Genera Deep Dive de 20 min sobre estructuras de datos en Python: listas, diccionarios, tuplas, sets con analogías del mundo real. ¿Cuándo usar cada una? List comprehensions y conexión con CS50.'},
+{phase:1,weeks:'5-8',title:'Git, Redes y Seguridad Básica',fmt:'The Critique',min:15,text:'Genera The Critique de 15 min sobre por qué Git es la habilidad más subestimada. Branching, code review, merge conflicts. Luego: modelo OSI en 5 minutos y por qué un developer debe entender redes.'},
+{phase:1,weeks:'9-12',title:'CS50x: C, Algoritmos y Memoria',fmt:'Deep Dive',min:25,text:'Genera Deep Dive de 25 min sobre pensamiento en C: compilación, punteros, memoria. Luego algoritmos de búsqueda y ordenamiento. ¿Por qué Harvard enseña C antes de Python?'},
+{phase:2,weeks:'1-4',title:'Nand2Tetris + Sistemas Operativos',fmt:'Deep Dive',min:25,text:'Genera Deep Dive de 25 min sobre construcción de computadoras desde NAND hasta assembler. Luego: procesos, memoria virtual, scheduling. ¿Por qué entender hardware y SO te hace 10x mejor?'},
+{phase:2,weeks:'5-8',title:'Web Full Stack + Bases de Datos',fmt:'The Brief',min:18,text:'Genera The Brief de 18 min sobre la trinidad web: HTML (estructura), CSS (presentación), JS (comportamiento). Luego SQL desde cero: SELECT, JOINs, índices. Errores comunes de principiantes.'},
+{phase:2,weeks:'9-12',title:'Flask, APIs y Seguridad Web',fmt:'The Critique',min:22,text:'Genera The Critique de 22 min sobre OWASP Top 10: SQL injection, XSS, CSRF, broken auth. Para cada una: qué es, cómo se explota, cómo se previene. Seguridad como parte del desarrollo.'},
+{phase:3,weeks:'1-4',title:'Algoritmos Avanzados y Teoría',fmt:'Deep Dive',min:25,text:'Genera Deep Dive de 25 min sobre pensamiento algorítmico: Big O intuitivo, búsqueda binaria, merge sort, quick sort. Luego: autómatas y máquinas de Turing. ¿Por qué la teoría importa para un developer práctico?'},
+{phase:3,weeks:'5-8',title:'Compiladores y Hado DSL',fmt:'The Debate',min:20,text:'Genera The Debate de 20 min: ¿vale la pena construir tu propio lenguaje? Un host defiende que entender parsers y AST te hace mejor arquitecto. El otro dice que es distracción. Concluye con utilidad de un DSL de ciberseguridad.'},
+{phase:3,weeks:'9-12',title:'Pentesting y Blue Team',fmt:'Deep Dive',min:25,text:'Genera Deep Dive de 25 min sobre hacking ético: pentesting vs bug bounty, nmap, Burp Suite, Metasploit. Luego: defenderse con Wazuh, análisis de logs, detección de anomalías.'},
+{phase:4,weeks:'1-4',title:'Arquitectura de Software a Escala',fmt:'Deep Dive',min:25,text:'Genera Deep Dive de 25 min sobre diseño de sistemas distribuidos: CAP theorem, sharding, caching, CDNs, microservicios vs monolitos. Caso real: POS para 10,000 tiendas en LATAM.'},
+{phase:4,weeks:'5-8',title:'Machine Learning para Seguridad',fmt:'The Brief',min:18,text:'Genera The Brief de 18 min sobre ML aplicado a ciberseguridad: detección de anomalías en tráfico, clasificación de malware, análisis de logs con clustering. ¿Es la IA el futuro de la defensa o hype?'},
+{phase:4,weeks:'9-12',title:'Forense, Malware y Threat Intel',fmt:'The Critique',min:22,text:'Genera The Critique de 22 min sobre análisis forense digital: recuperación de evidencia, análisis de malware estático vs dinámico, IOCs, MITRE ATT&CK. ¿Por qué el forense es el arte de la paciencia técnica?'},
+{phase:5,weeks:'1-6',title:'Criptografía Avanzada',fmt:'Deep Dive',min:25,text:'Genera Deep Dive de 25 min sobre criptografía moderna: RSA, curvas elípticas, TLS 1.3 handshake, zero-knowledge proofs. ¿Por qué la criptografía es matemática aplicada a la confianza? Post-quantum crypto básico.'},
+{phase:5,weeks:'7-12',title:'Cloud, DevSecOps y Zero Trust',fmt:'The Brief',min:20,text:'Genera The Brief de 20 min sobre arquitectura cloud segura: AWS IAM, Security Groups, containers seguros, Terraform. ¿Qué es Zero Trust y por qué todas las enterprise lo adoptan en 2026?'},
+{phase:5,weeks:'13-18',title:'Investigación y Publicación Técnica',fmt:'The Debate',min:20,text:'Genera The Debate de 20 min: ¿cómo un developer autodidacta de LATAM publica investigación relevante? Blogs/GitHub vs papers académicos. Estrategia práctica para posicionarse como experto.'},
+{phase:5,weeks:'19-24',title:'Especialización Profunda',fmt:'Deep Dive',min:25,text:'Genera Deep Dive de 25 min sobre cómo elegir especialización técnica profunda: arquitectura de seguridad, pentesting avanzado, threat intelligence, o desarrollo de herramientas de seguridad. Pros/contras para trabajo remoto desde LATAM.'},
+{phase:6,weeks:'1-6',title:'Portafolio y Carrera Remota',fmt:'The Debate',min:20,text:'Genera The Debate de 20 min: ¿cómo un developer autodidacta consigue trabajo remoto en 2026? Proyectos GitHub vs certificaciones vs networking. Estrategia práctica para vivir de la tecnología desde cualquier lugar.'}
+];
+function initAudio(){const c=document.getElementById('audio-container');c.innerHTML=audioPrompts.map((a,i)=>`<div class="audio-card"><h5>🎧 ${a.title} — ${a.weeks} (${a.fmt}, ~${a.min} min)</h5><p style="color:var(--text2);font-size:.82em;margin-bottom:6px">Fase ${a.phase}</p><div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:.78em;color:var(--text2);white-space:pre-wrap;max-height:100px;overflow-y:auto;margin-bottom:8px">${a.text}</div><button class="copy-btn" onclick="navigator.clipboard.writeText(audioPrompts[${i}].text).then(()=>alert('📋 Prompt copiado'))">📋 Copiar Prompt</button></div>`).join('');}
+
+// ── Mobile Detection ──
+function detectMobile(){const isMobile=window.innerWidth<=768;if(isMobile){document.getElementById('mobile-banner').style.display='block';}}
+window.addEventListener('resize',detectMobile);
+
+// ── Init ──
+initTracker();
+initAudio();
+updatePanelStats();
+renderLog();
+updatePanelTask();
+updateSmartState();
+updateTodayTab();
+detectMobile();
+</script>
+</body>
+</html>
