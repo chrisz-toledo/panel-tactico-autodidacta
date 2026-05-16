@@ -301,7 +301,7 @@ body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-
   <main class="content-area">
     <!-- STATS BAR -->
     <div class="stats-bar">
-      <div class="stat-item">📚 <span class="stat-value" id="stat-total">74</span> fuentes totales</div>
+      <div class="stat-item">📚 <span class="stat-value" id="stat-total">178</span> fuentes totales</div>
       <div class="stat-item">✅ <span class="stat-value" id="stat-completed">0</span> completadas</div>
       <div class="stat-item">📖 <span class="stat-value" id="stat-active">0</span> en progreso</div>
       <div class="stat-item">🎯 <span class="stat-value" id="stat-cs50">10</span> CS50x 2025</div>
@@ -1745,6 +1745,20 @@ function updateUI() {
   document.getElementById('badge-sources').textContent = `📚 ${STATE.completedSources.length}/${BIBLIOTECA.length}`;
   document.getElementById('stat-completed').textContent = STATE.completedSources.length;
   document.getElementById('stat-active').textContent = STATE.currentSourceId ? 1 : 0;
+  document.getElementById('stat-total').textContent = BIBLIOTECA.length; // v6 FIX: Total dinámico
+  
+  // v6 FIX: Actualizar contadores por categoría
+  const categories = { cs50: 0, security: 0, ai: 0, python: 0, web: 0, systems: 0, devops: 0, database: 0, methodology: 0, architecture: 0 };
+  BIBLIOTECA.forEach(s => { if (categories[s.category] !== undefined) categories[s.category]++; });
+  
+  const cs50El = document.getElementById('stat-cs50');
+  const securityEl = document.getElementById('stat-security');
+  const aiEl = document.getElementById('stat-ai');
+  
+  if (cs50El) cs50El.textContent = categories.cs50;
+  if (securityEl) securityEl.textContent = categories.security;
+  if (aiEl) aiEl.textContent = categories.ai;
+  
   renderSourceGrid();
 }
 
