@@ -346,6 +346,7 @@ body{
     </div>
     <span class="badge badge-xp" id="badge-xp">⚡ 0 XP</span>
     <span class="badge badge-streak" id="badge-streak">🔥 0 días</span>
+    <span class="badge badge-rank" id="badge-rank" style="color:var(--accent-purple);">🔰 Iniciado</span>
   </div>
   <div class="header-right">
     <button class="icon-btn" onclick="toggleChat()" title="Chat AI">💬</button>
@@ -975,9 +976,8 @@ function recordSession(minutes, score){
   STATE.sessions.push({date:today, minutes, score, energy:STATE.energy||3});
   STATE.total_minutes += minutes;
   STATE.total_days = new Set(STATE.sessions.map(s=>s.date)).size;
-  STATE.xp += Math.round(score*0.5 + minutes*0.3) + 25;
 
-  // Streak
+  // Streak Calculation (Calculated BEFORE XP to apply multiplier)
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
   const yStr = yesterday.toISOString().split('T')[0];
   if(STATE.last_study_date === yStr || STATE.last_study_date === today){
@@ -987,6 +987,25 @@ function recordSession(minutes, score){
   }
   if(STATE.streak > STATE.max_streak) STATE.max_streak = STATE.streak;
   STATE.last_study_date = today;
+
+  // Dopamine Engine: XP Calculation with Multipliers and Crits
+  const baseXP = Math.round(score*0.5 + minutes*0.3) + 25;
+  const streakMultiplier = Math.min(1 + (STATE.streak * 0.05), 2.5); // Cap at x2.5
+  const isCrit = Math.random() > 0.85; // 15% chance of CRIT
+  
+  let finalXP = Math.round(baseXP * streakMultiplier);
+  if(isCrit) finalXP = Math.round(finalXP * 1.5);
+  
+  STATE.xp += finalXP;
+
+  let xpMsg = `⚡ +${finalXP} XP Obtenida`;
+  if(streakMultiplier > 1) xpMsg += ` (Multiplicador de Racha x${streakMultiplier.toFixed(1)})`;
+  if(isCrit) {
+    xpMsg = `💥 ¡GOLPE CRÍTICO DE ENFOQUE! ${xpMsg}`;
+    setTimeout(fireConfetti, 500);
+  }
+  
+  setTimeout(() => showToast(xpMsg, isCrit ? 'success' : 'info'), 1000);
 
   // Phase progression
   const totalWeeks = Math.floor(STATE.total_days / 5); // ~5 study days/week
@@ -1303,6 +1322,7 @@ function showProgress(){
   addBotMsg(`📊 <strong>Tu progreso AEGIS</strong>
 
 <div class="card-inline">
+  <p>🏅 <strong>Rango Actual:</strong> <span style="color:var(--accent-purple);font-weight:bold">${getRankTitle(STATE.xp)}</span></p>
   <p>⚡ <strong>XP Total:</strong> ${STATE.xp.toLocaleString()}</p>
   <p>🔥 <strong>Racha actual:</strong> ${STATE.streak} días (máx: ${STATE.max_streak})</p>
   <p>📅 <strong>Días de estudio:</strong> ${STATE.total_days}</p>
@@ -1443,9 +1463,21 @@ function showWeeklySummary() {
 }
 
 // ── UI UTILITIES ────────────────────────────────────────
+function getRankTitle(xp) {
+  if (xp < 500) return "Iniciado";
+  if (xp < 1500) return "Script Kiddie";
+  if (xp < 3000) return "Code Slinger";
+  if (xp < 6000) return "Junior Dev";
+  if (xp < 12000) return "Cyber Tactician";
+  if (xp < 25000) return "Senior Architect";
+  if (xp < 50000) return "Tech Lead";
+  return "Leyenda AEGIS";
+}
+
 function updateHeader(){
   document.getElementById('badge-xp').textContent = '⚡ '+STATE.xp.toLocaleString()+' XP';
   document.getElementById('badge-streak').textContent = '🔥 '+STATE.streak+' días';
+  document.getElementById('badge-rank').textContent = '🏅 ' + getRankTitle(STATE.xp);
 }
 
 function toggleTheme(){
@@ -1460,7 +1492,39 @@ function showToast(text, type){
   d.className = 'toast toast-'+(type||'info');
   d.textContent = text;
   c.appendChild(d);
-  setTimeout(()=>d.remove(), 4000);
+  setTimeout(()=>d.remove(), 4500);
+}
+
+// ── DOPAMINE ENGINE (PARTICLES) ─────────────────────────
+function fireConfetti() {
+  if(!STATE.soundEnabled) return; // Silent mode overrides visual explosions too? No, let's keep it but optional
+  AudioEngine.playAchievement();
+  
+  const duration = 2500;
+  const end = Date.now() + duration;
+
+  (function frame() {
+    const conf = document.createElement('div');
+    conf.style.position = 'fixed';
+    conf.style.left = Math.random() * 100 + 'vw';
+    conf.style.top = '-10px';
+    conf.style.width = (Math.random() * 8 + 4) + 'px';
+    conf.style.height = (Math.random() * 12 + 6) + 'px';
+    conf.style.backgroundColor = ['#f44336','#4ade80','#fbbf24','#3b82f6','#a855f7'][Math.floor(Math.random()*5)];
+    conf.style.zIndex = '99999';
+    conf.style.pointerEvents = 'none';
+    conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(conf);
+
+    const animation = conf.animate([
+      { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+      { transform: `translate3d(${Math.random()*200 - 100}px, 100vh, 0) rotate(${Math.random()*720}deg)`, opacity: 0 }
+    ], { duration: 1000 + Math.random()*1500, easing: 'cubic-bezier(.37,0,.63,1)' });
+
+    animation.onfinish = () => conf.remove();
+
+    if (Date.now() < end) requestAnimationFrame(frame);
+  }());
 }
 
 function dashShowProgress() {
