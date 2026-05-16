@@ -404,7 +404,7 @@ body{
       <div style="display:flex; flex-wrap:wrap; gap:10px;">
         <button class="btn btn-secondary" onclick="dashShowProgress()">📊 Ver Progreso Global</button>
         <button class="btn btn-secondary" onclick="dashShowPhases()">🗺️ Mapa de Fases</button>
-        <button class="btn btn-secondary" style="background:var(--accent-red); color:white;" onclick="dashResetPhase()">🔄 Reset de Fase Actual</button>
+        <button class="btn btn-secondary" style="background:var(--accent-red); color:white;" onclick="dashHardReset()">🛑 Reset Total (Volver al Día 1)</button>
         <button class="btn btn-secondary" style="background:var(--accent-green); color:white;" onclick="dashForceType('practice')">🛠️ Forzar Práctica</button>
         <button class="btn btn-secondary" style="background:var(--accent-purple); color:white;" onclick="dashForceType('review')">🔄 Forzar Repaso</button>
       </div>
@@ -489,7 +489,16 @@ body{
 // AEGIS v2.0 — DATA LAYER
 // ══════════════════════════════════════════════════════════
 
-const START_DATE = '2026-01-05'; // Monday — Day 0
+const START_DATE = '2026-01-05'; // Fallback legacy constant, replaced by getStartDate()
+function getStartDate() {
+  if (STATE && STATE.start_date) return STATE.start_date;
+  const today = new Date().toISOString().split('T')[0];
+  if (STATE) {
+    STATE.start_date = today;
+    save();
+  }
+  return today;
+}
 
 // ── CURRICULUM: 8 phases, 10 years ──────────────────────
 const PHASES = [
@@ -647,12 +656,12 @@ function save(){
 
 // ── getTodayTask() ──────────────────────────────────────
 function getTodayTask(){
-  const start = new Date(START_DATE);
+  const start = new Date(getStartDate());
   const today = new Date();
   today.setHours(0,0,0,0); start.setHours(0,0,0,0);
   const diffDays = Math.floor((today - start) / 86400000);
   if(diffDays < 0) return {phase:PHASES[0],week:0,dayOfWeek:today.getDay(),dayNum:0,type:'rest',
-    title:'El plan aún no comienza',detail:'Tu fecha de inicio es el '+START_DATE+'. ¡Prepárate!',course:'',resources:[]};
+    title:'El plan aún no comienza',detail:'Tu fecha de inicio es el '+getStartDate()+'. ¡Prepárate!',course:'',resources:[]};
 
   // Calculate phase and week
   let totalWeeks = Math.floor(diffDays / 7);
@@ -1541,13 +1550,12 @@ function dashShowPhases() {
   alert(list);
 }
 
-function dashResetPhase() {
-  if(confirm("¿Estás seguro de reiniciar la Fase actual? Esto reseteará tu fecha de inicio a la de la fase actual.")) {
-    const today = new Date();
-    STATE.start_date = today.toISOString().split('T')[0]; // Simple reset for now
-    STATE.xp = Math.max(0, STATE.xp - 100);
-    saveState();
-    location.reload();
+function dashHardReset() {
+  if(confirm("🛑 ADVERTENCIA TÁCTICA 🛑\n\n¿Estás seguro de que quieres borrar TODO tu progreso y volver al Día 1 de la Fase 0?\nEsto no se puede deshacer y borrará XP, rachas, y calibración cognitiva.")) {
+    if(confirm("Confirmación final: ¿Ejecutar Borrado Seguro (Protocolo 8200)?")) {
+      localStorage.removeItem('aegis_v2_state');
+      location.reload();
+    }
   }
 }
 
