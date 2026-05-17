@@ -1,10 +1,10 @@
-# 🛡️ AEGIS v6.0 — Sistema de Autoaprendizaje hacia Dominio Mundial
+# 🛡️ AEGIS PRO — Tu Camino Real a $10,000+ USD/mes
 
-> **178 Fuentes | 6,000 Horas | 5-7 Años | De Junior a Especialista**
+> **40 Recursos Curados (URLs Reales) | 5 Fases | 36 Meses | De Cero a Profesional Bien Pagado**
 
-**Versión:** 6.0 (Mayo 2026)  
-**Status:** ✅ Producción — Listo para usar  
-**Filosofía:** *"Disciplina sobre motivación. Código sobre tutoriales."*
+**Versión:** PRO 1.0 (Mayo 2026)  
+**Status:** ✅ Producción — Listo para usar HOY  
+**Filosofía:** *"Disciplina + recursos reales + plan claro de monetización"*
 
 ---
 
@@ -46,13 +46,20 @@ No es un gestor de tareas. Es un sistema de **entrenamiento militar académico**
 
 ## 🚀 Cómo Empezar (1 Comando)
 
-### ⭐ AEGIS — Versión Definitiva
+### ⭐ AEGIS PRO — Versión Definitiva con URLs Reales
 
 ```bash
-open aegis/AEGIS/index.html
+open aegis/AEGIS_PRO/index.html
 ```
 
-📖 **Guía completa:** [`aegis/AEGIS/START_HERE.md`](aegis/AEGIS/START_HERE.md)
+📖 **Guía completa:** [`aegis/AEGIS_PRO/README.md`](aegis/AEGIS_PRO/README.md)
+
+**¿Por qué AEGIS PRO?**
+- ✅ **URLs reales verificadas** (no `url: "#"` rotas)
+- ✅ **40 recursos curados** (no 178 sin contexto)
+- ✅ **Plan de ingresos claro** ($500 → $20k+/mes)
+- ✅ **5 fases progresivas** con metas medibles
+- ✅ **Sin features rotas** (música/audios fake eliminados)
 
 **Características:**
 - ✅ 178 fuentes integradas
