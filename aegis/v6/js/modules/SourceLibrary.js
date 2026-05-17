@@ -6,17 +6,70 @@
  * filtrado, recomendaciones basadas en energía.
  */
 
-import BIBLIOTECA_DATA from '../data/biblioteca.json' assert { type: 'json' };
-
 class SourceLibrary {
   constructor() {
-    this.sources = BIBLIOTECA_DATA.sources || [];
-    this.metadata = BIBLIOTECA_DATA.metadata || {};
+    this.sources = [];
+    this.metadata = {};
+    this.loaded = false;
+  }
+
+  /**
+   * Carga la biblioteca desde JSON (funciona en file:// y http://)
+   */
+  async load() {
+    try {
+      // Intentar fetch (funciona en file:// en Chrome, no en Safari)
+      const response = await fetch(new URL('../data/biblioteca.json', import.meta.url));
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      
+      this.sources = data.sources || [];
+      this.metadata = data.metadata || {};
+      this.loaded = true;
+      
+      // Construir índices
+      this.indexById = this._buildIdIndex();
+      this.indexByCategory = this._buildCategoryIndex();
+      this.searchIndex = this._buildSearchIndex();
+      
+      console.log(`📚 SourceLibrary cargada: ${this.sources.length} fuentes`);
+      return true;
+    } catch (fetchError) {
+      console.warn('⚠️ Fetch failed, trying fallback:', fetchError);
+      return this._loadFallback();
+    }
+  }
+
+  /**
+   * Fallback: cargar datos embebidos para modo offline file://
+   */
+  async _loadFallback() {
+    // Datos mínimos para que la app no se rompa
+    // En producción real, esto debería ser un bundle con los datos
+    this.sources = this._getEmbeddedSources();
+    this.metadata = { version: '6.0-fallback', total: this.sources.length };
+    this.loaded = true;
     
-    // Índices para búsqueda eficiente
     this.indexById = this._buildIdIndex();
     this.indexByCategory = this._buildCategoryIndex();
     this.searchIndex = this._buildSearchIndex();
+    
+    console.log(`📚 SourceLibrary fallback: ${this.sources.length} fuentes básicas`);
+    return true;
+  }
+
+  /**
+   * Fuentes embebidas de respaldo (versión reducida)
+   */
+  _getEmbeddedSources() {
+    return [
+      { id: 1, name: "CS50x 2024", category: "cs50", difficulty: "beginner", priority: "critical", estimated_hours: 80, desc: "Fundamentos de CS", tactical: "Base imprescindible" },
+      { id: 2, name: "Python para Todos", category: "python", difficulty: "beginner", priority: "critical", estimated_hours: 40, desc: "Python desde cero", tactical: "Backend y scripting" },
+      { id: 3, name: "Clean Architecture", category: "architecture", difficulty: "advanced", priority: "critical", estimated_hours: 20, desc: "Arquitectura limpia", tactical: "Diseño escalable" },
+      { id: 4, name: "The Pragmatic Programmer", category: "methodology", difficulty: "intermediate", priority: "high", estimated_hours: 15, desc: "Filosofía de desarrollo", tactical: "Mentalidad profesional" },
+      { id: 5, name: "HackTheBox Academy", category: "security", difficulty: "intermediate", priority: "critical", estimated_hours: 100, desc: "Ciberseguridad práctica", tactical: "Hacking ético" },
+      { id: 6, name: "FastAI Course", category: "ai", difficulty: "intermediate", priority: "high", estimated_hours: 60, desc: "Deep Learning aplicado", tactical: "IA moderna" }
+    ];
   }
 
   // ============ BÚSQUEDA BÁSICA ============

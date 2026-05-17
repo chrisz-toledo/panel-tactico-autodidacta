@@ -44,6 +44,10 @@ async function initApp() {
     await stateManager.init();
     console.log('✅ StateManager inicializado');
 
+    // Cargar biblioteca de fuentes (funciona en file:// y http://)
+    await sourceLibrary.load();
+    console.log('✅ SourceLibrary cargada');
+
     // Cargar estado completo
     currentState = await stateManager.getFullState();
     console.log('✅ Estado cargado:', currentState);
