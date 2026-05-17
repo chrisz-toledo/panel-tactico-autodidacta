@@ -44,15 +44,15 @@ No es un gestor de tareas. Es un sistema de **entrenamiento militar académico**
 
 ---
 
-## 🚀 Cómo Empezar (2 Opciones)
+## 🚀 Cómo Empezar (1 Comando)
 
-### Opción A: v6-BETTER (Recomendada)
-**Un solo archivo. Todo incluido. Sin configuración.**
+### ⭐ AEGIS — Versión Definitiva
 
 ```bash
-cd aegis/v6-BETTER
-open aegis-v6-BIBLIOTECA.html
+open aegis/AEGIS/index.html
 ```
+
+📖 **Guía completa:** [`aegis/AEGIS/START_HERE.md`](aegis/AEGIS/START_HERE.md)
 
 **Características:**
 - ✅ 178 fuentes integradas
